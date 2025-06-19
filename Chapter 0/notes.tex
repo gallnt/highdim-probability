@@ -1,0 +1,106 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage{amsthm}
+\usepackage[english]{babel}
+
+\renewcommand\thesubsection{(\alph{subsection})}
+\renewcommand\thesubsubsection{(\roman{subsubsection})}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{(\roman{enumii})}
+\setlength{\parindent}{0pt}
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+
+\title{Notes for Chapter 0: Appetizers}
+\author{Gallant Tsao}
+
+\begin{document}
+\maketitle
+
+
+\begin{definition}[]
+A \underline{convex combination} of points $z_1, \dots, z_m \in \mathbb{R}^n$ is a linear combination with coefficients 
+that are nonnegative and sum to 1, i.e. it is a sum of the form
+\[ \sum_{i = 1}^{m} \lambda_i z_i, \quad \lambda_i \geq 0 \text{  and  } \sum_{i = 1}^{m} \lambda_i = 1. \]
+\end{definition}
+
+\begin{definition}[]
+The \underline{convex hull} of a set $T \in \mathbb{R}^n$ is the set of all convex combinations of all finite 
+collections of points in $T$, i.e. 
+\[ \text{conv}(T) := \{\text{convex combinations of } z_1, \dots, z_m \in T \text{ for } m \in \mathbb{N}\}. \]
+\end{definition}
+
+\begin{theorem}[\textbf{Caratheodory Theorem}]
+Every point in the convex hull of a set $T \subseteq \mathbb{R}^n$ can be expressed as a convex combination of at most 
+$n + 1$ points from $T$.
+\end{theorem}
+\begin{proof}
+Denote the point as 
+\[ p = a_1 x_1 + \cdots + a_m x_m, \ a_i \geq 0, \ \sum_{i = 1}^{m} a_i = 0. \]
+There are two cases that we can consider: 
+
+\textbf{Case 1: $m \leq n + 1$}. Then $p$ is already in the desired form and we don't need to worry about it.
+
+\textbf{Case 2: $m > n + 1$}. Then the set of $n - 1$ points $\{x_2 - x_1, \dots, x_m - 1\}$ have to be linearly 
+dependent because we have at least $n + 1$ points in a subspace of $\mathbb{R}^n$. Let $b_2, \dots, b_m \in \mathbb{R}$ 
+be not all zero such that 
+\[ \sum_{i = 2}^{m} b_i (x_i - x_1) = 0. \]
+From the above, by adding an extra term when $i = 1$, there exists $n$ numbers $c_1, \dots, c_n$ such that 
+\[ \sum_{i = 1}^{m} c_i x_i = 0 \text{  and  } \sum_{i = 1}^{m} c_i = 0. \]
+Define $I = \{i \in \{1, 2, \dots, n\}: c_i > 0\}$. The set is nonempty by the results that we have above. Define 
+\[ \alpha = \max_{i \in I} a_i / c_i. \]
+Then we can rewrite our point $p$ as 
+\[ p = p - 0 = \sum_{i = 1}^{m} a_i x_i - \alpha \sum_{i = 1}^{m} c_i x_i = \sum_{i = 1}^{m} (a_i - \alpha c_i)x_i, \]
+which is a convex combination with at least one zero coefficient, meaning $p$ can be written as a convex combination 
+of $m - 1$ points in $T$ (we can check this!). By continuing to apply the above, we can eventually arrive 
+at the case when $p$ consists of a combination of exactly $n + 1$ points, as desired.
+\end{proof}
+
+\begin{theorem}[\textbf{Approximate Caratheodory Theorem}]
+Consider a set $T \subseteq \mathbb{R}^n$ that is contained in the unit Euclidean ball. Then, for every point 
+$x \in \text{conv}(T)$ and every $k \in \mathbb{N}$, one can find points $x_1, \dots, x_k \in T$ such that 
+\[ \bigg\| x - \frac{1}{k} \sum_{j = 1}^{k} x_j \bigg\|_2 \leq \frac{1}{\sqrt{k}}. \]
+\end{theorem}
+
+\begin{proof}
+We'll apply a technique called the \textit{empirical method}. Fix $x \in \text{conv}(T)$ so 
+\[ x = \lambda_1 z_1 + \cdots + \lambda_m z_m, \ \lambda_i \geq 0, \ \sum_{i = 1}^{m} \lambda_i = 1. \]
+From the above, we can consider the $\lambda_i$'s as weights to a probability distribution. Define the random 
+vector $Z$ with its pmf being 
+\[ P(Z = z_i) = \lambda_i, \ i = 1, 2, \dots, m. \]
+We can immediately get that the expected value of $Z$ is 
+\[ \mathbb{E}[Z] = \sum_{i = 1}^{m} z_i P(Z = z_i) = \sum_{i = 1}^{m} \lambda_i z_i = x. \]
+Now consider $Z_1, \cdots, Z_k$ with the same distribution as $Z$. The strong law of large numbers tells us that 
+\[ \frac{1}{k}\sum_{j = 1}^{k} Z_j \to x \text{  almost surely as  } k \to \infty. \]
+For a more quantitative result, consider the mean-squared error:
+\[ \mathbb{E}\biggl[ \bigg\| x - \frac{1}{k}\sum_{j = 1}^{k}Z_j \bigg\|_2^2 \biggr] 
+= \frac{1}{k^2} \mathbb{E}\biggl[ \bigg\| \sum_{j = 1}^{k} (Z_j - x) \bigg\|_2^2 \biggr] 
+= \frac{1}{k^2} \sum_{j = 1}^{k} \mathbb{E}[\| Z_j - x \|_2^2], \]
+where the third equality is proved in exercise 3. For each term in the summation, 
+\begin{align*}
+	\mathbb{E}[\|Z_j - x\|_2^2] 
+	&= \mathbb{E}[\|Z - \mathbb{E}[Z]\|_2^2] \\
+	&= \mathbb{E}[\|Z\|_2^2] - \|\mathbb{E}[Z]\|_2^2 \quad (\text{Exercise 1}) \\
+	&\leq \mathbb{E}[\|Z\|_2^2] \\
+	&\leq 1. \quad (\text{Since } Z \in T).
+\end{align*}
+Then, we get that 
+\[ \mathbb{E}\biggl[ \bigg\| x - \frac{1}{k}\sum_{j = 1}^{k}Z_j \bigg\|_2^2 \biggr] \leq \frac{1}{k}. \]
+Therefore, there exists a realization $Z_1, \dots, Z_k$ such that 
+\[ \bigg\| x - \frac{1}{k}\sum_{j = 1}^{k}Z_j \bigg\|_2^2 \leq \frac{1}{k}. \]
+\end{proof}
+
+
+\section*{Covering Geometric Sets}
+
+\end{document}
