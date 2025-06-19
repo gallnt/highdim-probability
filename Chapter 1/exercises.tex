@@ -49,7 +49,7 @@ Let $x, y \in K$, and let $\lambda \in [0, 1]$. Then
 	&= \lambda \max_{}(f_1(x), \cdots, f_m(x)) + (1 - \lambda) \max_{}(f_1(y), \cdots, f_m(y)) \\
 	&= \lambda g(x) + 1 - \lambda) g(y).
 \end{align*}
-Therefore $g$ is a convex function.let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+Therefore $g$ is a convex function.
 
 
 % Exercise 3
@@ -86,7 +86,13 @@ Then from part (a),
 % Exercise 4
 \newpage
 \section*{Exercise 4}
-
+Let $x \in \text{conv}(T)$. Then for some $m \in \mathbb{N}$, 
+\[ x = \lambda_1 z_1 + \cdots + \lambda_m z_m, \ \lambda_i \geq 0, \sum_{i = 1}^{m} \lambda_i = 1. \]
+Then by Jensen's Inequality from Exercise 3, 
+\[ f(x) = f \biggl( \sum_{i = 1}^{m} \lambda_i z_i \biggr) \leq \sum_{i = 1}^{m} \lambda_i f(z_i) \leq \sup_{i} f(z_i). \]
+Therefore we get 
+\[ \sup_{x \in \text{conv}(T)} f(x) \leq \sup_{x \in T} f(x). \]
+The other side ("$\geq$") is obvious because $T \subseteq \text{conv}(T)$. Therefore we get the equality.
 
 
 \end{document}
