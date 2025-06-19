@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+\renewcommand\thesubsection{(\alph{subsection})}
+\renewcommand\thesubsubsection{(\roman{subsubsection})}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{(\roman{enumii})}
+\setlength{\parindent}{0pt}
+
+\title{Chapter 1 Exercises}
+\author{Gallant Tsao}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+% Exercise 1
+\section*{Exercise 1}
+Let $x_1, x_2 \in \text{conv}(T)$, and $\lambda \in [0, 1]$. Then there exists $j, k \in \mathbb{N}$ such that 
+\[ x_1 = a_1 y_1 + \cdots + a_j y_j, a_i \geq 0, \sum_{i = 1}^{j} a_i = 1, \]
+\[ x_2 = b_1 z_1 + \cdots + b_k z_k, b_I \geq 0, \sum_{i = 1}^{k} b_i = 1. \]
+Then we get 
+\[ \lambda x_1 + (1 - \lambda) x_2 
+= \lambda \sum_{i = 1}^{j} a_i y_i + (1 - \lambda)\sum_{i = 1}^{k} b_i z_i. \]
+From the formulation above, 
+\[ a_i \geq 0 \implies \lambda a_i \geq 0, \ b_i \geq 0 \implies (1 - \lambda) b_i \geq 0. \]
+Moreover, when summing up the coefficients, 
+\[ \lambda \sum_{i = 1}^{j} a_i + (1 - \lambda) \sum_{i = 1}^{k} b_i = \lambda + (1 - \lambda) = 1. \]
+Therefore $\lambdax_1 + (1 - \lambda)x_2 \in \text{conv}(T)$. Here we assumed that without loss of generality, there are no shared 
+points between $x_1$ and $x_2$. If there were to be shared points, it would not have affected our analysis because each coefficient 
+in the convex combination will still be greater than 0, and also their sum will be 1.
+
+
+% Exercise 2
+\newpage
+\section*{Exercise 2}
+Let $f_1, \dots, f_m$ be convex functions, and $g: K \to \mathbb{R}$ be defined as 
+\[ g(x) = \max_{x}(f_1(x), \cdots, f_m(x)). \]
+Let $x, y \in K$, and let $\lambda \in [0, 1]$. Then 
+\begin{align*}
+	g(\lambda x + (1 - \lambda)y) 
+	&= \max_{}(f_1(\lambda x + (1 - \lambda)y), \cdots, f_m(\lambda x + (1 - \lambda)y)) \\
+	&\leq \max_{}(\lambda f_1(x) + (1 - \lambda)f_1(y), \cdots, \lambda f_m(x) + (1 - \lambda) f_m(y)) \\
+	&\leq \max_{}(\lambda f_1(x), \cdots, \lambda f_m(x)) + \max_{}((1 - \lambda)f_1(y), \cdots, (1 - \lambda)f_m(y)) \\
+	&= \lambda \max_{}(f_1(x), \cdots, f_m(x)) + (1 - \lambda) \max_{}(f_1(y), \cdots, f_m(y)) \\
+	&= \lambda g(x) + 1 - \lambda) g(y).
+\end{align*}
+Therefore $g$ is a convex function.let g:rainbow#pairs = [['(', ')'], ['[', ']']]
+
+
+% Exercise 3
+\newpage
+\section*{Exercise 3}
+\subsection*{(a)}
+($\implies$) Suppose that $f$ is convex. For the base case, when $m = 2$, by the definition of convexity, the statement is true. 
+For the inductive hypothesis, assume that for some $m \in \mathbb{N}$, 
+\[ f \biggl( \sum_{i = 1}^{m} \lambda_i x_i \biggr) \leq \sum_{i = 1}^{m} \lambda_i f(x_i), \lambda_1 \geq 0, \sum_{i = 1}^{m} \lambda_i = 1. \]
+With $\lambda_j \geq 0, \sum_{j = 0}^{m + 1} \lambda_j = 1$, without loss of generality assume that $\lambda_{m + 1} < 1$ (if not we can switch 
+to another $\lambda$ that satisfies this condition). 
+\begin{align*}
+	f \biggl( \sum_{i = 1}^{m + 1} \lambda_i x_i \biggr) 
+	&= f \biggl( (1 - \lambda_{m + 1}) \sum_{j = 1}^{m} \frac{\lambda_j}{1 - \lambda_{j + 1}} x_j + \lambda_{m + 1} x_{m + 1} \biggr) \\
+	&\leq (1 - \lambda_{m + 1})  f \biggl( (1 - \lambda_{m + 1}) \sum_{j = 1}^{m} \frac{\lambda_j}{1 - \lambda_{j + 1}} x_j \biggr) 
+	+ \lambda_{m + 1} f(x_{m + 1}) \quad \text{(Base case)} \\
+	&\leq (1 - \lambda_{m + 1}) \sum_{j = 1}^{m} \frac{\lambda_j}{1 - \lambda_{m + 1}}f(x_j) + \lambda_{m + 1}f(x_{m + 1}) \quad 
+	\text{(Inductive step)} \\
+	&= \sum_{j = 1}^{m} \lambda_j f(x_j) + \lambda_{m + 1} f(x_{m + 1}) \\
+	&= \sum_{j = 1}^{m + 1} \lambda_j f(x_j).
+\end{align*}
+($\impliedby$) Take $m = 2$ and we are done.
+
+\subsection*{(b)}
+By the definition given for $X$,, let 
+\[ P(X = x_i) = p_i, i = 1, \dots, n, \ p_i \geq 0, \sum_{i = 1}^{n} p_i = 1. \]
+We can directly see from our construction that 
+\[ \mathbb{E}[X] = \sum_{i = 1}^{n} p_i x_i. \]
+Then from part (a), 
+\[ f(\mathbb{E}[X]) = f \biggl( \sum_{i = 1}^{n} p_i x_i \biggr) 
+\leq \sum_{i = 1}^{n} p_i f(x_i) = \mathbb{E}[f(X)]. \]
+
+
+% Exercise 4
+\newpage
+\section*{Exercise 4}
+
+
+
+\end{document}
