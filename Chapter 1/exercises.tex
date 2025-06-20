@@ -95,4 +95,92 @@ Therefore we get
 The other side ("$\geq$") is obvious because $T \subseteq \text{conv}(T)$. Therefore we get the equality.
 
 
+% Exercise 5
+\newpage
+\section*{Exercise 5}
+We'll proceed via proof by induction. For the base case when $n = 1$, let $x \in [-1. 1]$. Then $x$ can be written 
+as a combination via 
+\[ x = \frac{1 + x}{2} \cdot 1 + \frac{1 - x}{2} \cdot (-1). \]
+For the inductive step, assume if $x \in [-1, 1]^n$, $x \in \text{conv}(\{ -1, 1 \}^n)$. Now let's consider 
+$x \in [-1, 1]^{n + 1} = (x_1, \cdots, x_{n + 1})$. For a fixed value of $x_{n + 1} \in [-1, 1]$, from the 
+induction hypothesis, $x \in \text{conv}(\{ -1, 1 \}^n)$. Then 
+\begin{align*}
+	x 
+	&x_1, \cdots, x_{n + 1}) \\
+	&= \frac{1 + x_{n + 1}}{2}(x_1, \cdots, x_n, 1) + \frac{1 - x_{n + 1}}{2}(x_1, \cdots, x_n, -1).
+\end{align*}
+Therefore $x$ is a convex combination of points from a convex combination (we can acheive that via normalizing), hence 
+$x \in \text{conv}(\{ -1, 1 \}^{n + 1})$ so $[-1,1]^n \subseteq \text{conv}(\{-1, 1\}^n)$.
+
+For the other side of the proof, let $x \in \text{conv}(\{ -1, 1 \}^n)$. Then $\exists m \leq 2^n$ such that 
+\[ x = \lambda_1 z_1 + \cdot + \lambda_m z_m, z_i \in \text{conv}(\{ -1, 1 \}^n), \lambda_i \geq 0, 
+\sum_{i = 1}^{m} \lambda_1 = 1. \]
+Each entry $x_1$ satisfies $-1 \leq x_i \leq 1$ and equality occurs when all corresponding entries in $z_i$ are 
+either $1$ or $-1$, hence $\text{conv}(\{-1, 1\}^n) \subseteq [-1, 1]^n$.
+
+Finally we conclude that $\text{conv}(\{-1, 1\}^n) = [-1, 1]^n$.
+
+
+% Exercise 6
+\newpage
+\section*{Exercise 6}
+Let $x \in B_1^n$ so $\sum_{i = 1}^{n} |x_i| \leq 1$. Define the following sets: 
+\[ I_+ = \{ i \in \{1, \cdots, n\}: x_i > 0 \}, I_- = \{ i \in \{1, \cdots, n\}: x_i < 0. \]
+Without loss of generality, assume either $|I_+| > 0$ or $I_- > 0$. If both are zero, $x$ has to be 
+the origin, which finding a convex combination from the standard bases vectors would be very easy.
+Define 
+\[ \lambda_{i+} = \begin{cases}
+	|x_i| &\text{ if } \ i \in I_+, \\
+	0 &\text{ if } \ i \in I_-, \\
+	\frac{1}{2(|I_-| + |I_+|)} \biggl( 1 - \sum_{i \in I_- \cup I_+}^{} |x_i| \biggr) &\text{otherwise}
+\end{cases}, \]
+\[ \lambda_{i+} = \begin{cases}
+	|x_i| &\text{ if } \ i \in I_-, \\
+	0 &\text{ if } \ i \in I_+, \\
+	\frac{1}{2(|I_-| + |I_+|)} \biggl( 1 - \sum_{i \in I_- \cup I_+}^{} |x_i| \biggr) &\text{otherwise}
+\end{cases}. \]
+Then, 
+\[ x = \sum_{i = 1}^{n} \lambda_{i+}e_i + \lambda_{i-} (-e_i), \ \lambda_{i+}, \lambda_{i-} \geq 0, \ \sum_{i = 1}^{n} 
+\lambda_{i+} + \lambda_{i-} = 1. \]
+Hence $x \in \text{conv}(\{\pm e_1, \cdots, \pm e_n\})$ so $B_1^n \subseteq \text{conv}(\{\pm e_1, \cdots, \pm e_n\})$.
+
+Now let $x \in \text{conv}(\{\pm e_1, \cdots, \pm e_n\})$. Then $\exists \lambda_{i+}, \lambda_{i-} \geq 0$ and summing 
+to 1 such that 
+\begin{align*}
+	x 
+	&= \lambda_{1+} e_1 + \cdots + \lambda_{n+} e_n + \lambda_{1-} (-e_1) + \cdots + \lambda_{n-} (-e_n) \\
+	&\leq |\lambda_{1+} e_1| + \cdot + |\lambda_{n+} e_n| + |\lambda_{1-} e_1| + |\lambda_{n-} e_n| \\
+	&= \sum_{i = 1}^{n} |\lambda_{i+}| + |\lambda_{i-}| \\
+	&= 1.
+\end{align*}
+Therefore $x \in B_1^n$ so $\text{conv}(\{\pm e_1, \cdots, \pm e_n\}) \in B_1^n$. We conclude that 
+$B_1^n = \text{conv}(\{\pm e_1, \cdots, \pm e_n\})$. 
+
+
+% Exercise 7
+\newpage
+\section*{Exercise 7}
+Denote $E_i = $event that freshman $i$ has no friends, $X = $number of freshman. Then we are bounding
+\begin{align*}
+	\sum_{n = 0}^{\infty} P \biggl( \bigcup_{i = 1}^X E_i \bigg| X = n \biggr) P(x = n)
+	&= \sum_{n = 0}^{\infty} P \biggl( \bigcup_{i = 1}^n E_i \biggr) P(x = n) \\
+	&\leq \sum_{n = 1}^{\infty} \frac{\lambda^n e^{-\lambda}}{n!} \sum_{i = 1}^{n} P(E_i) \\
+	&= \sum_{n = 1}^{\infty} \frac{\lambda^n e^{-\lambda}}{n!} \cdot n(1 - p)^{n - 1} \\
+	&= \sum_{n = 1}^{\infty} \frac{\lambda^n e^{-\lambda}}{(n - 1)!} (1 - p){n - 1} \\
+	&= \lambda \sum_{n = 0}^{\infty} \frac{\lambda^n e^{-\lambda}}{n!}(1 - p)^n \\
+	&= \lambda e^{-p \lambda}.
+\end{align*}
+
+From the question, since $p \geq 2 \ln{\lambda} / \lambda$, 
+\[ \lambda e^{-p \lambda} \leq \lambda e^{-2 \ln{\lambda}} = \frac{1}{\lambda}. \]
+
+
+% Exercise 8
+\newpage
+\section*{Exercise 8}
+
+
+
+
+
 \end{document}
