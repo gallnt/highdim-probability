@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage{amsthm}
+\usepackage[english]{babel}
+
+\renewcommand\thesubsection{(\alph{subsection})}
+\renewcommand\thesubsubsection{(\roman{subsubsection})}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{(\roman{enumii})}
+\setlength{\parindent}{0pt}
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+
+\title{Chapter 1: A Quick Refresher on Analysis \& Probability}
+\author{Gallant Tsao}
+
+\begin{document}
+\maketitle
+\section*{Convex Sets and Functions}
+
+\begin{definition}[]
+A subset $K \subseteq \mathbb{R}^n$ is a \underline{convex set} if, for any pair of points in $K$, the line 
+segment connecting these two points is also contained in $K$, i.e. 
+\[ \lambda x + (1 - \lambda) y \in K \quad \forall x, y \in K, \lambda \in [0, 1]. \]
+Let $K \in \mathbb{R}^n$ be a convex subset. A function $f: K \to \mathbb{R}$ is a \underline{convex 
+function} if 
+\[ f(\lambda x + (1 - \lambda) y) \leq \lambda f(x) + (1 - \lambda) f(y) \quad \forall x, y \in K, 
+\lambda \in [0, 1]. \]	
+$f$ is \underline{concave} if the inequality above is reversed, or equivalently, if $-f$ is convex.
+\end{definition}
+
+
+\section*{Norms and Inner Products}
+
+
+
+
+\end{document}

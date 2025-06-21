@@ -30,8 +30,10 @@ From the formulation above,
 \[ a_i \geq 0 \implies \lambda a_i \geq 0, \ b_i \geq 0 \implies (1 - \lambda) b_i \geq 0. \]
 Moreover, when summing up the coefficients, 
 \[ \lambda \sum_{i = 1}^{j} a_i + (1 - \lambda) \sum_{i = 1}^{k} b_i = \lambda + (1 - \lambda) = 1. \]
-Therefore $\lambdax_1 + (1 - \lambda)x_2 \in \text{conv}(T)$. Here we assumed that without loss of generality, there are no shared 
-points between $x_1$ and $x_2$. If there were to be shared points, it would not have affected our analysis because each coefficient 
+Therefore $\lambdax_1 + (1 - \lambda)x_2 \in \text{conv}(T)$. Here we assumed that without loss of generality, 
+there are no shared 
+points between $x_1$ and $x_2$. If there were to be shared points, it would not have affected our analysis 
+because each coefficient 
 in the convex combination will still be greater than 0, and also their sum will be 1.
 
 
@@ -56,11 +58,12 @@ Therefore $g$ is a convex function.
 \newpage
 \section*{Exercise 3}
 \subsection*{(a)}
-($\implies$) Suppose that $f$ is convex. For the base case, when $m = 2$, by the definition of convexity, the statement is true. 
-For the inductive hypothesis, assume that for some $m \in \mathbb{N}$, 
-\[ f \biggl( \sum_{i = 1}^{m} \lambda_i x_i \biggr) \leq \sum_{i = 1}^{m} \lambda_i f(x_i), \lambda_1 \geq 0, \sum_{i = 1}^{m} \lambda_i = 1. \]
-With $\lambda_j \geq 0, \sum_{j = 0}^{m + 1} \lambda_j = 1$, without loss of generality assume that $\lambda_{m + 1} < 1$ (if not we can switch 
-to another $\lambda$ that satisfies this condition). 
+($\implies$) Suppose that $f$ is convex. For the base case, when $m = 2$, by the definition of convexity, 
+the statement is true. For the inductive hypothesis, assume that for some $m \in \mathbb{N}$, 
+\[ f \biggl( \sum_{i = 1}^{m} \lambda_i x_i \biggr) \leq \sum_{i = 1}^{m} \lambda_i f(x_i), \lambda_1 \geq 0, 
+\sum_{i = 1}^{m} \lambda_i = 1. \]
+With $\lambda_j \geq 0, \sum_{j = 0}^{m + 1} \lambda_j = 1$, without loss of generality assume that 
+$\lambda_{m + 1} < 1$ (if not we can switch to another $\lambda$ that satisfies this condition). 
 \begin{align*}
 	f \biggl( \sum_{i = 1}^{m + 1} \lambda_i x_i \biggr) 
 	&= f \biggl( (1 - \lambda_{m + 1}) \sum_{j = 1}^{m} \frac{\lambda_j}{1 - \lambda_{j + 1}} x_j + \lambda_{m + 1} x_{m + 1} \biggr) \\
@@ -178,9 +181,40 @@ From the question, since $p \geq 2 \ln{\lambda} / \lambda$,
 % Exercise 8
 \newpage
 \section*{Exercise 8}
+	
+
+% Exercise 9
+\newpage
+\section*{Exercise 9}
+Let $E_i = $ the event that student $i$ has no friends, and 
+$B = \{ \text{there exists a friendless student} \}$. We are bounding the probability 
+\[ P(B) 
+= P \biggl( \bigcup_{i = 1}^n E_i \biggr) 
+\leq \sum_{i = 1}^{n} P(E_i) 
+= n(1 - p_n)^{n - 1}
+\]
+Now when we take the limit, 
+\[ \lim_{n \to \infty} n(1 - p_n)^{n - 1} 
+< \lim_{n \to \infty} n \biggl( \frac{(1 + \varepsilon) \ln{n}}{n} \biggr)^{n - 1} 
+\to 0 \text{  as  } n \to \infty. \]
 
 
+% Exercise 10
+\newpage
+\section*{Exercise 10}
+\subsection*{(a)}
+Proving this statement is equivalent of proving 
+\[ \mathbb{E}[|X|^p]^{q / p} \leq \mathbb{E}[|X|^q]. \]
+The function $f(x) = x^{q / p}$ is convex because $q / p \geq 1$. Then by Jensen's Inequality, 
+\[ \mathbb{E}[|X|^p]^{q / p} \leq \mathbb{E}[(|X|^p)^{q / p}] = \mathbb{E}[|X|^q]. \]
 
-
+\subsection*{(b)}
+Let $q < \infty$, and $a = \frac{p + q}{2}$. Let $X$ be the random variable with pdf 
+\[ f_X(x) = \frac{a}{x^{a + 1}}, \ x \geq 1. \]
+Then we have that 
+\[ \|X\|_{L^p} = \int_{1}^{\infty} x^p \cdot \frac{a}{x^{a + 1}} \ dx 
+= \int_{1}^{\infty} ax^{(p - q) / 2 - 1} \ dx < \infty \quad (\frac{p - q}{2} - 1 < -1), \]
+\[ \|X\|_{L^q} = \int_{1}^{\infty} x^q \cdot \frac{a}{x^{a + 1}} \ dx 
+= \int_{1}^{\infty} ax^{(q - p) / 2 - 1} \ dx = \infty \quad (\frac{q - p}{2} - 1 \geq -1), \]
 
 \end{document}
