@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+\renewcommand\thesubsection{(\alph{subsection})}
+\renewcommand\thesubsubsection{(\roman{subsubsection})}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{(\roman{enumii})}
+\setlength{\parindent}{0pt}
+
+\title{Chapter 0 Exercises}
+\author{Gallant Tsao}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+% Exercise 1
+\section*{Exercise 1}
+\subsection*{(a)}
+\begin{align*}
+	\mathbb{E}[\|Z - \mathbb{E}[Z]\|_2^2] 
+	&= \mathbb{E}[\|Z\|_2^2 - 2 \langle Z, \mathbb{E}[Z] \rangle + \|\mathbb{E}[Z]\|_2^2] \\
+	&= \mathbb{E}[\|Z\|_2^2] - 2 \mathbb{E}[Z]^T \mathbb{E}[Z] + \|\mathbb{E}[Z]\|_2^2 \\
+	&= \mathbb{E}[\|Z\|]_2^2 - \|\mathbb{E}[Z]\|_2^2.
+\end{align*}
+
+
+
+\end{document}
