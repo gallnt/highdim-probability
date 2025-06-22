@@ -28,6 +28,34 @@
 	&= \mathbb{E}[\|Z\|]_2^2 - \|\mathbb{E}[Z]\|_2^2.
 \end{align*}
 
+\subsection*{(b)}
+From part (a), 
+\begin{align*}
+	\mathbb{E}[\|Z - \mathbb{E}[Z]\|_2^2] 
+	&= \mathbb{E}[\|Z\|]_2^2 - \|\mathbb{E}[Z]\|_2^2 \\
+	&= \frac{1}{2}\mathbb{E}[\|Z\|_2^2] - \mathbb{E}[Z]^T \mathbb{E}[Z] + \frac{1}{2}\mathbb{E}[\|Z\|_2^2] \\
+	&= \frac{1}{2} (\mathbb{E}[\|Z\|_2^2] - 2 \mathbb{E}[Z^t]\mathbb{E}[Z'] 
+	+ \frac{1}{2}\mathbb{E}[\|Z'\|_2^2]) \\
+	&= \frac{1}{2} (\mathbb{E}[\|Z\|_2^2] - 2 \mathbb{E}[Z^T Z'] + \mathbb{E}[\|Z'\|_2^2]) \\
+	&= \frac{1}{2}\mathbb{E}[\|Z - Z'\|_2^2].
+\end{align*}
+
+
+% Exercise 2
+\newpage
+\section*{Exercise 2}
+Let $\mu = \mathbb{E}[Z]$. First, notice that 
+\begin{align*}
+	\mathbb{E}[\|Z - a\|_2^2] - \mathbb{E}[\|Z - \mu\|_2^2] 
+	&= \mathbb{E}[\|Z\|_2^2 - 2a^T Z + \|a\|_2^2 - \|Z\|_2^2 + 2 \mu^T Z - \|\mu\|_2^2] \\
+	&= \|a\|_2^2 - 2(a^T - \mu^T)\mathbb{E}[Z] - \|\mu\|_2^2 \\
+	&= \|a\|_2^2 - 2a^T \mu + 2\|\mu\|_2^2 - \|\mu\|_2^2 \\
+	&= \|a - \mu\|_2^2.
+\end{align*}
+From above, minimizing $\mathbb{E}[\|Z - a\|_2^2]$ in terms of $a$ is the same as minimizing the term 
+we have above as the second term does not depend on $a$. The expression above is minimized exactly at 
+$a^* = \mu = \mathbb{E}[Z]$ as the quantity is always greater than or equal to 0, and reaches the value 
+$0$ if and only if $a = \mu$.
 
 
 \end{document}
