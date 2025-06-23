@@ -58,4 +58,90 @@ $a^* = \mu = \mathbb{E}[Z]$ as the quantity is always greater than or equal to 0
 $0$ if and only if $a = \mu$.
 
 
+% Exercise 3
+\newpage
+\section*{Exercise 3}
+\begin{align*}
+	\mathbb{E} \biggl[ \bigg\| \sum_{j = 1}^{k} Z_j \bigg\|_2^2 \biggr] 
+	&= \mathbb{E}[(Z_1 + \cdots + Z_k)^T (Z_1 + \cdots + Z_k)] \\
+	&= \mathbb{E} \biggl[ \sum_{j = 1}^{k} \|Z_j\|_2^2 + \sum_{i \neq j}^{} Z_i^T Z_j \biggr] \\
+	&= \mathbb{E} \biggl[ \sum_{j = 1}^{k} \|Z_j\|_2^2 \biggr] 
+	+ \sum_{i \neq j}^{} \mathbb{E}[Z_i]^T \mathbb{E}[Z_j] \\
+	&= \mathbb{E} \biggl[ \sum_{j = 1}^{k} \|Z_j\|_2^2 \biggr] + 0 \quad\quad (\mathbb{E}[Z_i] = 0) \\
+	&= \mathbb{E} \biggl[ \sum_{j = 1}^{k} \|Z_j\|_2^2 \biggr].
+\end{align*}
+
+
+% Exercise 4
+\newpage
+\section*{Exercise 4}
+\subsection*{(a)}
+We can consider these points as being chosen randomly at uniform from the unit ball in $n$ dimensions, i.e. 
+\[ X_1, \dots, X_n \sim_{iid} \text{Unif}(B_1^n) \implies \mathbb{E}[X_i] = 0. \]
+Then by exercise 3, 
+\[ \mathbb{E} \biggl[ \bigg\| \sum_{i = 1}^{k} X_i \bigg\|_2^2 \biggr] 
+= \sum_{i = 1}^{k} \mathbb{E}[\|X_i\|_2^2] \leq k. \]
+Therefore there exists a realization $(x_1, \dots, x_n)$ for which 
+\[ \bigg\| \sum_{i = 1}^{n} x_i \bigg\|_2^2 \leq k \implies 
+\bigg\| \sum_{i = 1}^{n} x_i \bigg\|_2 \leq \sqrt{k}. \]
+
+\subsection*{(b)}
+We are bounding $\mathbb{E}[\|X_i\|_2^2]$ by $1$, which is a tight bound.
+
+
+% Exercise 5
+\newpage
+\section*{Exercise 5}
+
+
+% Exercise 6
+\newpage
+\section*{Exercise 6}
+The first inequality comes as follows: we can see that 
+\[ \frac{n}{k} \leq \frac{n - i}{k - i}, \quad i = 1, 2, \dots, k - 1. \]
+This is because by cross multiplication
+\[ n(k - i) = nk - ni \geq nk - ki = k(n - 1). \]
+Then
+\[ \biggl( \frac{n}{k} \biggr)^k 
+= \frac{n}{k} \times \frac{n}{k} \times \cdots \times \frac{n}{k} 
+\leq \frac{n}{k} \times \frac{n - 1}{k - 1} \times \cdots \times \frac{n - k + 1}{1} 
+= \binom{n}{k}. \]
+The second inequality is trivial as $k \geq 1$.
+For the third inequality, we get 
+\begin{align*}
+	\sum_{j = 0}^{k} \binom{n}{j} \cdot \biggl( \frac{k}{n} \biggr)^k 
+	&\leq \sum_{j = 0}^{k} \binom{n}{j} \cdot \biggl( \frac{k}{n} \biggr)^j \quad (k/n \leq 1)\\
+	&\leq \sum_{j = 0}^{n} \binom{n}{j} \cdot \biggl( \frac{k}{n} \biggr)^j \quad (k/n \leq 1)\\
+	&= \biggl( 1 + \frac{k}{n} \biggr)^n \quad \text{(Binomial Theorem)} \\
+	&< e^k.
+\end{align*}
+
+
+% Exercise 7
+\newpage
+\section*{Exercise 7}
+Assume $n$ is large so that the $5/n$ radius near the surface is valid. The inner ball has radius 
+$\frac{1}{2} - \frac{5}{n}$. Then the volume of the inner ball is $(\frac{1}{2} - \frac{5}{n})^n$ times 
+the volums of the outer unit ball. In particular, as $n \to \infty$, 
+\[ \biggl( \frac{1}{2} - \frac{5}{n} \biggr)^n 
+= \biggl( \frac{1}{2} \biggr)^n \biggl( 1 - \frac{10}{n} \biggr)^n \to 0. \]
+This means that most of the points will be concentrated towards the surface of the $n$-dimensional ball.
+
+
+% Exercise 8
+\newpage
+\section*{Exercise 8}
+Let $X \sim \text{Unif}(B_1^n)$. Then the pdf of $X$ is 
+\[ f_X(x) = \frac{1}{\text{Vol}(B_1^n)}, \ x \in B_1^n. \]
+Now let's consider the random variable $\|X\|_2$, i.e. the 2-norm of the random vector. Since 
+the random vector is distributed uniformly in the $n$-dimensional ball, we can define its CDF as a 
+function of the radius $r$: 
+\[ F_{\|X\|_2}(r) = P(\|X\|_2 \leq r) = r^n. \]
+Correspondingly, we can find the PDF by just taking the derivative of the CDF: 
+\[ f_{\|X\|_2}(r) = nr^{n - 1}, \ 0 \leq r \leq 1. \]
+Then we can directly get that 
+\[ \mathbb{E}[\|X\|_2] = \int_{0}^{1} r \cdot nr^{n - 1} \ dr 
+= n \cdot \biggl[ \frac{r^{n + 1}}{n + 1} \biggr]_0^1 = \frac{n}{n + 1}. \]
+
+
 \end{document}
