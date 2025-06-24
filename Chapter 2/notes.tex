@@ -1,0 +1,93 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage{amsthm}
+\usepackage[english]{babel}
+
+\renewcommand\thesubsection{(\alph{subsection})}
+\renewcommand\thesubsubsection{(\roman{subsubsection})}
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{(\roman{enumii})}
+\setlength{\parindent}{0pt}
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{corollary}{Corollary}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+\newtheorem*{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem*{example}{Example}
+
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+
+\title{Notes for Chapter 2: Concentration of Sums of Independent Random Variables}
+\author{Gallant Tsao}
+
+\begin{document}
+\maketitle
+
+\section*{Why Concentration Inequalities?}
+From previous chapters, the simplest concentration inequality is Chebyshev's Inequality, which is quite 
+general but the bounds can often can be too weak. We can look at the following example: 
+\begin{example}
+Toss a fair coin $N$ times. What is the probability that we get at least $\frac{3}{4}$ heads?
+
+Let $S_N$ denote the number of heads, then $S_N \sim \text{Binom}(N, \frac{1}{2})$. We get 
+\[ \mathbb{E}[S_N] = \frac{N}{2}, \mathrm{Var}(S_n) = \frac{N}{4}. \]
+Using Chebyshev's Inequality, we get 
+\[ P(S_N \geq \frac{3}{4}N) \leq P(\bigg| S_N - \frac{N}{2} \bigg| \geq \frac{N}{4}) \leq \frac{4}{N}. \]
+This means probabilistic bound from above converges linearly in $N$. 
+
+However, by using the Central Limit Theorem, we get a very different result: If we let $S_N$ be a sum of 
+independent $Be(\frac{1}{2})$ random variables. Then by the De Moivre-Laplace CLT, the random variable 
+\[ Z_N = \frac{S_N - N/2}{\sqrt{N/4}} \]
+converges to the standard normal distribution $N(0, 1)$. Then for a large $N$, 
+\[ P(S_ \geq \frac{3}{4}N) = P(Z_N \geq \sqrt{N/4}) \approx P(Z \geq \sqrt{N/4}) \]
+where $Z \sim N(0, 1)$. We will use the following proposition: 
+
+\begin{proposition}[Gaussian tails]
+Let $Z \sim N(0, 1)$. Then for all $t > 0$, 
+\[  \frac{t}{t^2 + 1} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2} \leq P(Z \geq t) 
+\leq \frac{1}{t} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2}. \]
+\end{proposition}
+
+\begin{proof}
+The first inequality is proved in exercise 2.2. For the second inequality, by making the change 
+of variables $x = t + y$,
+\begin{align*}
+	P(Z \geq t) 
+	&= \frac{1}{\sqrt{2 \pi}} \int_{t}^{\infty} e^{-x^2 / 2} \ dx \\
+	&= \frac{1}{\sqrt{2 \pi}} \int_{0}^{\infty} e^{-t^2 / 2} e^{-ty} e^{-y^2 / 2} \ dy \\
+	&\leq \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2} \int_{0}^{\infty} e^{-ty} \ dy 
+	\quad (e^{-y^2 / 2} \leq 1) \\
+	&= \frac{1}{t} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2}.
+\end{align*}
+\end{proof}
+
+Therefore the probability of having at least $\frac{3}{4}N$ heads is bounded by 
+\[ \frac{1}{\sqrt{2 \pi}}e^{-N / 8}, \]
+which is much better than the linear convergence we had above. However, this reasoning is not rigorous, 
+as the approximation error decays slowly, which can be shown via the CLT below: 
+
+\begin{theorem}[Berry-Esseen CLT]
+Let $X_1, X_2, \dots$ be a sequence of i.i.d. random variables with mean $\mu$ and variance 
+$\sigma^2$, and let $S_N = X_1 + \cdots + X_N$, and let 
+\[ Z_N = \frac{S_N - \mathbb{E}[S_N]}{\sqrt{\mathrm{Var}(S_N)}}. \]
+Then for every $N \in \mathbb{N}$ and $t \in \mathbb{R}$ we have 
+\[ |P(Z_N \geq t) - P(Z \geq t)| \leq \frac{\rho}{\sqrt{N}}, \]
+where $Z \sim N(0, 1)$ and $\rho = \mathbb{E}[|X_1 - \mu|^3] / \sigma^3$.
+\end{theorem}
+Therefore the approximation error decays at a rate of $1 / \sqrt{N}$. Moreover, this bound cannot be improved, 
+as for even $N$, the probability of exactly half the flips being heads is 
+\[ P(S_N = \frac{N}{2}) = 2^{-N} \binom{N}{N/2} \approx \sqrt{\frac{2}{\pi N}}. \]
+where the last approximation uses Stirling approximation.
+
+All in all, we need theory for concentration which bypasses the Central Limit Theorem.
+\end{example}
+
+\end{document}
