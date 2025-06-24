@@ -1,35 +1,5 @@
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage[a4paper, margin=1in]{geometry}
-\usepackage{graphicx}
-\usepackage{minted}
-\usepackage{amsthm}
-\usepackage[english]{babel}
-
-\renewcommand\thesubsection{(\alph{subsection})}
-\renewcommand\thesubsubsection{(\roman{subsubsection})}
-\renewcommand{\labelenumi}{(\alph{enumi})}
-\renewcommand{\labelenumii}{(\roman{enumii})}
-\setlength{\parindent}{0pt}
-
-\newtheorem*{theorem}{Theorem}
-\newtheorem*{corollary}{Corollary}
-\newtheorem*{lemma}{Lemma}
-\newtheorem*{remark}{Remark}
-\newtheorem*{proposition}{Proposition}
-
-\theoremstyle{definition}
-\newtheorem*{example}{Example}
-
-\theoremstyle{definition}
-\newtheorem*{definition}{Definition}
-
-\title{Notes for Chapter 2: Concentration of Sums of Independent Random Variables}
-\author{Gallant Tsao}
-
-\begin{document}
-\maketitle
+% \title{Notes for Chapter 2: Concentration of Sums of Independent Random Variables}
+% \author{Gallant Tsao}
 
 \section*{Why Concentration Inequalities?}
 From previous chapters, the simplest concentration inequality is Chebyshev's Inequality, which is quite 
@@ -90,4 +60,20 @@ where the last approximation uses Stirling approximation.
 All in all, we need theory for concentration which bypasses the Central Limit Theorem.
 \end{example}
 
-\end{document}
+
+\section*{Hoeffding Inequality}
+\begin{definition}[]
+A random variable $X$ has the \underline{Rademacher Distribution} if it takes values $-1$ and $1$ 
+with probability $1/2$ each, i.e. 
+\[ P(X = -1) = P(X = 1) = \frac{1}{2}. \]
+\end{definition}
+
+\begin{theorem}[Hoeffding Inequality]
+Let $X_1, \sotd, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_n) 
+\in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
+\[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
+\end{theorem}
+
+\begin{proof}
+See how this looks with no box
+\end{proof}
