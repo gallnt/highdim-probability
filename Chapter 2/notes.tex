@@ -60,7 +60,6 @@ where the last approximation uses Stirling approximation.
 All in all, we need theory for concentration which bypasses the Central Limit Theorem.
 \end{example}
 
-
 \section*{Hoeffding Inequality}
 \begin{definition}[]
 A random variable $X$ has the \underline{Rademacher Distribution} if it takes values $-1$ and $1$ 
@@ -75,5 +74,44 @@ Let $X_1, \sotd, X_N$ be independent Rademacher random variables, and let $a = (
 \end{theorem}
 
 \begin{proof}
-See how this looks with no box
+The proof comes by a method called the \textit{exponential moment method}. We multiply the probability of 
+the quantity of interest by $\lambda \geq 0$ (whose value will be determined later), exponentiate, 
+and then bound using Markov's inequality, which gives: 
+\begin{align*}
+	P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) 
+	&= P \biggl( \lambda \sum_{i = 1}^{N} a_iX_i \geq \lambda t \biggr) \\
+	&= P \biggl( \exp{\biggl( \lambda \sum_{i = 1}^{N} a_iX_i \biggr)} \geq \exp{(\lambda t)} \biggr) \\
+	&\leq e^{-\lambda t} \mathbb{E} \biggl[ \exp{\biggl( \lambda \sum_{i = 1}^{N} a_iX_i \biggr)} \biggr].
+\end{align*}
+In fact, from the last quantity we got above, we are effectively trying to bound the moment generating 
+function of the sum $\sum_{i = 1}^{N} a_iX_i$. Since the $X_i$'s are independent, 
+\[ \mathbb{E} \biggl[ \exp{\biggl( \lambda \sum_{i = 1}^{N} a_iX_i \biggr)} \biggr] 
+= \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda a_i X_i)}]. \]
+Let's fix $i$. Since $X_i$ takes values $-1$ and $1$ with probability $1/2$ each, 
+\[ \mathbb{E}[\exp{(\lambda a_i X_i)}] = \frac{1}{2}\exp{(\lambda a_i)} 
++ \frac{1}{2}\exp{(-\lambda a_i)} = \cosh{(\lambda a_i)}. \]
+Next we will use the following inequality: 
+\[ \cosh{x} \leq e^{x^2/2} \quad \text{for all } x \in \mathbb{R}. \]
+The above is true by expanding the taylor series for both functions (proven in Exercise 2.5). Then 
+we get 
+\[ \mathbb{E}[\exp{(\lambda a_i X_i)}] \leq \exp{(\lambda^2 a_i^2 / 2)}. \]
+Substituting this inequality into what we have above gives 
+\begin{align*}
+	P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) 
+	&\leq e^{-\lambda t} \prod_{i = 1}^{N} \exp{(\lambda^2 a_i^2 / 2)} \\
+	&= \exp{\biggl( -\lambda t + \frac{\lambda^2}{2}\sum_{i = 1}^{N} a_i^2 \biggr)} \\
+	&= \exp{\biggl( -\lambda t + \frac{\lambda^2}{2} \|a\|_2^2 \biggr)}.
+\end{align*}
+Now we want to find the optimal value of $\lambda$ to make the quantity on the RHS as small as possible. 
+Define the RHS as a function of $\lambda$,  and taking derivatives with respect to $\lambda$ yields
+\[ f'(\lambda) = (-t + \lambda \|a\|_2^2) 
+\exp{\biggl( -\lambda t + \frac{\lambda^2}{2} \|a\|_2^2 \biggr)} = 0 
+\implies \lambda^* = \frac{t}{\|a\|_2^2}. \]
+Then the second derivative test gives 
+\[ f''(\lambda^*) = \|a\|_2^2 \exp{\biggl( -\lambda t + \frac{\lambda^2}{2} \|a\|_2^2 \biggr)} \geq 0. \]
+Therefore the quantity is indeed minimized at $\lambda^*$, then plugging this value back gives 
+\[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) 
+\leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
+
+
 \end{proof}
