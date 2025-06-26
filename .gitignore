@@ -5,3 +5,5 @@
 *.gz
 *.DS_Store
 *.cls
+*.toc
+*.out

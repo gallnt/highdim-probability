@@ -1,4 +1,0 @@
-\babel@toc {english}{}\relax 
-\contentsline {section}{\numberline {0}Appetizer: Using Probability to Cover a Set}{2}{section.0}%
-\contentsline {section}{\numberline {1}Convex Sets and Functions}{4}{section.1}%
-\contentsline {section}{\numberline {2}Concentration of Sums of Independent Random Variables}{5}{section.2}%

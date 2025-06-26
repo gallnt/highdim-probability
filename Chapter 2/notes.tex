@@ -1,9 +1,13 @@
 \section{Concentration of Sums of Independent Random Variables}
 
-\section*{Why Concentration Inequalities?}
+\subsection{Why Concentration Inequalities?}
 From previous chapters, the simplest concentration inequality is Chebyshev's Inequality, which is quite 
-general but the bounds can often can be too weak. We can look at the following example: 
+general but the bounds can often can be too weak. We can look at the following example:
+
+\subsubsection*{}
+
 \begin{example}
+\label{ex:2.1.1}
 Toss a fair coin $N$ times. What is the probability that we get at least $\frac{3}{4}$ heads?
 
 Let $S_N$ denote the number of heads, then $S_N \sim \text{Binom}(N, \frac{1}{2})$. We get 
@@ -16,10 +20,11 @@ However, by using the Central Limit Theorem, we get a very different result: If 
 independent $Be(\frac{1}{2})$ random variables. Then by the De Moivre-Laplace CLT, the random variable 
 \[ Z_N = \frac{S_N - N/2}{\sqrt{N/4}} \]
 converges to the standard normal distribution $N(0, 1)$. Then for a large $N$, 
-\[ P(S_ \geq \frac{3}{4}N) = P(Z_N \geq \sqrt{N/4}) \approx P(Z \geq \sqrt{N/4}) \]
+\[ P(S_N \geq \frac{3}{4}N) = P(Z_N \geq \sqrt{N/4}) \approx P(Z \geq \sqrt{N/4}) \]
 where $Z \sim N(0, 1)$. We will use the following proposition: 
 
 \begin{proposition}[Gaussian tails]
+\label{prop:2.1.2}
 Let $Z \sim N(0, 1)$. Then for all $t > 0$, 
 \[  \frac{t}{t^2 + 1} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2} \leq P(Z \geq t) 
 \leq \frac{1}{t} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2}. \]
@@ -45,7 +50,7 @@ as the approximation error decays slowly, which can be shown via the CLT below:
 
 \begin{theorem}[Berry-Esseen CLT]
 Let $X_1, X_2, \dots$ be a sequence of i.i.d. random variables with mean $\mu$ and variance 
-$\sigma^2$, and let $S_N = X_1 + \cdots + X_N$, and let 
+$\sigma^2$, and let $S_N = X_1 + Part of negotiations.\cdots + X_N$, and let 
 \[ Z_N = \frac{S_N - \mathbb{E}[S_N]}{\sqrt{\mathrm{Var}(S_N)}}. \]
 Then for every $N \in \mathbb{N}$ and $t \in \mathbb{R}$ we have 
 \[ |P(Z_N \geq t) - P(Z \geq t)| \leq \frac{\rho}{\sqrt{N}}, \]
@@ -67,7 +72,7 @@ with probability $1/2$ each, i.e.
 \end{definition}
 
 \begin{theorem}[Hoeffding Inequality]
-Let $X_1, \sotd, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_n) 
+Let $X_1, \dots, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_n) 
 \in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
 \end{theorem}
@@ -111,6 +116,38 @@ Then the second derivative test gives
 Therefore the quantity is indeed minimized at $\lambda^*$, then plugging this value back gives 
 \[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) 
 \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
-
-
 \end{proof}
+
+\begin{remark}[Exponentially light tails]
+Hoeffding inequality can be seen as a concentrated version of the CLT. With normalization $\|a\|_2 = 1$, 
+we get an exponentially light tail $e^{-t^2 / 2}$, which is comparable to \cref{prop:2.1.2}.
+\end{remark}
+
+\begin{remark}[Non-asymptotic theory]
+Unlike the classical limit theorems, Hoeffding inequality holds for every fixed $N$ instead of letting 
+$N \to \infty$. Non-asymptotic results are very useful in data science because we can use $N$ as the 
+sample size.
+\end{remark}
+
+\begin{remark}[The probability of $\frac{3}{4}N$ heads]
+Using Hoeffding, returning back to \cref{ex:2.1.1} and bound the probabiltiy of at least $\frac{3}{4}N$ 
+heads in $N$ tosses of a fair coin. Since $Y \sim \text{Bernoulli}(1/2)$, $2Y - 1$ is Rademacher. Since 
+$S_N$ is a sum of $N$ independent $\text{Be}(1/2)$ random variables, $2S_N - N$ is a sum of $N$ 
+independent Rademacher random variables. Hence 
+\begin{align*}
+	P(\text{At least } \frac{3}{4}N \text{ heads}) 
+	&= P(S_N \geq \frac{3}{4}N) \\
+	&= P(2S_N - N \geq \frac{N}{2}) \\
+	&\leq e^{-N/8}.
+\end{align*}
+This is a rigorous bound comparable to what we had heuristically in the example.
+\end{remark}
+
+Hoeffding inequality can also be extended to two-sided tails and only suffers by a constant multiple 
+of 2: 
+\begin{theorem}[Hoeffding inequality, two-sided]Let $X_1, \dots, X_N$ be independent Rademacher random 
+variables, and let $a = (a_1, \cdots, a_n) \in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
+\[ P \biggl( \bigg| \sum_{i = 1}^{N} a_iX_i \bigg| \geq t \biggr) 
+\leq 2\exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
+\end{theorem}
+
