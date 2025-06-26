@@ -1,4 +1,6 @@
-\section{Convex Sets and Functions}
+\section{A Quick Refresher on Analysis and Probability}
+
+\subsection{Convex Sets and Functions}
 
 \begin{definition}[]
 A subset $K \subseteq \mathbb{R}^n$ is a \underline{convex set} if, for any pair of points in $K$, the line 
@@ -12,5 +14,25 @@ $f$ is \underline{concave} if the inequality above is reversed, or equivalently,
 \end{definition}
 
 
-\section*{Norms and Inner Products}
+\subsection{Norms and Inner Products}
 
+\begin{definition}[]
+The \underline{Euclidean norm} of a vector $x \in \mathbb{R}^n$ is 
+\[ \|x\|_2 = \biggl( \sum_{i = 1}^{n} x_i^2 \biggr)^{1/2}. \]
+\end{definition}
+
+\begin{definition}[]
+The \underline{inner product (dot product)} of two vectors $x, y \in \mathbb{R}^n$ is 
+\[ \langle x, y \rangle = x^T y. \]
+\end{definition}
+
+\begin{definition}[]
+For $p \in [1, \infty]$, the \underline{$\ell^p$ norm} of a vector $x \in \mathbb{R}^n$ is 
+\[ \|x\|_p = \biggl( \sum_{i = 1}^{n} |x_i|^p \biggr)^{1/p} \quad \text{ for } p \in [1, \infty), 
+\ \|x\|_{\infty} = \max_{i = 1, \dots, n} |x_i|. \]
+\end{definition}
+
+\begin{theorem}[Minkowski's Inequality]
+For any vector $x, y \in \mathbb{R}^n$, 
+\[ \|x + y\|_p \leq \|x\|_p + \|y\|_p. \]
+\end{theorem}

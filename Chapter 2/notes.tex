@@ -4,8 +4,6 @@
 From previous chapters, the simplest concentration inequality is Chebyshev's Inequality, which is quite 
 general but the bounds can often can be too weak. We can look at the following example:
 
-\subsubsection*{}
-
 \begin{example}
 \label{ex:2.1.1}
 Toss a fair coin $N$ times. What is the probability that we get at least $\frac{3}{4}$ heads?
@@ -64,7 +62,8 @@ where the last approximation uses Stirling approximation.
 All in all, we need theory for concentration which bypasses the Central Limit Theorem.
 \end{example}
 
-\section*{Hoeffding Inequality}
+
+\subsection{Hoeffding Inequality}
 \begin{definition}[]
 A random variable $X$ has the \underline{Rademacher Distribution} if it takes values $-1$ and $1$ 
 with probability $1/2$ each, i.e. 
@@ -72,6 +71,7 @@ with probability $1/2$ each, i.e.
 \end{definition}
 
 \begin{theorem}[Hoeffding Inequality]
+\label{thm:2.2.2}
 Let $X_1, \dots, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_n) 
 \in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
@@ -150,4 +150,157 @@ variables, and let $a = (a_1, \cdots, a_n) \in \mathbb{R}^n$ be fixed. Then for 
 \[ P \biggl( \bigg| \sum_{i = 1}^{N} a_iX_i \bigg| \geq t \biggr) 
 \leq 2\exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
 \end{theorem}
+
+\begin{proof}
+Denote $S_N = \sum_{i = 1}^{N} a_iX_i$. By using the union bound,
+\begin{align*}
+	P(|S_N| \geq t) 
+	&= P(S_N \geq t \cup S_N \leq -t) \\
+	&\leq P(S_N \geq t) + P(-S_N \geq t).
+\end{align*}
+Then applying the exact process (exponential moment method) from above gives the result.
+\end{proof}
+
+Hoeffding inequality can be also be applied to general bounded random variables: 
+\begin{theorem}[Hoeffding inequality for bounded random variables]
+Let $X_1, \dots, X_N$ be independent random variables such that $X_i \in [a_i, b_i]$ for every $i$. Then 
+for any $t > 0$, we have 
+\[ P \biggl( \sum_{i = 1}^{N} (X_i - \mathbb{E}[X_i]) \geq t \biggr) 
+\leq \exp{\biggl( -\frac{2t^2}{\sum_{i = 1}^{N} (b_i - a_i)^2} \biggr)}. \]
+\end{theorem}
+
+\begin{proof}
+Done in Exercise 2.10.
+\end{proof}
+
+
+\subsection{Chernoff Inequality}
+In general, Hoeffding inequality is good for Rademacher random variables, but it does not account for, say, 
+the parameter $p_i$ within a Bernoulli random variable, which can lead to very different results depending 
+on what this value is.
+
+\begin{theorem}[Chernoff inequality]
+\label{thm:2.3.1}
+Let $X_i \sim \text{Ber}(p_i)$ be independent.Let $S_N = \sum_{i = 1}^{N} X_i$ and $\mu = \mathbb{E}[S_N]$. 
+Then 
+\[ P(S_N \geq t) \leq e^{-\mu} \biggl( \frac{e \mu}{t} \biggr)^t \quad \text{for any } t \geq \mu. \]
+\end{theorem}
+
+\begin{proof}
+We'll use the exponential moment method as from \cref{thm:2.2.2} again. Fix $\lambda > 0$.
+\begin{align*}
+	P(S_n \geq t) 
+	&= P(\lambda S_N \geq \lambda t) \\
+	&= P(\exp{(\lambda S_n)} \geq \exp{(\lambda t)}) \\
+	&\leq e^{-\lambda t} \mathbb{E}[\exp{(\lambda S_n)}] \\
+	&= e^{-\lambda t} \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}]. 
+\end{align*}
+Fix $i$. Since $X_i \sim \text{Ber}(p_i)$, 
+\[ \mathbb{E}[\exp{(\lambda X_i)}] = e^{\lambda} p_i + 1(1 - p_i) 
+= 1 + (e^\lambda - 1)p_i \leq e^{\lambda - 1} p_i \]
+where the last inequality comes from $1 + x \leq e^x$. So 
+\[ \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}] \leq \exp{ \biggl( 
+(e^\lambda - 1) \sum_{i = 1}^{N} p_i \biggr)} = \exp{((e^\lambda - 1)\mu)}. \]
+Substituting back to the original equation gives 
+\[ P(S_N \geq t) \leq e^{-\lambda t} \exp{((e^\lambda - 1)\mu)} 
+= \exp{(-\lambda t + (e^\lambda - 1)\mu)}. \]
+As before, define the above as a function of $\lambda$ and using calculus, 
+\[ f'(\lambda) = (-t + \mu e^\lambda)\exp{(-\lambda t + (e^\lambda - 1)\mu)} = 0 
+\implies \lambda^* = \ln{(t / \mu)}. \]
+Moreover, 
+\[ f''(\lambda^*) = t\exp{(-t \ln{(t / \mu)} + (t / \mu - 1)\mu)} \geq 0. \]
+Therefore we have found the $\lambda^*$ that produces the tightest bound, and plugging back into the 
+original equation gives the result.
+\end{proof}
+
+\begin{remark}[Chernoff inequality: left tails]
+\label{rmk:2.3.2}
+There is also a version of the Chernoff inequality for left tails: 
+\[ P(S_N \leq t) \leq e^{-\mu} \biggl( \frac{e \mu}{t} \biggr)^t \quad \text{for every } 
+0 < t \leq \mu. \]
+\end{remark}
+
+\begin{proof}
+Done in Exercise 2.11.
+\end{proof}
+
+\begin{remark}[Poisson tails]
+\label{rmk:2.3.3}
+When $p_i$ is small for the Bernoulli random variables, by the Poisson Limit Theorem (add link), 
+$S_N \sim \text{Pois}(\mu)$. Using Stirling approximation for $t!$, 
+\[ P(S_N = t) \approx \frac{e^{-\mu}}{\sqrt{2 \pi t}} \biggl( \frac{e \mu}{t} \biggr)^t, 
+\quad t \in \mathbb{N}. \]
+Chernoff inequality gives a similar result, but rigorous and non-asymptotic. It is saying that we can 
+bound a whole Poisson tail $P(S_N \geq t)$ by just one value $P(S_N = t)$ in the tail :)
+\end{remark}
+
+Poisson tails decay at the rate of $t^{-t} = e^{-t \ln{t}}$, which is not as fast as Gaussian tails. 
+However, the corollary below shows that for small deviations, the Poisson tail resembles the Gaussian: 
+\begin{corollary}[Chernoff inequality: small deviations]
+In the setting of \cref{thm:2.3.1}, 
+\[ P(|S_N - \mu| \geq \delta \mu) \leq 2 \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)} \quad 
+\text{for every } 0 \leq \delta \leq 1. \]
+\end{corollary}
+
+\begin{proof}
+Using \cref{thm:2.3.1} with $t = (1 + \delta)\mu$, 
+\begin{align*}
+	P(S_N \geq (1 + \delta)\mu) \\
+	&\leq e^{-\mu} \biggl( \frac{e \mu}{(1 + \delta)\mu} \biggr)^{(1 + \delta)\mu} \\
+	&= e^{-\mu + (1 + \delta)\mu} \cdot e^{-\ln{(1 + \delta)} \cdot (1 + \delta)\mu} \\
+	&= \exp{(-\mu((1 + \delta)\ln{(1 + \delta)} - \delta))}.
+\end{align*}
+Expanding the expression inside the exponent via Taylor series, 
+\[ (1 + \delta)\ln{(1 + \delta)} - \delta = \frac{\delta^2}{2} - \frac{\delta^3}{2 \cdot 3} 
++ \frac{\delta^4}{3 \cdot 4} - \frac{\delta^5}{4 \cdot 5} + \cdots \geq \frac{\delta^2}{3}. \]
+The last inequality is true because when we subtract $\delta^2 / 3$ on both sides, we get 
+\[ \frac{\delta^4}{3 \cdot 4} - \frac{\delta^5}{4 \cdot 5} + \frac{\delta^6}{5 \cdot 6} - \cdots \geq 0 \]
+because it is an alternating series with decreasing terms and a positive first term. Plugging the bound 
+above into our first equation gives 
+\[ P(S_N \geq (1 + \delta)\mu) \leq \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)}. \]
+
+As for the left tail, we do the same for $t = (1 - \delta)\mu$: by \cref{rmk:2.3.2},
+\begin{align*}
+	P(S_N \leq (1 - \delta)\mu)
+	&\leq e^{-\mu} \biggl( \frac{e \mu}{(1 - \delta)\mu} \biggr)^{(1 - \delta)\mu} \\
+	&= e^{-\mu + (1 - \delta)\mu} \cdot e^{-\ln{(1 - \delta)} \cdot (1 - \delta)\mu} \\
+	&= \exp{(-\mu((1 - \delta)\ln{(1 - \delta)} + \delta))}.
+\end{align*}
+Same as before, expanding the expression into Taylor series gives 
+\begin{align*}
+	(1 - \delta)\ln{(1 - \delta)} + \delta 
+	&= (1 - \delta)(-\delta - \frac{\delta^2}{2} - \frac{\delta^3}{3} - \cdots) + \delta \\
+	&= \biggl( -\delta - \frac{\delta^2}{2} - \frac{\delta^3}{3} - \cdots \biggr) + 
+	(\delta^2 + \frac{\delta^3}{2} + \frac{\delta^4}{3} + \cdots) + \delta \\
+	&= \frac{\delta^2}{1 \cdot 2} + \frac{\delta^3}{2 \cdot 3} + \frac{\delta^4}{3 \cdot 4} + \cdots \\
+	&\geq \frac{\delta^2}{2}.
+\end{align*}
+Plugging the bound gives 
+\[ P(S_N \leq (1 - \delta)\mu) \leq \exp{\biggl( -\frac{\delta^2 \mu}{2} \biggr)} 
+\leq \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)}. \]
+
+Summing up both bounds via union bound gives the result.
+\end{proof}
+
+\begin{remark}[Small and large deviations]
+The phenomena of having Gaussian tails for small deviations and Poisson tails for large deviations 
+can be seen via the figure below, which uses a $\text{Binom}(N, \mu / N)$ distribution with 
+$N = 200, \ \mu = 10$:
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 2/fig2-1.png}
+\end{center}
+\end{remark}
+
+
+\subsection{Application: Median-of-means Estimator}
+In data science, estimates are made using data frequently. Perhaps the most basic example is estimating 
+the mean. Let $X$ be a random variable with mean $\mu$ (representing a population). Let $X_1, \dots, X_N$ 
+be independent copies of $X$ (representing a sample). We want an estimator $\Hat{\mu}(X_1, \dots, X_N)$ 
+to satisfy $\Hat{\mu} \approx \mu$ with high probability.
+
+
+\subsection{Application: Degrees of Random Graphs}
+
+
+\subsection{Subgaussian Distributions}
 
