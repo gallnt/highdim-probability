@@ -72,8 +72,8 @@ with probability $1/2$ each, i.e.
 
 \begin{theorem}[Hoeffding Inequality]
 \label{thm:2.2.2}
-Let $X_1, \dots, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_n) 
-\in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
+Let $X_1, \dots, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_N) 
+\in \mathbb{R}^N$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
 \end{theorem}
 
@@ -146,7 +146,7 @@ This is a rigorous bound comparable to what we had heuristically in the example.
 Hoeffding inequality can also be extended to two-sided tails and only suffers by a constant multiple 
 of 2: 
 \begin{theorem}[Hoeffding inequality, two-sided]Let $X_1, \dots, X_N$ be independent Rademacher random 
-variables, and let $a = (a_1, \cdots, a_n) \in \mathbb{R}^n$ be fixed. Then for any $t \geq 0$, 
+variables, and let $a = (a_1, \cdots, a_N) \in \mathbb{R}^N$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \bigg| \sum_{i = 1}^{N} a_iX_i \bigg| \geq t \biggr) 
 \leq 2\exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
 \end{theorem}
@@ -181,7 +181,7 @@ on what this value is.
 
 \begin{theorem}[Chernoff inequality]
 \label{thm:2.3.1}
-Let $X_i \sim \text{Ber}(p_i)$ be independent.Let $S_N = \sum_{i = 1}^{N} X_i$ and $\mu = \mathbb{E}[S_N]$. 
+Let $X_i \sim \text{Ber}(p_i)$ be independent. Let $S_N = \sum_{i = 1}^{N} X_i$ and $\mu = \mathbb{E}[S_N]$. 
 Then 
 \[ P(S_N \geq t) \leq e^{-\mu} \biggl( \frac{e \mu}{t} \biggr)^t \quad \text{for any } t \geq \mu. \]
 \end{theorem}
@@ -303,4 +303,5 @@ to satisfy $\Hat{\mu} \approx \mu$ with high probability.
 
 
 \subsection{Subgaussian Distributions}
-
+Standard form for Hoeffding Inequality (including subgaussian distributions): 
+\[  \]
