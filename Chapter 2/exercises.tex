@@ -1,0 +1,247 @@
+\section{Sums of Independent Random Variables}
+
+% Exercise 1
+\section*{Exercise 1}
+First note that by independence, 
+\[ \mathbb{E}[Y_n] = \mathbb{E}[X_1] \cdots \mathbb{E}[X_n] = 0.5^n. \]
+For the first inequality, denote $A = \{X_i \geq 0.5 \quad \forall i\}$. Then we can get that 
+$P(A) \leq P(Y_n \geq \mathbb{E}[Y_n])$ because $A \subseteq \{Y_n  \geq \mathbb{E}[Y_n]\}$. By independence, 
+$P(A) = 0.5^n$ and we are done. For the second inequality, since all $X_i$ are nonnegative, 
+by Markov's inequality we get 
+\[ P(Y_n \geq \mathbb{E}[Y_n]) = P(\sqrt{Y_n} \geq \sqrt{\mathbb{E}[Y_n]}) 
+\leq \frac{\mathbb{E}[\sqrt{Y_n}]}{\sqrt{\mathbb{E}[Y_n]}}. \]
+The denominator is just $\sqrt{(1/2)^n}$ from earlier. For the numerator, since $X_i$ are iid, 
+\[ \mathbb{E}[\sqrt{Y_n}] = (\mathbb{E}[\sqrt{X_i}])^n. \]
+Now this problem amounts to finding the expected value of $\sqrt{X_i}$.
+\begin{align*}
+	F_{\sqrt{X_i}}(x) 
+	&= P(\sqrt{X_i} \leq x) \\
+	&= P(X_i \leq x^2) \\
+	&= F_{X_i}(x^2) \\
+	&= x^2.
+\end{align*}
+Then the pdf of $\sqrt{X_i}$ is 
+\[ f_{\sqrt{X_i}}(x) = 2x, \quad x \in [0, 1]. \]
+Finally, we get that 
+\[ \mathbb{E}[\sqrt{X_i}] = \int_{0}^{1} 2x^2 \ dx = \frac{2}{3} 
+\implies P(Y_n \geq \mathbb{E}[Y_n]) \leq \frac{(2/3)^n}{(1/2)^{n/2}} 
+= \biggl( \frac{2 \sqrt{2}}{3} \biggr)^n \leq 0.95^n. \]
+
+
+% Exercise 2
+\newpage
+\section*{Exercise 2}
+We'll approach this problem via a more calculus-based flavor.
+Define the function 
+\begin{align*}
+	f(t) 
+	&:= P(g \geq t) - \frac{t}{t^2 + 1} \cdot \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2} \\
+	&= \int_{t}^{\infty} \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx.
+\end{align*}
+First we can immediately see that $f(x) = \frac{1}{2} > 0$. Moreover, 
+\begin{align*}
+	f'(t) 
+	&= \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2} + \frac{t^4 + 2t^2 - 1}{(t^2 + 1)^2} 
+	\cdot \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2} \\
+	&= -\frac{2}{(t^2 + 1)^2} \cdot \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2} \\
+	&< 0 \quad \text{ for all } t > 0.
+\end{align*}
+We can also see that 
+\[ \lim_{t \to \infty} f(t) = 0 - 0 = 0. \]
+From these three facts, $f(t) \geq 0$ for all $t > 0$ hence the inequality follows.
+
+
+% Exercise 3
+\newpage
+\section*{Exercise 3}
+\subsection*{(a)}
+\[ f'(x) = (-x) \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} = -xf(x) \text{ for all } x. \]
+
+\subsection*{(b)}
+Using integration by parts and the property from part (a), 
+\begin{align*}
+	\int_{t}^{\infty} f(x) \ dx
+	&= \int_{t}^{\infty} -\frac{f'(x)}{x} \ dx \\
+	&= \biggl[ -\frac{f(x)}{x} \biggr]_t^{\infty} - \int_{t}^{\infty} f(x) \ d(-\frac{1}{x}) \\
+	&= \frac{f(t)}{t} - \int_{t}^{\infty} \frac{f(x)}{x^2} \ dx \\
+	&= \frac{f(t)}{t} - \int_{t}^{\infty} -\frac{f'(x)}{x^3} \ dx \\
+	&= \frac{f(t)}{t} - \biggl[ \biggl[ -\frac{f(x)}{x^3} \biggr]_t^\infty 
+	- \int_{t}^{\infty} f(x) \ d(-\frac{1}{x^3}) \biggr] \\
+	&= \frac{f(t)}{t} - \frac{f(t)}{t^3} + 3 \int_{t}^{\infty} \frac{f(x)}{x^4} \ dx \quad 
+	{\color{blue} (*)} \\
+	&= \frac{f(t)}{t} - \frac{f(t)}{t^3} + 3 \int_{t}^{\infty} -\frac{f'(x)}{x^5} \ dx \\
+	&= \frac{f(t)}{t} - \frac{f(t)}{t^3} + 3 \biggl[ -\frac{f(x)}{x^5} \biggr]_t^\infty 
+	- \int_{t}^{\infty} f(x) \ d(-\frac{1}{x^5}) \\
+	&= \frac{f(t)}{t} - \frac{f(t)}{t^3} + \frac{3f(t)}{t^5} - 5 \int_{t}^{\infty} \frac{f(x)}{x^6} \ dx 
+	. \quad {\color{blue} (**)}
+\end{align*}
+Since $f(t) > 0$, dividing $\color{blue} (*)$ by $f(t)$ we will get the first inequality, and dividing 
+$\color{blue} (**)$ by $f(t)$ results in the second inequality.
+
+
+% Exercise 4
+\newpage
+\section*{Exercise 4}
+\subsection*{(a)}
+\begin{align*}
+	\mathbb{E}[g \mathbf{1}_{g > t}] 
+	&= \int_{t}^{\infty} x \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx \\
+	&= \biggl[ -\frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \biggr]_t^\infty \\
+	&= \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2}.
+\end{align*}
+
+\subsection*{(b)}
+\begin{align*}
+	\mathbb{E}[g^2 \mathbf{1}_{g > t}] 
+	&= \int_{t}^{\infty} x^2 \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx \\
+	&= \biggl[ -\frac{x}{\sqrt{2 \pi}} e^{-x^2 / 2} \biggr]_t^\infty 
+	+ \int_{t}^{\infty} \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dt \\
+	&\leq \frac{t}{\sqrt{2 \pi}} e^{-t^2 / 2} + \frac{1}{t} \cdot 
+	\frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2} \quad \text{(prop 2.1.2)} \\
+	&= \biggl( t + \frac{1}{t} \biggr) \cdot \frac{1}{\sqrt{2 \pi}} e^{-t^2 / 2}.
+\end{align*}
+
+
+% Exercise 5
+\newpage
+\section*{Exercise 5}
+We start by expanding both quantities into their respective Taylor series representations: 
+\begin{align*}
+	\cosh{x} 
+	&= \frac{e^x + e^{-x}}{2} \\
+	&= \frac{1}{2}\sum_{n = 0}^{\infty} \frac{x^n}{n!} + \frac{1}{2}\sum_{n = 0}^{\infty} 
+	(-1)^n \frac{x^n}{n!} \\
+	&= \sum_{n = 0}^{\infty} \frac{x^{2n}}{(2n)!} \quad (x \in \mathbb{R}),
+\end{align*}
+\[ \exp{(x^2 / 2)} = \sum_{n = 0}^{\infty} \frac{(x^2 / 2)^n}{n!} 
+= \sum_{n = 0}^{\infty} \frac{x^{2n}}{n! 2^n} \quad (x \in \mathbb{R}). \]
+From the above, if we subtract the Taylor series of $\cosh{x}$ from that of $\exp{(x^2 / 2)}$, to show 
+that this quantity is nonnegative, it is enough to show that 
+\[ n! 2^n \leq (2n)! \quad \forall n \in \mathbb{N}_0. \]
+We'll proceed via proof by induction. For the base case, when $n = 0$, 
+\[ 0! 2^0 = 1 \leq 1 = (2 \cdot 0)! \]
+For the inductive step, assume that for some $n \in \mathbb{N}_0$, the statement is true.
+\begin{align*}
+	(n + 1)! 2^{n + 1} 
+	&= 2(n + 1) n! 2^n \\
+	&\leq 2(n + 1) \cdot (2n)! \\
+	&\leq (2n + 2)(2n + 1)(2n)! \\
+	&= (2(n + 1))!
+\end{align*}
+Therefore we are done.
+
+
+% Exercise 6
+\newpage
+\section*{Exercise 6}
+As per usual, let $\lambda > 0$. By the typical procedure for the exponential moment method, 
+\begin{align*}
+	P(g \geq t) 
+	&= P(\lambda g \geq \lambda t) \\
+	&= P(\exp{(\lambda g)} \geq \exp{(\lambda t)}) \\
+	&\leq e^{-\lambda t} \mathbb{E}[\exp{(\lambda g)}] \\
+	&= \exp{(-\lambda t + \lambda^2 / 2)}.
+\end{align*}
+Defining the quantity above as a function $f(\lambda)$, 
+\[ f'(\lambda) = (-t + \lambda)\exp{(-\lambda t + \lambda^2 / 2)} = 0 \implies \lambda^* = t. \]
+Moreover, 
+\[ f''(\lambda^*) = \exp{(-\lambda t + \lambda^2 / 2)} > 0. \]
+Therefore by the second derive test, we have found a minimizer $\lambda^* = t$ for the quantity on the 
+RHS bound. Plugging back gives the result.
+
+
+% Exercise 7
+\newpage
+\section*{Exercise 7}
+Again, we'll use the exponential moment method so let $\lambda > 0$. 
+\begin{align*}
+	P \biggl( \sum_{i = 1}^{N} X_i \leq \varepsilon N \biggr) 
+	&= P \biggl( \sum_{i = 1}^{N} -(X_i / \varepsilon) \geq -N \biggr) \\
+	&= P \biggl( \exp{\biggl( \sum_{i = 1}^{N} -(X_i / \varepsilon)} \geq 
+	\exp{(- \lambda N)} \biggr) \\
+	&\leq e^{\lambda N} \mathbb{E}[\exp{\biggl( \lambda \sum_{i = 1}^{n} -X_i / \varepsilon \biggr)}] \\
+	&= e^{\lambda N} \prod_{i = 1}^{N} \mathbb{E}[\exp{(-\lambda X_i / \varepsilon)}].
+\end{align*}
+Now fix $i$. Since $X_i$ is uniformly bounded by $K$, we have 
+\begin{align*}
+	\mathbb{E}[\exp{(-\lambda X_i / \varepsilon)}] 
+	&= \int_{0}^{\infty} e^{-\lambda x / \varepsilon} f_X(x) \ dx \\
+	&\leq \int_{0}^{\infty} Ke^{-\lambda x / \varepsilon} \ dx \\
+	&= K \biggl[ -\frac{\varepsilon}{\lambda} e^{-\lambda x / \varepsilon} \biggr]_0^\infty \\
+	&= \frac{K \varepsilon}{\lambda}.
+\end{align*}
+Combining the above gives 
+\[ P \biggl( \sum_{i = 1}^{N} X_i  \leq \varepsilon N \biggr) \leq e^{\lambda N} 
+\biggl( \frac{K \varepsilon}{\lambda} \biggr)^N = (K \varepsilon)^N e^{\lambda N} \lambda^{-N}. \]
+Defining the result above as $f(\lambda)$ and differentiate, we get 
+\[ f'(\lambda) = (K \varepsilon)^N (N \lambda - N) e^{\lambda N} \lambda^{-N - 1} = 0 
+\implies \lambda^* = 1. \]
+Moreover, 
+\[ f''(\lambda^*) = (K \varepsilon)^N \cdot Ne^{\lambda N} > 0. \]
+Therefore $\lambda^* = 1$ is the minimizer of our bound, and plugging back gives the result.
+
+
+% Exercise 8
+\newpage
+\section*{Exercise 8}
+The function $f(x) = e^{\lambda x}$ is convex because $f''(x) = \lambda^2 e^{\lambda x} \geq 0$. By 
+Jensen's inequality, for any $a, b \in \mathbb{R}$ and $p \in [0, 1]$, 
+\begin{align*}
+	f(pa + (1 - p)b) 
+	&= e^{\lambda(pa + (1 - p)b)} 
+	&\leq p e^{\lambda a} + (1 - p) e^{\lambda b} \\
+	&= pf(a) + (1 - p)f(b).
+\end{align*}
+In particular, this means for any $x \in [a, b]$, 
+\[ e^{\lambda x} \leq e^{\lambda a} + (1 - p) e^{\lambda b} 
+\implies e^{\lambda X} \leq e^{\lambda a} + (1 - p) e^{\lambda b}. \]
+Taking expectations on both sides, 
+\[ \mathbb{E}[e^{\lambda X}] \leq e^{\lambda a} + (1 - p) e^{\lambda b} = \mathbb{E}[e^{\lambda Y}]. \]
+
+
+% Exercise 9
+\newpage
+\section*{Exercise 9}
+\subsection*{(a)}
+We can assume WLOG $X$ has mean zero because we can define another random variable $Y = X - \mathbb{E}[X]$, 
+then $Y$ will take values between $[a - \mathbb{E}[X], b - \mathbb{E}[X]]$, which does not affect the 
+analysis. 
+
+We can assume WLOG $b - a = 1$ because we can define another random variable $Y = X / (b - a)$. Then 
+Y takes values in $[a / (b - a), b / (b - a)]$, which again does not affect the analysis.
+
+We can assume that $X$ takes values in $\{a, b\}$ because from Exercise 2.8 (add link), if we prove that 
+the bound is true for the discrete version, we have also effectively proven it for the continuous version.
+
+\subsection*{(b)}
+Without loss of generality assume $X$ satisfies everything in part (a). Define $P(X = a) = p$. Then 
+from the expectation and range conditions, 
+\[ \begin{cases}
+	pa + (1 - p)b &= 0 \\
+	b - a &= 1
+\end{cases} \implies p = a + 1 = b, \ 1 - p = -a. \]
+After finding $p$, we can solve for the cumulant generating function $K(\lambda)$: 
+\begin{align*}
+	K(\lambda) 
+	&= \ln{(\mathbb{E}[e^{\lambda X}])} \\
+	&= \ln{(be^{\lambda a} + (-a)e^{\lambda b})} \\
+	&= \ln{(be^{\lambda a} - ae^{\lambda(a + 1)})} \\
+	&= \ln{e^{\lambda a}(b - ae^\lambda)} \\
+	&= \lambda a + \ln{(b - ae^\lambda)}.
+\end{align*}
+We can see clearly that $K(0) = 0 + \ln{(b - a)} = 0$. We also get 
+\[ K'(\lambda) = a - \frac{ae^\lambda}{b - ae^\lambda} \implies K'(0) = a - a = 0. \]
+Moreover, 
+\begin{align*}
+	K''(\lambda) 
+	&= -\frac{ae^\lambda (b - ae^\lambda) - ae^\lambda \cdot (-ae^\lambda)}{(b - ae^\lambda)^2} \\
+	&= -\frac{abe^\lambda}{(b - ae^\lambda)^2} \\
+	&\leq \frac{(-ae^\lambda + b)^2}{2^2 (b - ae^\lambda)^2} \quad \text{(AM-GM inequality with } 
+	x = -ae^\lambda, y = b) \\
+	&= \frac{1}{4}.
+\end{align*}
+Then by Taylor's Theorem, 
+\[ K(\lambda) 
+= K(0) + \lambda K'(0) + \frac{\lambda^2 K''(\xi)}{2!} 
+\leq 0 + 0 + \frac{\lambda^2}{4 \cdot 2!} = \frac{\lambda^2}{8} \text{ for all } \lambda \in \mathbb{R}. \]
+
