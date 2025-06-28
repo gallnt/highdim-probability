@@ -304,4 +304,331 @@ to satisfy $\Hat{\mu} \approx \mu$ with high probability.
 
 \subsection{Subgaussian Distributions}
 Standard form for Hoeffding Inequality (including subgaussian distributions): 
-\[  \]
+\[ P \biggl( \bigg| \sum_{i = 1}^{N} a_i X_i \bigg| \geq t \biggr) \leq 
+2 \exp{\biggl( -\frac{ct^2}{\|a\|_2^2} \biggr)} \text{ for all } t \geq 0. \]
+
+\begin{definition}[]
+\label{def:2.6.1}
+A random variable $X$ has a \underline{subgaussian distribution} if 
+\[ P(|X_i| > t) \leq 2e^{-ct^2} \text{ for all } t \geq 0. \]
+\end{definition}
+
+There are also other equivalent representations of subgaussian distributions due to their importance, and 
+they all convey the same meaning: The distribution is bounded by a normal distribution. 
+
+\begin{proposition}[Subgaussian properties]
+\label{prop:2.6.2}
+Let $X$ be a random variable. The following peoperties are equivalent, with the parameters $K_i$ differing 
+by at most an absolute constant factor, i.e. There exists an absolute constant $C$ such that property $i$ 
+implies property $j$ with parameter $K_j \leq CK_i$ for any two properties $i, j$.
+\begin{enumerate}
+	\item (Tails) $\exists K_1 > 0$ such that 
+	\[ P(|X| > t) \leq 2\exp{(t^2 / K_1^2)} \text{ for all } t \geq 0. \]
+	\item (Moments) $\exists K_2 > 0$ such that 
+	\[ \|X\|_{L^p} = \mathbb{E}[|X|^p]^{1/p} \leq K_2 \sqrt{p} \text{ for all } p \geq 1. \]
+	\item (MGF of $X^2$) $\exists K_3 > 0$ such that 
+	\[ \mathbb{E}[\exp{(X^2 / K_3^2)}] \leq 2. \]
+	Additionally, if $\mathbb{E}[X] = 0$, then the properties above are equivalent to 
+	\item (MGF) $\exists K_4 > 0$ such that 
+	\[ \mathbb{E}[\exp{(\lambda X)}] \leq \exp{(K_4^2 \lambda^2)} \text{ for all } \lambda \in \mathbb{R}. \]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The proof is all about transforming one type of information about random variables into another.
+
+$\color{blue} (a) \Rightarrow (b)$ Assume $(a)$ holds. WLOG assume $K_1 = 1$. If not, 
+we can scale $X$ to $X / K_1$ and our 
+analysis will not be affected. The integrated tail formula (Lemma 1.6.1 + link) for $|X|^p$ gives 
+\begin{align*}
+	\mathbb{E}[|X|^p] 
+	&= \int_{0}^{\infty} P(|X|^p \geq u) \ du \\
+	&= \int_{0}^{\infty} P(|X| \geq t) pt^{p - 1} \ dt (\text{ Change of variables } u = t^p) \\
+	&\leq \int_{0}^{\infty} 2e^{-t^2} pt^{p - 1} \ dt (\text{ By $(a)$ }) \\
+	&= p \Gamma(p / 2) \text{ (Set $t = s$ and use Gamma function) } \\
+	&\leq 3p(p/2)^{p/2}.
+\end{align*}
+Where the last inequality uses the fact that $\Gamma(x) \leq 3x^x \text{ for all } x \geq 1/2$: If we let 
+$x = n + t, \ 1/2 \leq t < 1$, 
+\begin{align*}
+	\Gamma(x) 
+	&= (x - 1) \Gamma(n - 1 + t) \\
+	&= \cdots \\
+	&= (x - 1) \cdots x(x - (n - 1)) \Gamma(t) \\
+	&\leq x \cdot x \cdots x \cdot 3 \\
+	&= 3x^x.
+\end{align*}
+Then taking the $p$th root of the first bound gives $(b)$ with $K_2 \leq 3$.
+
+$\color{blue} (b) \Rightarrow (c)$ Again, WLOG we can assume that $K_2 = 1$ and property $(b)$ holds. 
+By the Taylor series expansion of the exponential function, 
+\[ \mathbb{E}[\exp{(\lambda^2 X^2)}] 
+= \mathbb{E}\biggl[ 1 + \sum_{p = 1}^{\infty} \frac{(\lambda^2 X^2)^p}{p!} \biggr] 
+= 1 + \sum_{p = 1}^{\infty} \frac{\lambda^{2p} \mathbb{E}[X^{2p}]}{p!}. \]
+$(b)$ guarantees that $\mathbb{E}[X^{2p}] \leq (2p)^p$, and $p! \geq (p / e)^p$ by lemma 1.7.8 + link, 
+hence substituting these bound in, we get 
+\[ \mathbb{E}[\exp{(\lambda^2 X^2)}] 
+\leq 1 + \sum_{p = 1}^{\infty} \frac{(2 \lambda^2 p)^p}{(p / e)^p} 
+= \sum_{p = 0}^{\infty} (2e \lambda^2)^p 
+= \frac{1}{1 - 2e \lambda^2} = 2 \]
+if we choose $\lambda = 1 / 2 \sqrt{e}$. This means we get $(c)$ with $K_3 = 2 \sqrt{e}$. 
+
+$\color{blue} (c) \Rightarrow (a)$ WLOG assume that $K_3 = 1$ and property $(c)$ holds. By exponentiating 
+and using Markov's inequality, 
+\[ P(|X| \geq t) = P(e^{X^2} \geq e^{t^2}) \leq e^{-t^2} \mathbb{E}[e^{X^2}] \leq 2e^{-t^2}. \]
+This gives $(a)$ with $K_1 = 1$.
+
+Now assume that additionally $\mathbb{E}[X] = 0$. 
+
+$\color{blue} (c) \Rightarrow (d)$ Assume WLOG $K_3 = 1$ and property $(c)$ holds. We'll use the following 
+inequality which follows from Taylor's Theorem with Lagrange remainder: 
+\[ e^x \leq 1 + x + \frac{x^2}{2}e^{|x|}. \]
+Replace the above with $x = \lambda X$ and taking expectations, we get 
+\begin{align*}
+	\mathbb{E}[e^{\lambda X}] 
+	&\leq 1 + \frac{\lambda^2}{2}\mathbb{E}[X^2 e^{|\lambda X|}] \quad (\mathbb{E}[X] = 0) \\
+	&\leq 1 + \frac{\lambda^2}{2}e^{\lambda^2 / 2} \mathbb{E}[e^{X^2}] \quad 
+	(x^2 \leq e^{x^2 / 2} \text{ and } |\lambda x| \leq \lambda^2 / 2 + x^2 / 2) \\
+	&\leq (1 + \lambda^2)e^{\lambda^2 / 2} \quad (\mathbb{E}[e^{X^2}] \leq 2 \text{ by } (c)) \\
+	&\leq e^{3 \lambda^2 / 2} \quad (1 + x \leq e^x).
+\end{align*}
+Then we get property $(d)$ with $K_4 = \sqrt{3/2}$.
+
+$\color{blue} (d) \Rightarrow (a)$ WLOG assume $K_4 = 1$ and property $(d)$ holds. By the exponential 
+moment method (Hi again :]), let $\lambda > 0$ to be chosen.
+\[ P(X \geq t) = P(e^{\lambda X} \geq e^{\lambda t}) \leq e^{-\lambda t} \mathbb{E}[e^{\lambda X}] 
+\leq e^{-\lambda t} e^{\lambda^2} = e^{-\lambda t + \lambda^2}. \]
+Optimizing the above gives $\lambda^* = t/2$, and plugging back in gives 
+\[ P(X \geq t) \leq e^{-t^2 / 4}. \]
+By using the exponential moment method again for $-X$, 
+\[ P(X \leq -t) = P(e^{-\lambda X} \geq e^{\lambda t}) 
+\leq e^{-\lambda t} \mathbb{E}[e^{-\lambda X}] \leq e^{-\lambda t + \lambda^2}. \]
+Then by summing up these probabilities, 
+\[ P(|x| \geq t) \leq 2e^{-t^2 / 4}. \]
+Hence property $(a)$ is true with $K_1 = 2$, and the proof is complete.
+\end{proof}
+
+\begin{remark}[Zero mean]
+\label{rmk:2.6.3}
+For property $(d)$ above, $\mathbb{E}[X]$ is a necessary and sufficient condition (Exercise 2.23)!
+\end{remark}
+
+\begin{remark}[On constant factors]
+\label{rmk:2.6.4}
+The constant '2' in properties $(a)$ and $(c)$ don't have any special meaning. Any absolute constant 
+greater than 1 works!
+\end{remark}
+
+
+\subsubsection{The Subgaussian Norm}
+\begin{definition}[]
+\label{def:2.6.5}
+A random variable $X$ is called \underline{subgaussian} if it satisfies any of the equivalent properties 
+in \cref{prop:2.6.2}. Its \underline{subgaussian norm} is 
+\[ \|X\|_{\psi_2} := \inf\{ K > 0: \ \mathbb{E}[\exp{(X^2 / K^2)}] \leq 2 \}. \]
+This represents how quickly the tails of $X$ decays compared to a normal distribution.
+\end{definition}
+
+\begin{example}[]
+\label{ex:2.6.6}
+The following random variables are subgaussian: 
+\begin{enumerate}
+	\item Normal,
+	\item Rademacher,
+	\item Bernoulli, 
+	\item Binomial,
+	\item Any bounded random variable.
+\end{enumerate}
+The exponential, Poisson, geometric, chi-squared, Gamma, Cauchy, and Pareto distributions are not 
+subgaussian (Exercise 2.25).
+\end{example}
+
+We can replace the results from \ref{prop:2.6.2} with those having the subgaussian norm:
+\begin{proposition}[Subgaussian bounds]
+\label{prop:2.6.7}
+Every subgaussian random variable $X$ satisfies the following bounds:
+\begin{enumerate}
+	\item (Tails) $P(|X| \geq t) \leq 2\exp{(-ct^2 / \lVert X \rVert_{\psi_2}^2)}$ for all $t \geq 0$.
+	\item (Moments) $\lVert X \rVert_{L^p} \leq C\lVert X \rVert_{\psi_2} \sqrt{p}$ for all $p \geq 1$.
+	\item (MGF of $X^2$) $\mathbb{E}[\exp{(X^2 / \lVert X \rVert_{\psi_2}^2)}] \leq 2$.
+	\item (MGF) If additionally $\mathbb{E}[X] = 0$ then 
+	$\mathbb{E}[\exp{(\lambda X)}] \leq \exp{(C \lambda^2 
+	\lVert X \rVert_{\psi_2}^2)}$ for all $\lambda \in \mathbb{R}$.
+\end{enumerate}
+\end{proposition}
+
+There are a number of other equivalent ways to describe subgaussian random variables (Exercise 2.26-2.28, 
+2.39). Moreover, there is a sharper way do define the subgaussian norm such that we won't lose any absolute 
+constant factors (Exercise 2.40)!
+
+
+\subsection{Subgaussian Hoeffding and Khintchine Inequalities}
+From exercise 0.3, we have shown that for independent mean zero random variables, 
+\[ \left\lVert \sum_{i = 1}^{N} X_i \right\lVert_{L^2}^2 = \sum_{i = 1}^{N} \lVert X_i \rVert_{L^2}^2. \]
+There is a similar weaker property for the subgaussian norm: 
+
+\begin{proposition}[Subgaussian norm of a sum]
+\label{prop:2.7.1}
+Let $X_1, \dots, X_N$ be independent mean zero subgaussian random variables. Then 
+\[ \left\lVert \sum_{i = 1}^{N} X_i \right\lVert_{\psi^2}^2 \leq C\sum_{i = 1}^{N} 
+\lVert X_i \rVert_{\psi^2}^2, \]
+where $C$ is an absolute constant.
+\end{proposition}
+
+\begin{proof}
+We can compute the MGF of the sum $S_N = \sum_{i = 1}^{N} X_i$. For any $\lambda \in \mathbb{R}$, 
+\begin{align*}
+	\mathbb{E}[\exp{(\lambda S_N)}] 
+	&= \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}] \quad \text{(independence)} \\
+	&\leq \prod_{i = 1}^{N} \exp{(C \lambda^2 \lVert X_i \rVert_{\psi_2}^2)} 
+	\quad \text{(\cref{prop:2.6.7} (d))} \\
+	&= \exp{(\lambda^2 K^2)}, K^2 = C \sum_{i = 1}^{N} \lVert X_i \rVert_{\psi_2}^2.
+\end{align*}
+Then by \cref{prop:2.6.2}, $(d) \Rightarrow (c)$ hence 
+\[ \mathbb{E}[\exp{(x S_N^2 / K^2)}] \leq 2 \]
+where $c > 0$ is some constant. Then by the definition of the subgaussian norm, $\lVert S_N \rVert_{\psi_2} 
+\leq K / \sqrt{c}$, and we are done.
+\end{proof}
+
+\begin{remark}[Reverse bound]
+\label{rmk:2.7.2}
+The inequality in \cref{prop:2.7.1} can be reversed, but only if $X_i$ are identically distributed 
+(Exercise 2.33, 2.34).
+\end{remark}
+
+
+\subsubsection{Subgaussian Hoeffding Inequality}
+\begin{theorem}[Subgaussian Hoeffding Inequality]
+\label{thm:2.7.3}
+Let $X_1, \dots, X_N$ be independent, mean zero, subgaussian random varirables. Then for every $t \geq 0$, 
+\[ P \biggl( \bigg| \sum_{i = 1}^{N} X_i \bigg| \geq t \biggr) 
+\leq 2\exp{\biggl( -\frac{ct^2}{\sum_{i = 1}^{N} \lVert X_i \\rVert_{\psi_2}^2} \biggr)}. \]
+\end{theorem}
+
+\begin{example}[Recovering classical Hoeffding]
+\label{ex:2.7.4}
+Let $X_i$ follow the Rademacher distribution and apply \cref{thm:2.7.3} to the random variables 
+$a_i X_i$. Since $\lVert a_i X_i \rVert_{\psi_2} = |a_i| \lVert X_i \rVert_{\psi_2}$, 
+and $\lVert X_i \rVert_{\psi_2}$ is an absolute 
+constant, we get 
+\[  P \biggl( \bigg| \sum_{i = 1}^{N} a_iX_i \bigg| \geq t \biggr) 
+\leq 2\exp{\biggl( -\frac{ct^2}{\lVert a \rVert_2^2} \biggr)}. \]
+This is exactly the Hoeffding inequality for the Rademacher distribution but with the constant $c$ instead 
+of $1/2$. We can recover the general form of Hoeffding inequality for bounded random variables from this 
+method, again up to an absolute constant (Exercise 2.29).
+\end{example}
+
+
+\subsubsection{Subgaussian Khintchine Inequality}
+Below is a two-sided bound on the $L^p$ norms of sums of independent random variables:
+\begin{theorem}[Khintchine Inequality]
+\label{thm:2.7.5}
+Let $X_1, \dots, X_N$ be independent subgaussian random variables with zero means with unit variances. 
+Let $a_1, \dots, a_n \in \mathbb{R}$. Then for every $p \in [2, \infty)$, we have 
+\[ \biggl( \sum_{i = 1}^{N} a_i^2 \biggr)^{1/2} \leq 
+\left\lVert \sum_{i = 1}^{N} a_i X_i \right\rVert_{L^p} \leq 
+CK \sqrt{p}\biggl( \sum_{i = 1}^{N} a_i^2 \biggr)^{1/2}, \]
+where $K = \max_{i} \lVert X_i \rVert_{\psi_2}$ and $C$ is an absolute constant.
+\end{theorem}
+
+\begin{proof}
+For $p = 2$, we have an equality, since the Pythagorean identity with unit variance assumption gives 
+\[ \left\lVert \sum_{i = 1}^{N} a_i X_i \right\rVert_{L^2} 
+= \biggl( \sum_{i = 1}^{N} a_i^2 \lVert X_i \rVert_{\psi_2}^2 \biggr)^{1/2} 
+= \biggl( \sum_{i = 1}^{N} a_i^2 \biggr)^{1/2} \]
+\end{proof}
+The lower bound in the theorem follows from the monotonicity of the $L^p$ norms. For the upper bound, 
+we use \cref{prop:2.7.1} to get 
+\[ \left\lVert \sum_{i = 1}^{N} a_i X_i \right\rVert_{\psi_2} 
+\leq C \biggl( \sum_{i = 1}^{N} a_i^2 \lVert X_i \rVert_{\psi_2}^2 \biggr)^{1/2} 
+\leq CK \biggl( \sum_{i = 1}^{N} a_i^2 \biggr)^{1/2}. \]
+We then get the factor of $\sqrt{p}$ in the final result from (b) of \cref{prop:2.6.7}.
+
+
+\subsubsection{Maximum of Subgaussians}
+\begin{proposition}[Maximum of subgaussians]
+\label{prop:2.7.6}
+Let $X_1, \dots, X_N$ be subgaussian random variables for some $N \geq 2$, that are not necessarily 
+independent. Then 
+\[ \lVert \max_{i = 1, \dots, N} X_i rVert|_{\psi_2} \leq C \sqrt{\ln{N}} 
+\max_{i = 1, \dots, N} \lVert X_i \rVert_{\psi_2}. \]
+In particular, 
+\[ \mathbb{E}[\max_{i = 1, \dots, N} X_i] \leq CK \sqrt{\ln{N}} \]
+where $K = \max_{i} \lVert X_i \rVert_{\psi_2}$. The same bounds obviously hold for $\max_{i}|X_i|$.
+\end{proposition}
+
+\begin{proof}
+Two proof methods are provided in the book.
+
+Method 1: Union bound. WLOG, we can assume that $\max_{i} \lVert X_i \rVert_{\psi_2} = 1$. 
+This is because we can just scale down all the random variables if needed. For any $t \geq 0$, we have 
+\[ P(\max_{i = 1, \dots, N} X_i \geq t) \leq \sum_{i = 1}^{N} P(X_i \geq t) \leq 2N \exp{(-ct^2)} \]
+where the last inequality comes from (a) of \cref{prop:2.6.7}. If $N < \exp{(ct^2 / 2)}$, then the 
+probability above is bounded by $2\exp{(-ct^2 / 2)}$, which is stronger than needed. If 
+$N > \exp{(ct^2 / 2)}$, the probability of any event is bounded by $2\exp{(ct^2 / 3 \ln{N})}$ as by definition 
+this quantity is greater than 1. Then in either case, 
+\[  P(\max_{i = 1, \dots, N} X_i \geq t) \leq 2 \exp{\biggl( -\frac{ct^2}{3 \ln{N}} \biggr)} 
+\text{ for any } t \geq 0. \]
+Then by \cref{prop:2.6.7} ($(c) \iff (a)$) we get $\lVert \max_{i} X_i \rVert_{\psi_2} \leq C \sqrt{\ln{N}}.$
+
+Method 2: Maximum with sum. Again, assume that $\max_{i} \lVert X_i \rVert_{\psi_2} = 1$ and denote 
+$Z = \max_{i = 1, \dots, N} |X_i|$. Then 
+\[ \mathbb{E}[e^{Z^2}] = \mathbb{E}[\max_{i = 1, \dots, N} e^{X_i^2}] 
+\leq \mathbb{E}\biggl[ \sum_{i = 1}^{N} e^{X_i^2} \biggr] = \sum_{i = 1}^{N} \mathbb{E}[e^{X_i^2}] 
+\leq 2N. \]
+Let $M := \sqrt{2 \ln{2N}} \geq 1$. Then Jensen's inequality yields 
+\[ \mathbb{E}[e^{Z^2 / M^2}] \leq (\mathbb{E}[e^{Z^2}])^{1 / M^2} 
+\leq (2N)^{1 / 2 \ln{(2N)}} = \sqrt{e} < 2. \]
+Then $\lVert Z \rVert_{\psi_2} \leq M = \sqrt{2 \ln{(2N)}}$, proving the first statement. 
+The second statement follows from the first statement via (b) of \cref{prop:2.6.7} for $p = 1$.
+\end{proof}
+
+\begin{remark}[Gaussian samples have no outliers]
+\label{rmk:2.7.7}
+The factor $\sqrt{\ln{N}}$ in \cref{prop:2.7.6} is unavoidable. In Exercise 2.38, we prove that 
+i.i.d random $N(0, 1)$ samples $Z_i$ satisfy 
+\[ \mathbb{E}[\max_{i = 1, \dots, N} |Z_i|] \approx \sqrt{2 \ln{N}}. \]
+However, not all hope is lost as logarithmic functions grow slowly. This means for sampling, 
+it helps prevent extreme outliers. On average, the farthest point in an $N$-point sample from a 
+normal distribution is approximately $\sqrt{2 \ln{N}}$ away from the mean!
+\end{remark}
+
+
+\subsubsection{Centering}
+From exercise 0.2, we see that centering reduces the $L^2$ norm: 
+\[ \lVert X - \mathbb{E}[X] \rVert_{L^2} \leq \lVert X \rVert_{L^2}. \]
+There is a similar phenomenon for the subgaussian norm: 
+\begin{lemma}[Centering]
+\label{lem:2.7.8}
+Any subgaussian random variable $X$ satisfies 
+\[ \lVert X - \mathbb{E}[X] \rVert_{\psi_2} \leq C \lVert X \rVert_{\psi_2}. \]
+\end{lemma}
+
+\begin{proof}
+From Exercise 2.42, we know that $\lVert \cdot \rVert_{\psi_2}$ is a norm hence the triangle inequality gives 
+\[ \lVert X - \mathbb{E}[X] \rVert_{\psi_2} \leq \lVert X \rVert_{\psi_2} 
++ \lVert \mathbb{E}[X] \rVert_{\psi_2}. \]
+We only need to bound the second term. From part (b) of exercise 2.24, for any constant random 
+variable $a$, $\lVert a \rVert_{\psi_2} \lesssim |a|$. Then using $a = \mathbb{E}[X]$ and Jensen's inequality 
+for $f(x) = |x|$, we get
+\[ \lVert \mathbb{E}[X] \rVert_{\psi_2} \lesssim |\mathbb{E}[X]| \leq \mathbb{E}[|X|] 
+= \lVert X \rVert_{L^1} \lesssim \lVert X \rVert_{\psi_2}, \]
+where the last step comes from (b) of \cref{prop:2.6.7} with $p = 1$. Substituting this back into the 
+equation for the triangle inequality and we are done.
+\end{proof}
+
+
+% ----------2.8----------
+\subsection{Subexponential Distributions}
+Main idea: Subgaussian distributions cover a wide range of distributions already, but leaves out 
+some more heavy-tailed distributions. For tails behaving like exponential distributions, we cannot use 
+conclusions from before like Hoeffding inequality, as the distributions are not subgaussian. 
+
+
+\subsubsection{Subexponential Properties}
+
+
+
+% ----------2.9----------
+\subsection{Bernstein Inequality}
+
