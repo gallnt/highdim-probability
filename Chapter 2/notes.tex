@@ -174,6 +174,7 @@ Done in Exercise 2.10.
 \end{proof}
 
 
+% ----------2.3----------
 \subsection{Chernoff Inequality}
 In general, Hoeffding inequality is good for Rademacher random variables, but it does not account for, say, 
 the parameter $p_i$ within a Bernoulli random variable, which can lead to very different results depending 
@@ -197,7 +198,7 @@ We'll use the exponential moment method as from \cref{thm:2.2.2} again. Fix $\la
 \end{align*}
 Fix $i$. Since $X_i \sim \text{Ber}(p_i)$, 
 \[ \mathbb{E}[\exp{(\lambda X_i)}] = e^{\lambda} p_i + 1(1 - p_i) 
-= 1 + (e^\lambda - 1)p_i \leq e^{\lambda - 1} p_i \]
+= 1 + (e^\lambda - 1)p_i \leq \exp{((e^\lambda - 1) p_i)}, \]
 where the last inequality comes from $1 + x \leq e^x$. So 
 \[ \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}] \leq \exp{ \biggl( 
 (e^\lambda - 1) \sum_{i = 1}^{N} p_i \biggr)} = \exp{((e^\lambda - 1)\mu)}. \]
@@ -237,6 +238,7 @@ bound a whole Poisson tail $P(S_N \geq t)$ by just one value $P(S_N = t)$ in the
 Poisson tails decay at the rate of $t^{-t} = e^{-t \ln{t}}$, which is not as fast as Gaussian tails. 
 However, the corollary below shows that for small deviations, the Poisson tail resembles the Gaussian: 
 \begin{corollary}[Chernoff inequality: small deviations]
+\label{cor:2.3.4}
 In the setting of \cref{thm:2.3.1}, 
 \[ P(|S_N - \mu| \geq \delta \mu) \leq 2 \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)} \quad 
 \text{for every } 0 \leq \delta \leq 1. \]
@@ -245,7 +247,7 @@ In the setting of \cref{thm:2.3.1},
 \begin{proof}
 Using \cref{thm:2.3.1} with $t = (1 + \delta)\mu$, 
 \begin{align*}
-	P(S_N \geq (1 + \delta)\mu) \\
+	P(S_N \geq (1 + \delta)\mu)
 	&\leq e^{-\mu} \biggl( \frac{e \mu}{(1 + \delta)\mu} \biggr)^{(1 + \delta)\mu} \\
 	&= e^{-\mu + (1 + \delta)\mu} \cdot e^{-\ln{(1 + \delta)} \cdot (1 + \delta)\mu} \\
 	&= \exp{(-\mu((1 + \delta)\ln{(1 + \delta)} - \delta))}.
