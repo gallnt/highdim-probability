@@ -502,7 +502,7 @@ The inequality in \cref{prop:2.7.1} can be reversed, but only if $X_i$ are ident
 \label{thm:2.7.3}
 Let $X_1, \dots, X_N$ be independent, mean zero, subgaussian random varirables. Then for every $t \geq 0$, 
 \[ P \biggl( \bigg| \sum_{i = 1}^{N} X_i \bigg| \geq t \biggr) 
-\leq 2\exp{\biggl( -\frac{ct^2}{\sum_{i = 1}^{N} \lVert X_i \\rVert_{\psi_2}^2} \biggr)}. \]
+\leq 2\exp{\biggl( -\frac{ct^2}{\sum_{i = 1}^{N} \lVert X_i \rVert_{\psi_2}^2} \biggr)}. \]
 \end{theorem}
 
 \begin{example}[Recovering classical Hoeffding]
@@ -713,7 +713,8 @@ $X$ is subgaussian if and only if $X^2$ is subexponential, and
 \[ \lVert X^2 \rVert_{\psi_1} = \lVert X \rVert_{\psi_2}^2. \]
 \end{lemma}
 
-\begin{lemma}[Name]
+\begin{lemma}[]
+\label{lem:2.8.6}
 If $X$ and $Y$ are subgaussian then $XY$ is subexponential, and 
 \[ \lVert XY \rVert_{\psi_1} = \lVert X \rVert_{\psi_2} \lVert Y \rVert_{\psi_2}. \]
 \end{lemma}
@@ -733,8 +734,133 @@ implies that $\mathbb{E}[e^{X^2}] \leq 2$ and $\mathbb{E}[e^{Y^2}] \leq 2$. Then
 By definition, $\lVert XY \rVert_{\psi_1} \leq 1$ and we are done.
 \end{proof}
 
+\begin{example}[]
+\label{ex:2.8.7}
+The following random variables are subexponential:
+\begin{enumerate}
+	\item Any subgaussian random variable,
+	\item The square of any subgaussian random variable, 
+	\item Exponential,
+	\item Poisson,
+	\item Geometric,
+	\item Chi-squared,
+	\item Gamma.
+\end{enumerate}
+The Cauchy the Pareto distributions are \textit{not} subexponential.
+\end{example}
+
+Many properties of subgaussian distributions extend to subexponentials, such as centering (Exercise 2.44):
+\[ \lVert X - \mathbb{E}[X] \rVert_{\psi_1} \leq C \lVert X \rVert_{\psi_1}. \]
+
+There are a lot of norms that are being discussed, and here is their relationship: 
+\begin{remark}[All the norms!]
+\label{rmk:2.8.8}
+\begin{align*}
+	X \text{ is bounded almost surely } 
+	&\implies X \text{ is subgaussian } \\
+	&\implies X \text{ is subexponential } \\
+	&\implies X \text{ has moments of all orders } \\
+	&\implies X \text{ has finite variance } \\
+	&\implies X \text{ has finite mean}. \\
+\end{align*}
+Quantitatively, 
+\[ \lVert X \rVert_{L^1} \leq \lVert X \rVert_{L^2} \leq \lVert X \rVert_{L^p} 
+\lesssim \lVert X \rVert_{\psi_1} \lesssim \lVert X \rVert_{\psi_2} \lesssim \lVert X \rVert_{L^\infty}. \]
+The above holds for any $p \in [2, \infty)$, where the $\lesssim$ sign hides an $O(p)$ factor in one of the 
+inequalities and absolute constant factors in the other two inequalities.
+\end{remark}
+
+\begin{remark}[More general: $\psi_\alpha$ and Orlics norms]
+\label{rmk:2.8.9}
+Subgaussian and subexponential distributions are part of a broader family of $\psi_{\alpha}$ distributions. 
+The general framework is provided by Orlicz spaces and norms (Exercise 2.42, 2.43).
+\end{remark}
 
 
 % ----------2.9----------
 \subsection{Bernstein Inequality}
+Below is a version of Hoeffding inequality that works for subexponential distributions:
 
+\begin{theorem}[Subexponential Bernstein Inequality]
+\label{thm:2.9.1}
+Let $X_1, \dots, X_N$ be indepependent, mean zero, subexponential random variables. Then for every $t \geq 0$, 
+\[ P \left( \left| \sum_{i = 1}^{N} X_i \right| \geq t \right) 
+\leq 2\exp{\left( -c \min_{} \left( \frac{t^2}{\sum_{i = 1}^{N} \lVert X_i \rVert_{\psi_1}^2}, \
+\frac{t}{\max_{i} \lVert X_i \rVert_{\psi_1}} \right) \right)}. \]
+where $c > 0$ is an absolute constant.
+\end{theorem}
+
+\begin{proof}
+By using the exponential moment method, 
+\begin{align*}
+	P(S_N \geq t) 
+	&= P(\exp{(\lambda S_N)} \geq e^{\lambda t}) \\
+	&\leq e^{-\lambda t} \mathbb{E}[\exp{(\lambda S_N)}] \\
+	&= e^{-\lambda t} \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}].
+\end{align*}
+Fix $i$. To bound the MGF of $X_i$, by (iv) in \cref{prop:2.8.1}, if $\lambda$ is small enough, i.e. 
+\[ |\lambda| \leq \frac{c}{\max_{i} \lVert X_i \rVert_{\psi_1}} \quad (*), \]
+then $\mathbb{E}[\exp{(\lambda X_i)}] \leq \exp{(C \lambda^2 \lVert X_i \rVert_{\psi_1}^2)}$. Substituting 
+this back into the inequality above, we get 
+\[ P(S_N \geq t) \leq \exp{(-\lambda t + C \lambda^2 \sigma^2)}, \ \sigma^2 = \sum_{i = 1}^{N} 
+\lVert X_i \rVert_{\psi_1}^2. \]
+When we minimize the expression above in terms of $\lambda$ subject to the constaint (*), then the optimal 
+chocie that we get is 
+\[ \lambda^* = \min \left( \frac{t}{2C \sigma^2}, \frac{c}{\max_{i} \lVert X_i \rVert_{\psi_1}} \right). \]
+Plugging this optimal $\lambda^*$ back we get 
+\[ P(X_N \geq t) \leq \exp{\left( -\min \left( \frac{t^2}{4C \sigma^2}, 
+\frac{ct}{2 \max_{i} \lVert X_i \rVert_{\psi_1}} \right) \right)}. \]
+Repeating the exponential moment method for $-X_i$ instead of $X_i$ gives the same result, hence also have the 
+same bound for $P(-S_N \geq t)$. Combining the two bounds gives the result.
+\end{proof}
+
+Of course, we can apply the argument to $\sum_{i = 1}^{N} a_iX_i$ as well:
+\begin{corollary}[Simpler subexponential Bernstein inequality]
+\label{cor:2.9.2}
+Let $X_1, \dots, X_N$ be independent, mean zero, subexponential random variables, and $a_i \in \mathbb{R}$. 
+Then for every $t \geq 0$, we have that 
+\[ P \left( \left| \sum_{i = 1}^{N} a_iX_i \right| \geq t \right) 
+\leq 2\exp{\left( -c \min \left( \frac{t^2}{K^2 \lVert a \rVert_{2}^2}, 
+\frac{t}{K \lVert a \rVert_{\infty}} \right) \right)}. \]
+where $K = \max_{i} \lVert X_i \rVert_{\psi_1}$.
+\end{corollary}
+
+\begin{remark}[Why two tails?]
+\label{rmk:2.9.3}
+Unlike Hoeffding inequality (\cref{thm:2.7.3}), Bernstein inequality has two tails - gaussian and exponential. 
+The gaussian tail comes from what we would expect from the CLT. The exponential tail is also there because 
+there can be one term $X_i$ having a heavy exponential tail, which is strictly heavier than a gaussian tail. 
+The cool thing is that Bernstein inequality says that if you have some number of random variables with 
+exponential tails, only the one with the largest subexponential norm matters!
+\end{remark}
+
+\begin{remark}[Small and large deviations]
+\label{rmk:2.9.4}
+Normalizing the sum in \cref{cor:2.9.2} like in the CLT, we get 
+\[ P \left( \left| \frac{1}{\sqrt{N}} \sum_{i = 1}^{N} X_i \right| \geq t \right) \leq \begin{cases}
+	2 \exp{(-ct^2)} &\text{ if } t \leq \sqrt{N}, \\
+	2 \exp{(-ct \sqrt{N})} &\text{ if } t \geq \sqrt{N}.
+\end{cases} \]
+In the small deviations range we have a gaussian tail bound. This range grows at the rate of $\sqrt{N}$, 
+reflecting the increasing strength of the CLT. For the large deviations range, we have an exponential 
+tail bound driven by a single term $X_i$, shown in the figure below:
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 2/fig2-3.png}
+\end{center}
+\end{remark}
+
+There is also a version of Bernstein inequality that uses the variances of the terms $X_i$. However, we need 
+a stronger assumption that the terms $X_i$ are bounded almost surely: 
+
+\begin{theorem}[Bernstein inequality for bounded distributions]
+\label{thm:2.9.5}
+Let $X_1, \dots, X_N$ be independent, mean zero random variables satisfying $|X_i| \leq K$ for all $i$. 
+Then for every $t \geq 0$, we have 
+\[ P \left( \left| \sum_{i = 1}^{N} X_i \right| \geq t \right) 
+\leq 2 \exp{\left( -\frac{t^2 / 2}{\sigma^2 + Kt / 3} \right)}, \]
+where $\sigma^2 = \sum_{i = 1}^{N}\mathbb{E}[X_i^2]$ is the variance of the sum.
+\end{theorem}
+
+\begin{proof}
+Exercise 2.47.
+\end{proof}
