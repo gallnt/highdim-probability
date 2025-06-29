@@ -626,6 +626,112 @@ conclusions from before like Hoeffding inequality, as the distributions are not 
 
 
 \subsubsection{Subexponential Properties}
+\begin{proposition}[Subexponential properties]
+\label{prop:2.8.1}
+Let $X$ be a random variable. The following are equivalent, with $K_i > 0$ differing by at most a 
+constant factor: 
+\begin{enumerate}[label=(\roman*)]
+	\item (Tails) $\exists K_1 > 0$ such that
+	\[ P(|X| \geq t) \leq 2\exp{(-t / K_1)} \text{ for all } t \geq 0. \]
+	\item (Moments) $\exists K_2 > 0$ such that 
+	\[ \lVert X \rVert_{L^p} = (\mathbb{E}[|X|^p])^{1/p} \leq K_2 p \text{ for all } p \geq 1. \]
+	\item (MGF of $|X|$) $\exists K_3 > 0$ such that 
+	\[ \mathbb{E}[\exp{(|X| / K_3)}] \leq 2. \]
+	Moreover, if $\mathbb{E}[X] = 0$ then properties (i)-(iii) are equivalent to 
+	\item (MGF) $\exists K_4 > 0$ such that 
+	\[ \mathbb{E}[\exp{(\lambda X)}] \leq \exp{(K_4^2 \lambda^2)} \text{ for all } |\lambda| 
+	\leq \frac{1}{K_4}. \]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The equivalence of (i)-(iii) is done in Exercise 2.41. (iii)$\Rightarrow$(iv) and (iv)$\Rightarrow$(i) 
+are a bit different and will be done here.
+
+(iii)$\Rightarrow$(iv) Assume that (iii) holds, and WLOG assume $K_3 = 1$. We'll use again the 
+inequality coming from Taylor's theorem with Lagrange form remainder: 
+\[ e^x \leq 1 + x + \frac{x^2}{2}e^{|x|}. \]
+Assume that $|\lambda| \leq 1/2$ and substitute the above with $x = \lambda X$ to get 
+\begin{align*}
+	\mathbb{E}[e^{\Lambda X}] 
+	&\leq 1 + \frac{\lambda^2}{2}\mathbb{E}[X^2 e^{|\lambda X|}] \quad (\mathbb{E}[X] = 0) \\
+	&\leq 1 + 2 \lambda^2 \mathbb{E}[e^{|X|}] \quad (x^2 \leq 4e^{|x| / 2} \text{ and } 
+	e^{|\lambda x|} \leq e^{|x| / 2}) \\
+	&\leq 1 + 2 \lambda^2 \quad (\mathbb{E}[x^{|x|}] \leq 2) \\
+	&\leq e^{2 \lambda^2}.
+\end{align*}
+Then property (iv) is true with $K_4 = 2$.
+
+(iv)$\Rightarrow$(i) Assume that (iv) holds, and WLOG assume $K_4 = 1$. Exponentiating, applying Markov 
+inequality, and using (iv) for $\lambda =1$, we get 
+\[ P(X \geq t) = P(e^X \geq e^t) \leq e^{-t}\mathbb{E}[e^X] \leq e^{1 - t}. \]
+We also have that 
+\[ P(-X \geq t) = P(e^{-X} \geq e^t) \leq e^{-t}\mathbb{E}[e^{-X}] \leq e^{1 - t}. \]
+Combining the two equations above vis union bound, we get $P(|X| >= t) <= 2e^{1 - t}$. There are now 
+two cases: 
+
+Case 1: $t \geq 2$. Then the $2e^{1 - t} \leq 2e^{-t / 2}$ hence we are done.
+
+Case 2: $t < 2$. Then $2e^{-t / 2} \geq 1$ hence the probability is trivially bounded, we are done.
+
+Therefore we get property (i) with $K_1 = 2$.
+\end{proof}
+
+\begin{remark}[MGF near the origin]
+\label{rmk:2.8.2}
+It may be surprising that the bound for subgaussian and subexponential distributions have the same 
+bound on the MGFs near the origin. However, it is expected for any random variable $X$ with mean zero. 
+To see why, assume $X$ is bounded and has unit variance. Then the MGF is approximately 
+\[ \mathbb{E}[\exp{(\lambda X)}] 
+\approx \mathbb{E}\left[ 1 + \lambda X + \frac{\lambda^2 X^2}{2} + o(\lambda^2 X^2) \right] 
+= 1 + \frac{\lambda^2}{2} \approx e^{\lambda^2 / 2} \]
+as $\lambda \to 0$. For $N(0, 1)$, the appxomation becomes an equality. For subgaussian distributions, 
+the above holds for all $\lambda \in \mathbb{R}$, while for subexponential distributions, the above 
+holds only for small $\lambda$.
+\end{remark}
+
+\begin{remark}[MGF far from the origin]
+\label{rmk:2.8.3}
+For subexponentials, the MGF bound is only guaranteed near zero. For example, the MGF of an $\text{Exp}(1)$ 
+random variable is infinite for $\lambda \geq 1$!
+\end{remark}
+
+
+\subsubsection{The Subexponential Norm}
+\begin{definition}[]
+\label{def:2.8.4}
+A random variable $X$ is \underline{subexponential} if it satisfies any of (i)-(iii) in \cref{prop:2.8.1}. 
+Its \underline{subexponential norm} is 
+\[ \lVert X \rVert_{\psi_1} = \inf\{K > 0: \ \mathbb{E}[\exp{(|X| / K)}] \leq 2\}. \]
+\end{definition}
+$\lVert \cdot \rVert_{\psi_1}$ defines a norm on the space of subexponential random variables (Exercise 2.42). 
+
+Subgaussian and Subexponential distributions are closely connected: 
+\begin{lemma}[]
+\label{lem:2.8.5}
+$X$ is subgaussian if and only if $X^2$ is subexponential, and 
+\[ \lVert X^2 \rVert_{\psi_1} = \lVert X \rVert_{\psi_2}^2. \]
+\end{lemma}
+
+\begin{lemma}[Name]
+If $X$ and $Y$ are subgaussian then $XY$ is subexponential, and 
+\[ \lVert XY \rVert_{\psi_1} = \lVert X \rVert_{\psi_2} \lVert Y \rVert_{\psi_2}. \]
+\end{lemma}
+
+\begin{proof}
+WLOG, we can assume that $\lVert X \rVert_{\psi_2} = \lVert Y \rVert_{\psi_2} = 1$. By definition, this 
+implies that $\mathbb{E}[e^{X^2}] \leq 2$ and $\mathbb{E}[e^{Y^2}] \leq 2$. Then 
+\begin{align*}
+	\mathbb{E}[\exp{(|XY|)}] 
+	&\leq \mathbb{E}\left[ \exp{\left( \frac{X^2}{2} \right)} 
+	+ \exp{\left( \frac{Y^2}{2} \right)} \right] \quad (|ab| \leq \frac{a^2}{2} + \frac{b^2}{2}) \\
+	&= \mathbb{E}\left[ \left( \frac{X^2}{2} \right) \left( \frac{Y^2}{2} \right) \right] \\
+	&\leq \frac{1}{2} \mathbb{E}[\exp{(X^2)} + \exp{(Y^2)}] \\
+	&\leq \frac{1}{2}(2 + 2) \\
+	&= 2.
+\end{align*}
+By definition, $\lVert XY \rVert_{\psi_1} \leq 1$ and we are done.
+\end{proof}
 
 
 

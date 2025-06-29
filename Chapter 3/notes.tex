@@ -1,0 +1,19 @@
+\section{Random Vectors in High Dimensions}
+This chapter mainly deals with the curse of dimensionality, and howvectors interact in these 
+high-dimensional settings.
+
+\subsection{Concentration of the Norm}
+\begin{theorem}[Concentration of the norm]
+\label{thm:3.1.1}
+Let $X = (X_1, \dots, X_n) \in \mathbb{R}^n$ be a random vector with independent, subgaussian coordinates 
+$X_i$ satisfying $\mathbb{E}[X_i^2] = 1$. Then 
+\[ \left\lVert \lVert x \rVert_2 - \sqrt{n} \right\rVert_{\psi_2} \leq CK^2 \]
+where $K = \max_{i} \lVert X_i \rVert_{\psi_2}$ and $C$ is an absolute constant.
+\end{theorem}
+
+\begin{proof}
+Using \cref{prop:2.6.7}, we can rewrite the above as 
+\[ P(\lVert X \rVert_2 - \sqrt{2} \geq t) \leq 2\exp{\left( -\frac{ct^2}{K^4} \right)} \text{ for all } 
+t \geq 0. \]
+We can prove the bound using Bernstein inequality. 
+\end{proof}
