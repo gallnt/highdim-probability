@@ -275,11 +275,11 @@ Same as before, expanding the expression into Taylor series gives
 	&= \biggl( -\delta - \frac{\delta^2}{2} - \frac{\delta^3}{3} - \cdots \biggr) + 
 	(\delta^2 + \frac{\delta^3}{2} + \frac{\delta^4}{3} + \cdots) + \delta \\
 	&= \frac{\delta^2}{1 \cdot 2} + \frac{\delta^3}{2 \cdot 3} + \frac{\delta^4}{3 \cdot 4} + \cdots \\
-	&\geq \frac{\delta^2}{2}.
+	&\geq \frac{\delta^2}{2} \\
+	&\geq \frac{\delta^2}{3}.
 \end{align*}
 Plugging the bound gives 
-\[ P(S_N \leq (1 - \delta)\mu) \leq \exp{\biggl( -\frac{\delta^2 \mu}{2} \biggr)} 
-\leq \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)}. \]
+\[ P(S_N \leq (1 - \delta)\mu) \leq \exp{\biggl( -\frac{\delta^2 \mu}{3} \biggr)}. \]
 
 Summing up both bounds via union bound gives the result.
 \end{proof}
