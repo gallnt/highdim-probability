@@ -84,7 +84,7 @@ Caratheodory theorem has some applications, namely in covering sets: To cover a 
 Caratheodory theorem can help us in these kinds of situations: 
 
 \begin{corollary}[Covering polytopes by balls]
-\label{cor:0.0.5}
+\label{cor:0.1.1}
 Let $P$ be a polytope in $\mathbb{R}^n$ with $N$ vertices, contained in the unit Euclidean ball. Then 
 for every $k \in \mathbb{N}$, the polytope $P$ can be covered by at most $N^k$ Euclidean balls of radii $
 1 / \sqrt{k}$.
@@ -107,12 +107,35 @@ we are done.
 Covering is useful in, for example, computing the volume of a general polyhedron (which is not easy in 
 high dimensions). Here is a simple bound: 
 \begin{theorem}[]
-\label{thm:0.0.6}
+\label{thm:0.1.2}
 Let $P$ be a polytope with $N$ vertices, which is contained in the unit Euclidean ball of $\mathbb{R}^n$, 
 denoted by $B$. Then 
 \[ \frac{\text{Vol}(P)}{\text{Vol}(B)} \leq \left( 3 \sqrt{\frac{\log{N}}{n}} \right)^n. \]
 \end{theorem}
 
 \begin{proof}
-
+\cref{cor:0.1.1} says that the polytope $P$ can be covered by at most $N^k$ balls of radius $1/\sqrt{k}$. 
+The volume of each ball is $(1/\sqrt{k})^{n} \text{Vol}(B)$ because we are in dimension $n$. The volume of 
+$P$ is bounded by the total volume of the balls that cover $P$, hence 
+\[ \text{Vol}(p) \leq N^k (1 / \sqrt{k})^n \text{Vol}(B). \]
+Rearranging the terms above gives 
+\[ \frac{\text{Vol}(P)}{\text{Vol}(B)} \leq \frac{N^k}{k^{n/2}}. \]
+This is true for every $k \in \mathbb{N}$. We can find the optimal $k$ by differentiating and setting 
+to 0. Then we get 
+\[ k_0 = \frac{n}{2 \log{N}}, \]
+but we need $k$ to be an integer! Hence we take $k = \lfloor k_0 \rfloor$. Since $k_0 \leq k \leq k_0 + 1$, 
+then plugging in the bound we get 
+\[ \frac{\text{Vol}(P)}{\text{Vol}(B)} \leq \frac{N^{k_0 + 1}}{k_0^{n / 2}} 
+\leq N \left( \sqrt{\frac{2e \log{N}}{n}} \right)^n. \]
+Now there are two cases: If $N \leq e^{n / 9}$, then plugging in this bound gives that the RHS is bounded 
+by $(3 \sqrt{\log{N} / n})^n$ hence the proof is complete. If $N > e^{n / 9}$, then the RHS is greater than 
+equal to 1 hence the bound trivially holds (Vol($P$) $\leq$ Vol($B$)).
 \end{proof}
+
+\begin{remark}[A high-dimensional surprise]
+\cref{thm:0.1.2} gives the counterintuitive conclusion: Polytopes with a modest number of vertices have 
+extremely small volume! We can interpret the corollary above as "The polytope $P$ has volume as small 
+as the Euclidean balls of radius $3 \sqrt{\log{N} / n}$, and maybe smaller".
+\end{remark}
+
+As being mentioned, there will be many other high-dimensional phenomena that are mentioned later in the book.
