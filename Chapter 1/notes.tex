@@ -1,8 +1,11 @@
 \section{A Quick Refresher on Analysis and Probability}
 
+
+% ----------1.1----------
 \subsection{Convex Sets and Functions}
 
 \begin{definition}[]
+\label{def:1.1.1}
 A subset $K \subseteq \mathbb{R}^n$ is a \underline{convex set} if, for any pair of points in $K$, the line 
 segment connecting these two points is also contained in $K$, i.e. 
 \[ \lambda x + (1 - \lambda) y \in K \quad \forall x, y \in K, \lambda \in [0, 1]. \]
@@ -14,25 +17,273 @@ $f$ is \underline{concave} if the inequality above is reversed, or equivalently,
 \end{definition}
 
 
+% ----------1.2----------
 \subsection{Norms and Inner Products}
 
 \begin{definition}[]
+\label{def:1.2.1}
 The \underline{Euclidean norm} of a vector $x \in \mathbb{R}^n$ is 
 \[ \|x\|_2 = \biggl( \sum_{i = 1}^{n} x_i^2 \biggr)^{1/2}. \]
 \end{definition}
 
 \begin{definition}[]
+\label{def:1.2.2}
 The \underline{inner product (dot product)} of two vectors $x, y \in \mathbb{R}^n$ is 
 \[ \langle x, y \rangle = x^T y. \]
 \end{definition}
 
 \begin{definition}[]
+\label{def:1.2.3}
 For $p \in [1, \infty]$, the \underline{$\ell^p$ norm} of a vector $x \in \mathbb{R}^n$ is 
 \[ \|x\|_p = \biggl( \sum_{i = 1}^{n} |x_i|^p \biggr)^{1/p} \quad \text{ for } p \in [1, \infty), 
 \ \|x\|_{\infty} = \max_{i = 1, \dots, n} |x_i|. \]
 \end{definition}
 
-\begin{theorem}[Minkowski's Inequality]
+\begin{theorem}[Minkowski's inequality]
+\label{def:1.2.4}
 For any vector $x, y \in \mathbb{R}^n$, 
 \[ \|x + y\|_p \leq \|x\|_p + \|y\|_p. \]
 \end{theorem}
+It follows that the $\ell^p$ norm defines a norm on $\mathbb{R}^n$  for every $p \in [1, \infty]$.
+
+\begin{theorem}[Cauchy-Schwartz inequality]
+\label{thm:1.2.5}
+For all vectors $x, y \in \mathbb{R}^n$, 
+\[ |\langle x, y \rangle| \leq \lVert x \rVert_{2} \lVert y \rVert_{2}. \]
+\end{theorem}
+
+\begin{theorem}[Hölder's inequality]
+\label{thm:1.2.6}
+For all vectors $x, y \in \mathbb{R}^n$, 
+\[ |\langle x, y \rangle| \leq \lVert x \rVert_{p} \lVert y \rVert_{p'} \text{ if } 
+\frac{1}{p} + \frac{1}{p'} = 1 \]
+where $p, p'$ are called \underline{conjugate exponents}.
+\end{theorem}
+
+
+% ----------1.3----------
+\subsection{Random Variables and Random Vectors}
+
+We'll do a brief review of some important concepts about random variables first: 
+\begin{definition}[]
+\label{def:1.3.1}
+The \underline{expectation (mean)} of a random variable $X$ is 
+\[ \mathbb{E}[X] = \sum_{k = -\infty}^{\infty} k p_X(k) = \int_{-\infty}^{\infty} x f_X(x) \ dx. \]
+Its \underline{variance} is 
+\[ \mathrm{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2. \]
+\end{definition}
+
+The expectation is linear: 
+\[ \mathbb{E}[a_1 X_1 + \cdots + a_n X_n] = a_1 \mathbb{E}[X_1] + \cdots + a_n \mathbb{E}[X_n]. \]
+For variance this is not the case. However, if the random variables are independent (or even uncorrelated): 
+\[ \mathrm{Var}(a_1 X_1 + \cdots + a_n X_n) = a_1^2 \mathrm{Var}(X_1) + \cdots + a_n^2 \mathrm{Var}(X_n). \]
+
+The simplest example of a random variable is the \textit{indicator} of a given event $E$, which is 
+\[ \mathbf{1}_E(x) = \begin{cases}
+	1 & \text{ if } x \in E, \\
+	0 & \text{ if } x \notin E.
+\end{cases} \]
+Its expectation is given by 
+\[ \mathbb{E}[\mathbf{1}_E] = P(E). \]
+
+\begin{definition}[]
+\label{def:1.3.2}
+The \underline{moment generating function (mgf)} of a random variable $X$ is given by 
+\[ M_X(t) = \mathbb{E}[e^{tX}], t \in \mathbb{R}. \]
+\end{definition}
+
+\begin{definition}[]
+\label{def:1.3.3}
+For $p > 0$, the \underline{pth moment} of a random variable $X$ is $\mathbb{E}[X^p]$, and the 
+\underline{pth absolute moment} is $\mathbb{E}[|X|^p]$. By taking the $p$th root of the absolute moment, 
+we get the \underline{$L^p$ norm} of a random variable: 
+\[ \lVert X \rVert_{L^p} = (\mathbb{E}[|X|^p])^{1/p}, \text{ and } 
+\lVert X \rVert_{\infty} = \text{ess} \sup |X|, \]
+where esssup denotes the essential supremum. 
+
+The normed space consisting of all random variables on a given probability space that have finite 
+$L^p$ norm is called the \underline{$L^p$ space}:
+\[ L^p = \{ X: \ \lVert X \rVert_{L^p} < \infty \}. \]
+\end{definition}
+
+\begin{definition}[]
+\label{def:1.3.4}
+The \underline{standard deviation} of a random variable $X$ is 
+\[ \sigma = \sqrt{\mathrm{Var}(X)} = \lVert X - \mathbb{E}[X] \rVert_{L^2}. \]
+The \underline{covariance} of two random variables $X$ and $Y$ is 
+\[ \mathrm{Cov}(X, Y) = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])] 
+= \langle X - \mathbb{E}[X], Y - \mathbb{E}[Y] \rangle_{L^2}. \]
+\end{definition}
+
+\begin{definition}[]
+\label{def:1.3.5}
+A \underline{random vector} $X = (X_1, \dots, X_n)$ is a vector whose all $n$ coordinates $X_i$ 
+are random variables. Its expected value is
+\[ \mathbb{E}[X] = (\mathbb{E}[X_1], \dots, \mathbb{E}[X_n]). \]
+Its \underline{covariance matrix} is 
+\[ \mathrm{Cov}(X) = \mathbb{E}[(X - \mathbb{E}[X]) (X - \mathbb{E}[X])^T]. \]
+which is a $n \times n$ matrix whose $(i, j)$-th entry is $\mathrm{Cov}(X_i, X_j)$.
+\end{definition}
+
+
+% ----------1.4----------
+\subsection{Union Bound}
+\begin{lemma}[Union bound]
+For any events $E_1, \dots, E_n$, we have 
+\[ P \left( \bigcup_{i = 1}^n E_i \right) \leq \sum_{i = 1}^{n} P(E_i). \]
+\end{lemma}
+
+\begin{proof}
+If the event $\cup_{i = 1}^n$ occurs, at least of the events $E_i$ has to occur. Therefore their respective 
+indicator random variables satisfy 
+\[ \mathbf{1}_{\cup_{i = 1}^n E_i} \leq \mathbf{1}_{E_i}. \]
+Taking expectations and using the linearity of expectation completes the proof.
+\end{proof}
+
+\begin{example}[Dense random graphs have no isolated vertices]
+Consider the $G(n, p)$ graph from the Erdos-Renyi model, with $n \geq 2$. Show that if $p \geq 4 \ln{n}/n$ 
+then there are no isolated vertices with probability at least $1 - 1/n$.
+\end{example}
+
+\begin{proof}
+Call the vertices $1, \dots, n$ and let $E_i$ denote the event that vertex has no neighbors. This means that 
+none of the other $n - 1$ vertices are neighbors with vertex $i$, and these $n - 1$ events are independent 
+and have probability $1 - p$ each. Thus $P(E_i) = (1 - p)^{n - 1}$.
+
+Therefore, by union bound, we have 
+\begin{align*}
+	P \left( \bigcup_{i = 1}^n E_i \right) 
+	&\leq \sum_{i = 1}^{n} P(E_i) \\
+	&= n(1 - p)^{n - 1}.
+\end{align*}
+\end{proof}
+
+
+% ----------1.5----------
+\subsection{Conditioning}
+
+\begin{definition}[]
+Given a probability space, the \underline{conditional probability} of an event $E$ given an event $F$ 
+is 
+\[ P(E|F) = \frac{P(E \cap F)}{P(F)}. \]
+\end{definition}
+
+
+% ----------1.6----------
+\subsection{Probabilistic Inequalities}
+\begin{theorem}[Jensen's Inequality]
+For any random variable $X$ and a convex function $f: \ \mathbb{R} \to \mathbb{R}$, 
+\[ f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)]. \]
+This also holds for any random vector taking values in $\mathbb{R}^n$ and any convex function 
+$f: \mathbb{R}^n \to \mathbb{R}$.
+\end{theorem}
+In particular, since any norm on $\mathbb{R}^n$ is convex, we get
+\[ \lVert \mathbb{E}[X] \rVert_{} \leq \mathbb{E}[\lVert X \rVert_{}]. \]
+
+\begin{theorem}[Inequalities for random variables]
+Minkowski inequality states that for any $p \in [1, \infty]$ and any random variables $X, Y \in L^p$, 
+\[ \lVert X + Y \rVert_{L^p} \leq \lVert X \rVert_{L^p} + \lVert Y \rVert_{L^p}. \]
+\end{theorem}
+
+
+% ----------1.7----------
+\subsection{Limit Theorems}
+
+\begin{theorem}[Strong law of large numbers]
+\label{thm:1.7.1}
+Let $X_1, X_2, \dots$ be a sequence of i.i.d. random variables with mean $\mu$. Let $S_N = X_1 + \cdots 
++ X_N$. Then as $N \to \infty$, 
+\[ \frac{S_N}{N} \to \mu \text{ almost surely. } \]
+\end{theorem}
+
+\begin{definition}[]
+\label{def:1.7.2}
+A random variable $X$ is a \underline{standard normal} random variable, denoted $X \sim N(0, 1)$, if 
+its density is 
+\[ f_X(x) = \frac{1}{\sqrt{2 \pi}}e^{-x^2 / 2}, x \in \mathbb{R}. \]
+$X$ has mean zero and variance 1.
+
+More generally, $X$ as a \underline{normal distribution} with mean $\mu$ and variance $\sigma^2$ if 
+its density is 
+\[ f_X(x) = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}, x \in \mathbb{R}. \]
+\end{definition}
+
+\begin{theorem}[Lindeberg–Lévy CLT]
+\label{thm:1.7.3}
+Let $X_1, X_2, \dots$ be a sequence of i.i.d. random variables with mean $\mu$ and variance $\sigma^2$. 
+Consider the sum $S_N = X_1 + \cdots + X_N$. Normalize this sum so that it has zero mean and unit variance: 
+\[ Z_N := \frac{S_N - \mathbb{E}[S_N]}{\sqrt{\mathrm{Var}(S_N)}} = 
+\frac{1}{\sigma \sqrt{N}} \sum_{i = 1}^{N} (X_i - \mu). \]
+Then as $N \to \infty$, 
+\[ Z_N \to N(0, 1) \text{ in distribution, } \]
+meaning the CDF of $Z_N$ converges pointwise to the CDF of $N(0, 1)$. 
+\end{theorem}
+
+\begin{example}[Bernoulli and binomial distributions]
+\label{ex:1.7.4}
+When $X_i \sim \text{Ber}(p)$, $S_N \sim \text{Binom}(N, p)$. In particular, \cref{thm:1.7.3} gives us
+\[ \frac{S_N - Np}{\sqrt{Np(1 - p)}} \to N(0, 1) \text{ in distribution. } \]
+The special case above is called the \underline{de Moivre-Laplace theorem}.
+\end{example}
+
+There is also a version of the CLT used for the Poisson distribution, when $p \to 0$ for the Bernoulli 
+random variables: 
+
+\begin{definition}[]
+\label{def:1.7.5}
+A random variable $X$ has the \underline{Poisson distribution} with parameter $\lambda > 0$, denoted 
+$X \sim \text{Pois}(\lambda)$, if 
+\[ P(X = k) = e^{-\lambda} \frac{\lambda^k}{k!}, \ k \in \mathbb{N}_0. \]
+\end{definition}
+
+\begin{theorem}[Poisson limit theorem]
+\label{thm:1.7.6}
+Consider independent random variables $X_{N, i} \si, p_{N, i}$ for $N \in \mathbb{N}$ and $1 \leq i \leq N$. 
+Let 
+\[ S_N = X_{N, 1} + \cdots + X_{N, N}. \]
+Assume that as $N \to \infty$, 
+\[ \max_{i \leq N} p_{N, i} \to 0 \text{  and  } \mathbb{E}[S_N] = \sum_{i = 1}^{N} p_{N, i} 
+\to \lambda < \infty. \]
+Then as $N \to \infty$, 
+\[ S_N \to \text{Pois}(\lambda) \text{ in distribution. } \]
+\end{theorem}
+
+To approximate the Poisson distributions, we often have to deal with factorials. Here are a few useful tools 
+for approximations:
+\begin{lemma}[Stirling approximation]
+\label{lem:1.7.7}
+\[ n! = \sqrt{2 \pi n} \left( \frac{n}{e} \right)^n (1 + o(1)) \text{ as } n\to \infty. \]
+In particular, for $X \sim \text{Pois}(\lambda)$, 
+\[ P(Z = k) = \frac{e^{-\lambda}}{\sqrt{2 \pi k}} \left( \frac{e \lambda}{k} \right)^k (1 + o(1)) 
+\text{ as } k \to \infty. \]
+\end{lemma}
+
+Of course, there are also non-asymptotic results:
+\begin{lemma}[Bounds on the factorial]
+\label{lem:1.7.8}
+For any $n \in \mathbb{N}$, we have 
+\[ \left( \frac{n}{e} \right)^n \leq n! \leq en \left( \frac{n}{e} \right)^n. \]
+\end{lemma}
+
+\begin{proof}
+For the lower bound, we use the Taylor series for $e^x$ and drop all terms except the $n$th one, which 
+gives 
+\[ e^x \geq \frac{x^n}{n!}. \]
+Substitute $x = n$ and rearranging gives the inequality.
+
+For the upper bound, 
+\[ \ln{(n!)} \leq \sum_{k = 1}^{n} \ln{k} \leq \int_{1}^{n} \ln{x} \ dx + \ln{n} 
+= n(\ln{n} - 1) + 1 + \ln{n}. \]
+Exponentiating and rearranging gives the upper bound.
+\end{proof}
+
+\begin{remark}[Gamma function]
+The \underline{gamma function} extends the notion of the factorial to all real numbers, even to all 
+complex numbers with positive real part. It is defined as 
+\[ \Gamma(z) := \int_{0}^{\infty} t^{z - 1}e^{-t} \ dt. \]
+Repeated integration by parts gives 
+\[ \Gamma(n + 1) = n!, \ n \in \mathbb{N}_0. \]
+Stirling approximation (\cref{lem:1.7.7}) is also valid for the gamma function:
+\[ \Gamma(z) = \sqrt{2 \pi z} \left( \frac{z}{e} \right)^z (1 + o(1)) \text{ as } z \to \infty. \]
+\end{remark}
+
