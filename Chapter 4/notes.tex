@@ -343,4 +343,199 @@ Then substituting $\varepsilon = \max_{}(\delta, \delta^2)$, we get
 The $\varepsilon$-net argument is useful for analysis of random matrices. It is also connected to ideas like 
 covering, packing, entropy, volume, and coding.
 
+\begin{definition}[]
+\label{def:4.2.1}
+Let $(T, d)$ be a metric space. Consider $K \subset T$ and $\varepsilon > 0$. A subset $\mathcal{N} \subset 
+T$ is called an \underline{$\varepsilon$-net} of $K$ is every point in $K$ is within distance $\varepsilon$ 
+of some point in $\mathcal{N}$, i.e.
+\[ \forall x \in K \exists x_0 \in \mathcal{N}: \ d(x, x_0) \leq \varepsilon. \]
+Equivalently, $\mathcal{N}$ is an $\varepsilon$-net of $K$ if the balls of radius $\varepsilon$ centered at 
+points in $\mathcal{N}$ cover $K$, like in the figure below:
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 4/fig4-1.png}
+\end{center}
+\end{definition}
+
+\begin{definition}[]
+\label{def:4.2.2}
+The smallest cardinality of an $\varepsilon$-net of $K$ is called the \underline{covering number} of 
+$K$, and is denoted $\mathcal{N}(K, d, \varepsilon)$.
+\end{definition}
+
+\begin{remark}[Compactness]
+\label{rmk:4.2.3}
+An important result in real analysis says that a subset $K$ of a complete metric space $(T, d)$ is 
+\underline{precompact} (i.e. the closure of $K$ is compact) if and only if
+\[ N(K, d, \varepsilon) < \infty \text{ for every } \varepsilon > 0. \]
+We can think about the covering numbers as a quantitative measure of how compact $K$ is.
+\end{remark}
+
+\begin{definition}[]
+\label{def:4.2.4}
+A subset $\mathcal{N}$ of a metric space $(T, d)$ is \underline{$\varepsilon$-seperated} if 
+\[ d(x, y) > \varepsilon \text{ for any distinct points } x, y \in \mathcal{N}. \]
+The largest possible cardinality of an $\varepsilon$-seperated subset of a given $K \subset T$ is called 
+the \underline{packing number} of $K$ and is denoted $\mathcal{P}(K, d, \varepsilon)$.
+\end{definition}
+
+\begin{remark}[Packing balls into $K$]
+\label{rmk:4.2.5}
+If $\mathcal{N}$ is $\varepsilon$-seperated, the closed $\varepsilon / 2$-balls centered at points in 
+$\mathcal{N}$ are disjoint by the triangle inequality, hence we can always pack into $K$ at least 
+$\mathcal{P}(K, d, \varepsilon)$ disjoint $\varepsilon / 2$-balls.
+\end{remark}
+
+\begin{lemma}[Nets from seperated sets]
+\label{lem:4.2.6}
+Let $\mathcal{N}$ be a maximal $\varepsilon$-seperated subset of $K$, i.e. adding any new point to $\mathcal{N}$ 
+destroys the seperation property. Then $\mathcal{N}$ is an $\varepsilon$-net of $K$.
+\end{lemma}
+
+\begin{proof}
+Let $x \in K$. We want to show that there exists $x_0 \in \mathcal{N}$ such that $d(x, x_0) \leq \varepsilon$. 
+If $x \in \mathcal{N}$, the conclusion is trivial by choosing $x_0 = x$. Suppose $x \notin \mathcal{N}$. 
+The maximality assumption implies that $\mathcal{N} \cup \{x\}$ is not $\varepsilon$-seperated, meaning 
+$d(x, x_0) \leq \varepsilon$ for some $\varepsilon \in \mathcal{N}$.
+\end{proof}
+
+\begin{remark}[Constructing a net]
+\label{rmk:4.2.7}
+The lemma above (\cref{lem:4.2.6}) gives an iterative algorithm to construct an $\varepsilon$-net for a 
+given set $K$. Pick $x_1 \in K$ arbitrarily, then pick $x_2 \in K$ that is farther than $\varepsilon$ from 
+$x_1$, then pick $x_3$ that it is farther than $\varepsilon$ from both $x_1$ and $x_2$, and so on. If $K$ 
+is compact, then the process will stop in a finite number of iterations!
+\end{remark}
+
+\begin{lemma}[Equivalence of covering and packing numbers]
+\label{lem:4.2.8}
+For any set $K \subset T$ and $\varepsilon > 0$, 
+\[ \mathcal{P}(K, d, 2 \varepsilon) \leq \mathcal{N}(K, d, \varepsilon) 
+\leq \mathcal{P}(K, d, \varepsilon). \]
+\end{lemma}
+
+\begin{proof}
+The upper bound follows from \cref{lem:4.2.6} because the packing number is exactly the number that makes 
+$\mathcal{N}$ a maximal $\varepsilon$-seperated set.
+
+For the lower bound, take any $2 \varepsilon$-seperated subset $\mathcal{P} = \{x_i\}$ in $K$ and any 
+$\varepsilon$-net $\mathcal{N} = \{y_j\}$ of $K$. By definition, each point $x_i$ is in the $\varepsilon$-ball 
+centered at some point $y_j$. Since any closed $\varepsilon$ ball cannot contain two $2 \varepsilon$-seperated 
+points, each $\varepsilon$-ball centered at $y_j$ can contain at most one $x_i$. The pigeonhole principle 
+gives $|\mathcal{P}| \leq |\mathcal{N}|$. Since $\mathcal{P}$ and $\mathcal{N}$ are arbitrary, the bound follows.
+\end{proof}
+
+\subsubsection{Covering Numbers and Volume}
+This sections is about covers with $T = \mathbb{R}^n$ with the Eudlidean metric 
+\[ d(x, y) = \lVert x - y \rVert_{2}. \]
+Therefore, we can omit the metric when denoting the covering and packing numbers: 
+\[ \mathcal{N}(K, \varepsilon) = \mathcal{N}(K, d, \varepsilon). \]
+How do the covering numbers relate to the most classical measure, the volume of $K$ in $\mathbb{R}^n$? 
+
+\begin{definition}[Minkowski sum]
+\label{def:4.2.9}
+Let $A, B \subseteq \mathbb{R}^n$. The \underline{Minkowski sum} is defined as 
+\[ A + B := \{ A + B: \ a \in A, b \in B \}. \]
+Below is an example of the Minkowski sum of two sets on the plane:
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 4/fig4-2.png}
+\end{center}
+\end{definition}
+
+\begin{proposition}[Covering numbers and Volume]
+\label{prop:4.2.10}
+Let $K \subset \mathbb{R}^n$ and $\varepsilon > 0$. Then
+\[ \frac{\mathrm{Vol}(K)}{\mathrm{Vol}(\varepsilon B_2^n)} \leq \mathcal{N}(K, \varepsilon) 
+\leq \mathcal{P}(K, \varepsilon) \leq 
+\frac{\mathrm{Vol}(K + (\varepsilon / 2)B_2^n)}{\mathrm{Vol}((\varepsilon / 2)B_2^n)}, \]
+where $B_2^n$ denotes the unit ball in $\mathbb{R}^n$. 
+\end{proposition}
+
+\begin{proof}
+The middle inequality was already proven in \cref{lem:4.2.8}, hence we focus on the left and right bounds.
+
+(\textbf{Lower bound}) Let $N := \mathcal{N}(K, \varepsilon)$. Then $K$ can be covered by $N$ balls with radii 
+$\varepsilon$. Comparing the volumes,
+\[ \mathrm{Vol}(K) \leq N \cdot \mathrm{Vol}(\varepsilon B_2^n), \]
+which gives the lower bound.
+
+(\textbf{Upper bound}) Let $N := \mathcal{P}(K, \varepsilon)$. Then we can find $N$ disjoint closed 
+$\varepsilon / 2$-balls with centers $x_i \in K$. While these balls may not fit entirely in $K$ (Figure 4-1), 
+they do fit in a slightly inflated set, namely $K + (\varepsilon / 2)B_2^n$ (Basically putting balls at the 
+boundary of $K$). Comparing the volume gives 
+\[ N \cdot \mathrm{Vol}((\varepsilon / 2)B_2^n) \leq \mathrm{Vol}(K + (\varepsilon / 2)B_2^n), \]
+which completes the upper bound.
+\end{proof}
+
+An important consequence of the volumetric bound is that the covering (hence packing) numbers are typically 
+\textit{exponential} in the dimension $n$: 
+\begin{corollary}[Covering numbers of the Euclidean ball]
+\label{cor:4.2.11}
+The covering numbers of the unit Euclidean ball $B_2^n$ satisfy the following for any $\varepsilon > 0$: 
+\[ \left( \frac{1}{\varepsilon} \right)^n \leq \mathcal{N}(B_2^n, \varepsilon) 
+\leq \left( \frac{2}{\varepsilon} + 1 \right)^n. \]
+\end{corollary}
+
+\begin{proof}
+The lower bound immediately follows from \cref{prop:4.2.10}, since the volumd in $\mathbb{R}^n$ scale as 
+$\mathrm{Vol}(\varepsilon B_2^n) = \varepsilon^n \mathrm{Vol}(B_2^n)$.
+
+The upper bound follows from \cref{prop:4.2.10} as well:
+\[ \mathcal{N}(B_2^n, \varepsilon) \leq 
+\frac{\mathrm{Vol}((1 + \varepsilon / 2)B_2^n)}{\mathrm{Vol}((\varepsilon / 2)B_2^n)} 
+= \frac{(1 + \varepsilon / 2)^n}{(\varepsilon / 2)^n} 
+= \left( \frac{2}{\varepsilon} + 1 \right)^n. \]
+\end{proof}
+
+To simplify \cref{cor:4.2.11}, we can divide this into two cases for $\varepsilon$:
+
+For $\varepsilon \in (0, 1]$, we have 
+\[ \left( \frac{1}{\varepsilon} \right)^n \leq \mathcal{N}(B_2^n, \varepsilon) 
+\leq \left( \frac{3}{\varepsilon} \right)^n. \]
+In the other case where $\varepsilon > 1$, one $\varepsilon$-ball covers the unit ball hence 
+$\mathcal{N}(B_2^n, \varepsilon) = 1$.
+
+\begin{remark}[Volume of the ball]
+\label{rmk:4.2.12}
+The proof of \cref{cor:4.2.11} works with the volume of the Euclidean ball but never actually calculates it!
+We can compute the volume geometrically, probabilistically, and analytically (Exercises 4.27-4.29), and 
+also extend this notion of volume to $\ell^p$ balls (Exercise 4.30).
+\end{remark}
+
+\begin{remark}[How to construct a net?]
+\label{rmk:4.2.13}
+We have an algorithm to construct nets already (\cref{rmk:4.2.7}), but for the Euclidean ball, we can also 
+use a scaled integer lattice (Exercise 4.31), or just use random points (Exercise 4.39).
+\end{remark}
+
+We can also use covering/packing notions for other objects via volumetric arguments, here is another example:
+
+\begin{definition}[]
+\label{def:4.2.14} 
+The Hamming cube $\{0, 1\}^n$ consists of all binary strings of length $n$. To turn it into a metric space, 
+we define the \underline{hamming distance} as the number of bits where the strings $x$ and $y$ differ:
+\[ d_H(x, y) := |\{i: \ x(i) \neq y(i) \}|, \ x, y \in \{0, 1\}^n. \]
+\end{definition}
+
+\begin{proposition}[Covering and packing numbers of the Hamming cube]
+The covering and packing numbers of the Hamming cube $K = \{0, 1\}^n$ satisfy the following for any integer 
+$m \in \{0, \dots, n\}$: 
+\[ \frac{2^n}{\sum_{k = 0}^{m} \binom{n}{k}} \leq \mathcal{N}(K, d_H, m) 
+\leq \mathcal{P}(K, d_H, m) \leq \frac{2^n}{\sum_{k = 0}^{\left\lfloor m/2 \right\rfloor} \binom{n}{k}}. \]
+\end{proposition}
+
+\begin{proof}
+Use the volumetric argument from above using cardinality instead of the volume (Exercise 4.32).
+\end{proof}
+
+
+
+% ----------4.3----------
+\subsection{Application: Error Correcting Codes}
+
+
+
+% ----------4.4----------
+\subsection{Upper Bounds on Subgaussian Random Matrices}
 
