@@ -1,0 +1,346 @@
+\section{Random Matrices}
+
+This chapter mostly focuses on the theory regarding random matrices - nets, covering and packing numbers. 
+Applications include community detection, covariance estimation, and spectral clustering.
+
+
+
+% ----------4.1----------
+\subsection{A Quick Refresher on Linear Algebra}
+
+\subsubsection{Singular Value Decomposition}
+\begin{theorem}[SVD]
+\label{thm:4.1.1}
+Any $m \times n$ matrix $A$ with real entries can be written as 
+\[ A = \sum_{i = 1}^{r} \sigma_i u_i v_i^T \text{ where } r = \min_{}(m, n). \]
+Here $\sigma_i > 0$ are the \underline{singular values} of $A$, $u_I \in \mathbb{R}^m$ are orthonormal vectors 
+called the \underline{left singular vectors} of $A$, and $v_i \in \mathbb{R}^n$ are orthonormal vectors called 
+the \underline{right singular vectors} of $A$.
+\end{theorem}
+
+\begin{proof}
+WLOG, we can assume that $m \geq n$ or else we can just take the transpose. Since $A^T A \in \mathbb{R}^
+{n \times n}$ is a symmetric positive semidefinite matrix, the spectral theorem tells us that its eigenvalues 
+are $\sigma_1^2, \dots, \sigma_n^2$ and corresponding orthonormal eigenvectors $v_1, \dots, v_n \in 
+\mathbb{R}^n$, so that $A^T A v_i = \sigma_i^2 v_i$. The vectors $Av_i$ are orthogonal: 
+\[ \left\langle Av_i, Av_j \right\rangle = \left\langle A^TA v_i, v_j \right\rangle 
+= \sigma_i^2 \left\langle v_i, v_j \right\rangle = \sigma_i^2 \delta{ij}. \]
+Therefore, there exist orthonormal vectors $u_1, \dots, u_n \in \mathbb{R}^n$ such that 
+\[ Av_i = \sigma_i u_i, \quad i = 1, \dots, n. \]
+For the above, for all $i$ with $\sigma_i \neq 0$, the vectors $u_i$ are uniquely defined and ensures that 
+they are orthonormal. If $\sigma_i = 0$, then $Av_i = 0$ holds triviall. In this case, we can pick any $u_i$ 
+while keeping orthonormality.
+
+Since $v_1, \dots, v_n$ form an orthonormal basis of $\mathbb{R}^n$, we can write $I_n = \sum_{i = 1}^{n} 
+v_i v_i^T$. Multiplying by $A$ on the left and plugging the equation above gives 
+\[ A = \sum_{i = 1}^{n} (Av_i)v_i^T = \sum_{i = 1}^{n} \sigma_i u_i v_i^T. \]
+\end{proof}
+
+\begin{remark}[Geometric interpretation]
+\label{rmk:4.1.2}
+SVD gives a geometric view of matrices: it stretches the orthogonal direction of $v_i$ by $\sigma_i$, then 
+rotates the space, mapping the orthonormal basis $v_i$ to $u_i$.
+\end{remark}
+
+\begin{remark}[SVD matrix form]
+\label{rmk:4.1.3}
+We can set $\sigma_i = 0$ for $i > r$ and arrange them in weakly decreasing order. Then by extending 
+$\{u_i\}$ and $\{v_i\}$ to orthonormal bases in $\mathbb{R}^m$ and $\mathbb{R}^n$, we get 
+\[ A = U \Sigma V^T \]
+where $U$ is the $m \times m$ matrix with left singular vectors $u_i$ as columns, $V$ is the $n \times n$ 
+orthogonal matrix with right singular vectors $v_i$ as columns, and $\Sigma$ is the $m \times n$ diagonal 
+matrix with the singular values $\sigma_i$ on the diagonal. If $A$ is symmetric, we get the spectral 
+decomposition instead: 
+\[ A = U \Lambda U^T. \]
+\end{remark}
+
+\begin{remark}[Spectral decomposition v.s. SVD]
+\label{rmk:4.1.4}
+The spectral and singular value decompositions are tightly connected. Since 
+\[ AA^T = \sum_{i = 1}^{r} \sigma_i^2 u_i u_i^T \text{ and } A^T A = \sum_{i = 1}^{r} \sigma_i^2 v_i v_i^T \]
+the left singular vectors $u_i$ of $A$ are the eigenvectors of $AA^T$, while the right singular vectors $v_i$ 
+of $A$ are the eigenvectors of $A^T A$, and the singular values $\sigma_i$ of $A$ are 
+\[ \sigma_i(A) = \sqrt{\lambda_i(AA^T)} = \sqrt{\lambda_i(A^T A)}. \]
+\end{remark}
+
+\begin{remark}[Orthogonal projection]
+\label{rmk:4.1.5}
+Consider the orthogonal projection $P$ in $\mathbb{R}^n$ onto a $k$-dimensional subspace $E$. The projection 
+of a vector $x$ onto $E$ is given by $Px = \sum_{i = 1}^{k} \left\langle u_i, x \right\rangle u_i$ where 
+$u_1, \dots, u_k$ is an orthonormal basis of $E$. We can rewrite this as 
+\[ P = \sum_{i = 1}^{k} u_i u_i^T = UU^T \]
+where $U$ is the $n \times k$ matrix with orthonormal columns $u_i$. In particular, $P$ is a symmetric 
+matrix with eigenvalues $\underbrace{1, \dots, 1}_{k}, \underbrace{0, \dots, 0}_{n - k}$.
+\end{remark}
+
+\subsubsection{Min-max Theorem}
+\label{thm:4.1.6}
+There is another optimization-based description of eigenvalues:
+\begin{theorem}[Min-max theorem for eigenvalues]
+The $k$-th largest eigenvalue of an $n \times n$ symmetric matrix $A$ can be written as 
+\[ \lambda_k(A)= \max_{\dim{E} = k} \min_{x \in S(E)} x^T Ax 
+= \min_{\dim{E} = n-k+1} \max_{x \in S(E)} x^T Ax, \]
+where the first max/min is taking with respect to all subspaces of a fixed dimension, and $S(E)$ denotes 
+the Euclidean unit sphere of $E$, i.e. the set of all unit vectors in $E$. 
+\end{theorem}
+
+\begin{proof}
+Let us focus on the first equation. To prove the upper bound on $\lambda_k$, we need to find a $k$-dimensional 
+subspace $E$ such that 
+\[ x^T Ax \geq \lambda_k \text{ for all } x \in S(E). \]
+To find the set $E$, take the spectral decomposition $A = \sum_{i = 1}^{n} \lambda_i u_i u_i^T$ and pick the 
+subspace $E = \mathrm{span}(u_1, \dots, u_k)$. The eigenvectors form an orthonormal basis of $E$, so any vector 
+$x \in S(E)$ can be written as $x = \sum_{i = 1}^{k} a_i u_i$. Then by orthonormality of $u_i$ and 
+monotonicity of $\lambda_i$, we get 
+\[ x^T Ax = \sum_{i = 1}^{k} \lambda_i a_i^2 \leq \lambda_k \sum_{i = 1}^{k} a_i^2 = \lambda_k \]
+and we have the upper bound. For the lower bound on $\lambda_k$, we need to find $x \in S(E)$ such that 
+$x^T Ax \leq \lambda_k$. Here we let the subspace be $F = \mathrm{span}(u_k, \dots, u_n)$. 
+
+Since $\dim{E} + \dim{F} = n + 1$, the intersection of $E$ and $F$ is nontrivial hence there is a unit 
+vector $x \in E \cap F$.  Writing $x = \sum_{i = k}^{n} a_i u_i$, we get 
+\[ x^T Ax = \sum_{i = k}^{n} \lambda_i a_i^2 \geq \lambda_k \sum_{i = k}^{n} a_i^2 = \lambda_k. \]
+Then we get the lower bound, and hence the first equality is done.
+
+The second equality is by applying the same technique to $-A$ and reversing the eigenvalues.
+\end{proof}
+
+Applying \cref{thm:4.1.6} to $A^T A$ and using \cref{rmk:4.1.4}, we get 
+\begin{corollary}[Min-max theorem for singular values]
+\label{cor:4.1.7}
+Let $A \in \mathbb{R}^{m \times n}$ with singular values $\sigma_1 \geq \cdots \geq \sigma_n \geq 0$. Then 
+\[ \sigma_k(A) = \max_{\dim{E} = k} \min_{x \in S(E)} \lVert Ax \rVert_{2} 
+= \min_{\dim{E} = n-k+1} \max_{x \in S(E)} \lVert Ax \rVert_{2} \]
+with the same notation as \cref{thm:4.1.6}.
+\end{corollary}
+
+\subsubsection{Frobenius and Operator Norms}
+\begin{definition}[]
+\label{def:4.1.8}
+For a matrix $A \in \mathbb{R}^{m \times n}$, the \underline{Frobenius norm} is 
+\[ \lVert A \rVert_{F} := \left( \sum_{i = 1}^{m} \sum_{j = 1}^{n} A_{ij}^2 \right)^{1/2}. \]
+
+The \underline{operator norm} of $A$ is the smallest number $K$ such that 
+\[ \lVert Ax \rVert_{2} \leq K \lVert x \rVert_{2} \text{ for all } x \in \mathbb{R}^n. \]
+Equivalently, 
+\[ \lVert A \rVert_{} = \max_{x \neq 0} \frac{\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} 
+= \max_{\lVert x \rVert_{2} \leq 1} \lVert Ax \rVert_{2} 
+= \max_{\lVert x \rVert_{2} = 1} \lVert Ax \rVert_{2} 
+= \max_{\lVert x \rVert_{2} = \lVert y \rVert_{2} = 1} |y^T Ax|. \]
+\end{definition}
+From the Frobenius norm, we can get that 
+\[ \left\langle A, B \right\rangle = \sum_{i = 1}^{m} \sum_{j = 1}^{n} A_{ij} B_{ij} = \mathrm{tr}(A^T B). \]
+Also, from above we can get 
+\[ \lVert A \rVert_{F}^2 = \left\langle A, A \right\rangle = \mathrm{tr}(A^T A). \]
+
+For the operator norm, the first three equations follows by rescaling, and the last one comes from the 
+duality formula: 
+\[ \lVert Ax \rVert_{} = \max_{\lVert y \rVert_{2} = 1} \left\langle Ax, y \right\rangle. \]
+Here the absolute sign does not matter.
+
+\begin{remark}[Other operator norms]
+\label{rmk:4.1.9}
+We can replace the $\ell^2$ norm in \cref{def:4.1.8} with other norms to get a more general concept of 
+operator norms (Exercise 4.18-4.22).
+\end{remark}
+
+\subsubsection{The Matrix Norms and the Spectrum}
+\begin{lemma}[Orthogonal invariance]
+\label{lem:4.1.10}
+The Frobenius and spectral norms are orthogonal invariant, meaning that for any $A$ and orthogonal matrices 
+$Q, R$ with proper dimensions, we have 
+\[ \lVert QAR \rVert_{F} = \lVert A \rVert_{F} \text{ and } \lVert QAR \rVert_{} = \lVert A \rVert_{}. \]
+\end{lemma}
+
+\begin{proof}
+For the Frobenius norm, by one of the formulas above, 
+\begin{align*}
+	\lVert QAR \rVert_{F} 
+	&= \mathrm{tr}(R^T AT Q^T QAR) \\
+	&= \mathrm{tr}(R^T A^T AR) \\
+	&= \mathrm{tr}(RR^T A^T A) \\
+	&= \mathrm{tr}(A^T A) \\
+	&= \lVert A \rVert_{F}^2.
+\end{align*}
+For the spectral norm, by an equivalent characterization, $\lVert QAR \rVert_{}$ is obtained by maximizing the 
+bilinear form $y^T QARx = (Qy)^T A (Rx)$ over all unit vectors $x, y$. Since $Q, R$ are orthogonal, 
+$Qy$ and $Rx$ also range over all unit vectors, so we just get $\lVert A \rVert_{}$ as a result.
+\end{proof}
+
+\begin{lemma}[Matrix norms via singular values]
+\label{lem:4.1.11}
+For any $A \in \mathbb{R}^{m \times n}$ with singular values $\sigma_1 \geq \cdots \geq \sigma_n$, 
+\[ \lVert A \rVert_{F} = \left( \sum_{i = 1}^{n} \sigma_i^2 \right)^{1/2} \text{ and } 
+\lVert A \rVert_{} = \sigma_1. \]
+\end{lemma}
+
+\begin{proof}
+For the Frobenius norm, by orthogonal invariance (\cref{lem:4.1.10}), 
+\[ \lVert A \rVert_{F} = \lVert U \Sigma V^T \rVert_{F} = \lVert \Sigma \rVert_{F} \]
+which directly gives us the result.
+
+The result for the operator norm directly follows from \cref{cor:4.1.7} with $k = 1$.
+\end{proof}
+
+\begin{remark}[Symmetric matrices]
+\label{rmk:4.1.12}
+For a symmetric matrix $A$ with eigenvalues $\lambda_k$, 
+\[ \lVert A \rVert_{} = \max_{k}|\lambda_k| = \max_{\lVert x \rVert_{} = 1} |x^T Ax|. \] 
+The first equality becomes \cref{lem:4.1.11} since the singular values of $A$ are $|\lambda_k|$. The 
+min-max theorem (\cref{thm:4.1.6}) gives $|\lambda_k| \leq \max_{\lVert x \rVert_{} = 1} |x^T Ax|$, proving 
+the upper bound in the equation above. The lower bound can be proven by taking $x - y$ in the definition of 
+the operator norm (\cref{def:4.1.8}).
+\end{remark}
+
+\subsubsection{Low-rank Approximation}
+For a given matrix $A$, what is the closest approximation to it for a given matrix of rank $k$? The answer 
+is just truncating the SVD of A: 
+
+\begin{theorem}[Eckart-Young-Mirski theorem]
+\label{thm:4.1.13}
+Let $A = \sum_{i = 1}^{n} \sigma_i u_i v_i^T$. Then for any $1 \leq k \leq n$,
+\[ \min_{\mathrm{rank}(B) = k} \lVert A - B \rVert_{} = \sigma_{k + 1}. \]
+The minimum is attained at $B = \sum_{i = 1}^{k} \sigma_i u_i v_i^T$.
+\end{theorem}
+
+\begin{proof}
+If $B \in \mathbb{R}^{m \times n}$ has rank $k$, $\dim{\ker{(B)}} = n - k$. Then the min-max theorem 
+(\cref{cor:4.1.7}) for $k + 1$ instead of $k$ gives 
+\[ \lVert A - b \rVert_{} \geq \max_{x \in S(E)} \lVert (A - B)x \rVert_{2} 
+= \max_{x \in S(E)} \lVert Ax \rVert_{2} \geq \sigma_{k + 1}. \]
+
+In the opposite direction, setting $B = \sum_{i = 1}^{k} \sigma_i u_i v_i^T$ gives $A - b = 
+\sum_{i = k + 1}^{n} \sigma_i u_I v_i^T$. The maximal singular value of this matrix $\sigma_{k + 1}$, 
+which is the same as its operator norm by \cref{lem:4.1.11}.
+\end{proof}
+
+\subsubsection{Perturbation Theory}
+We can also study how eigenvalues/eigenvectors change under matrix perturbations: 
+\begin{lemma}[Weyl inequality]
+\label{lem:4.1.14}
+The $k$-th largest eigenvalue of symmetric matrices $A, B$ satisfy 
+\[ |\lambda_k(A) - \lambda_k(B)| \leq \lVert A - B \rVert_{}. \]
+Similarly, the $k$-th largest singular values of general rectangular matrices satisfy 
+\[ |\sigma_k(A) - \sigma_k(B)| \leq \lVert A - B \rVert_{}. \]
+\end{lemma}
+
+A similar result holds for eigenvectors, however we have to track the same eigenvector before and after the 
+perturbation. If the eigenvalues are too close, a small perturbation can swap them, leading to huge error 
+since their eigenvectors are orthogonal and far apart.
+
+\begin{theorem}[Davis-Kahan inequality]
+\label{thm:4.1.15}
+Consider two symmetric matrices $A, B$ with spectral decompositions 
+\[ A = \sum_{i = 1}^{n} \lambda_i u_i u_i^T, \ B = \sum_{i = 1}^{n} \mu_i v_i v_i^T, \]
+where the eigenvalues are weakly decreasing. Assume the the $k$-th largest eigenvalue of $A$ is 
+$\delta$-seperated from the rest: 
+\[ \min_{i \neq k} |\lambda_k - \lambda_i| = \delta > 0. \]
+Then the angle between the eigenvectors $u_k$ and $v_k$ satisfies
+\[ \sin{\angle u_k, v_k} \leq \frac{2 \lVert A - B \rVert_{}}{\delta}. \]
+\end{theorem}
+
+The theorem above can be derived via a stronger result of Davis-Kahan focusing on spectral projections - 
+the orthogonal projections onto the span of some subset of eigenvectors:
+
+\begin{lemma}[Davis-Kahan inequality for spectral projections]
+\label{lem:4.1.16}
+Consider $A, B$ as in \cref{thm:4.1.15}. Let $I, J$ be two $\delta$-seperated subsets of $\mathbb{R}$, with 
+$I$ being an interval. Then the spectral projections 
+\[ P = \sum_{i: \lambda_i \in I}^{} u_i u_i^T \text{ and } 
+Q = \sum_{j: \lambda_j \in J}^{} v_j v_j^T \text{ satisfy } \lVert QP \rVert_{} 
+\leq \frac{\lVert A - B \rVert_{}}{\delta}. \]
+\end{lemma}
+
+\begin{proof}
+WLOG, assume $I$ is finite and closed. Adding the same multiple of Identity to $A$ and $B$, we can center 
+$I$ as $[-r, r]$, so that $|\lambda_i| \leq r$ for $i \in I$ and $|\mu_j| \geq r + \delta$ for $\mu_j \in J$. 
+The idea is to see how $P$ and $Q$ interact through $H := B - A$:
+\[ \lVert H \rVert_{} \geq \lVert QHP \rVert_{} = \lVert QBP - QAP \rVert_{} 
+\geq \lVert QBP \rVert_{} - \lVert QAP \rVert_{}. \]
+The spectral projection $A$ commutes with $B$, hence 
+\[ \lVert QBP \rVert_{} \geq \lVert BQP \rVert_{} \geq (r + \delta)\lVert QP \rVert_{}. \]
+To see the last inequality, the image of $Q$ is spanned by orthogonal vectors $v_j$ with $|\mu_j| \geq 
+r + \delta$. The matrix $B$ maps each such vector $v_j$ to $\mu_j v_j$, hence scaling it by at least 
+$r + \delta$. Thus $B$ expands the norm of any vector in the image of $Q$ by at least $r + \delta$ so
+\[  \lVert BQPx \rVert_{2} \geq (r + \delta)\lVert QPx \rVert_{2} \text{ for any } x. \]
+Taking the supremum over all unit vectors gives the result with the operator norm. 
+
+Also, $AP = PAP = \sum_{i: \lambda_i \in I}^{} \lambda_i u_i u_i^T$ so 
+\[ \lVert QAP \rVert_{} = \lVert QPAP \rVert_{} \leq \lVert QP \rVert_{} \cdot \lVert AP \rVert_{} 
+\leq r \lVert AP \rVert_{}, \]
+because $\lVert AP \rVert_{} = \max_{i: \lambda_i \in I} |\lambda_i| \leq r$. Putting the two bounds together 
+we get 
+\[ \lVert H \rVert_{} = \lVert B - A \rVert_{} \geq \delta \lVert QP \rVert_{}, \]
+which completes the proof.
+\end{proof}
+
+\begin{proof}[Proof for \cref{thm:4.1.15}]
+Since the LHS is a trig angle, we can assume that $\varepsilon := \lVert A - B \rVert_{} \leq \delta / 2$ or 
+else the inequality holds trivially. By Weyl inequality (\cref{lem:4.1.14}), $|\lambda_j - \mu_j| 
+\leq \varepsilon$ for each $j$ hence 
+\[ \min_{j: j \neq k} |\lambda_k - \mu_k| \geq \min_{j: j \neq k} |\lambda_k - \lambda_j| - \varepsilon 
+= \delta - \varepsilon \geq \delta/2. \]
+Apply \cref{lem:4.1.16} for the $\delta/2$-seperated subsets $I = \{\lambda_k\}$ and $J = \{\mu_j: 
+j \neq k\}$ to get $\lVert QP \rVert_{} \leq 2 \varepsilon / \delta$. 
+
+Since $P$ and $I_n - Q$ are the orthogonal projections on the directions of $u_k$ and $v_k$ respectively, 
+\[ \lVert QP \rVert_{} = \max_{\lVert x \rVert_{} = 1} \lVert QPx \rVert_{2} 
+= \lVert Q u_k \rVert_{2} = \sin{\angle(u_k, v_k)}. \]
+Combining this with the inequality on $\lVert QP \rVert_{}$ above completes the proof.
+\end{proof}
+
+\subsubsection{Isometries}
+The singular values of a matrix $A$ satisfy (by the min-max theorem)
+\[ \sigma_n \lVert x - y \rVert_{2} \leq \lVert Ax - Ay \rVert_{2} \leq \sigma_1 \lVert x - y \rVert_{2}. \]
+The extreme singular values set the limits on how the linear map $A$ distorts space.
+
+A matris is an \underline{isometry} if 
+\[ \lVert Ax \rVert_{2} = \lVert x \rVert_{2} \text{ for all } x \in \mathbb{R}^n. \]
+Notice that $A$ need not be a square matrix. T
+
+For $A \in \mathbb{R}^{m \times n}$ with $m \geq n$, the following are equivalent: 
+\begin{enumerate}
+	\item The columns of $A$ are orthonormal, i.e. $A^T A = I_n$, 
+	\item A is an isometry, 
+	\item All singular values of $A$ are 1.
+\end{enumerate}
+
+There is a stronger result where the properties hold approximately instead of exactly (useful when 
+dealing with random matrices): 
+\begin{lemma}[Approximate isometries]
+\label{lem:4.1.17}
+Let $A \in \mathbb{R}^{m \times n}$ with $m \geq n$ and let $\varepsilon \geq 0$. The following are equivalent: 
+\begin{enumerate}
+	\item $\lVert A^T A - I_n \rVert_{} \leq \varepsilon$.
+	\item $(1 - \varepsilon)\lVert x \rVert_{2}^2 \leq \lVert Ax \rVert_{2}^2 \leq 
+	(1 + \varepsilon)\lVert x \rVert_{2}^2$ for any $x \in \mathbb{R}^n$.
+	\item $1 - \varepsilon \leq \sigma_n^2 \leq \sigma_1^2 \leq 1 + \varepsilon$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) $\Leftrightarrow$ (b) By rescaling, we can assume that $\lVert x \rVert_{2} = 1$ in (b). Then we have 
+\[ \lVert A^T A - I_n \rVert_{} = \max_{\lVert x \rVert_{2} = 1} 
+|x^T (A^T A - I_n)x| = \max_{\lVert x \rVert_{2} = 1} |\lVert Ax \rVert_{2}^2 - 1|, \]
+The above being bounded by $\varepsilon$ is equivalent to (b) for all unit vectors $x$.
+
+(b) $\Leftrightarrow$ (c) follows from the relationship for singular values distorting space from above.
+\end{proof}
+
+\begin{remark}[]
+\label{rmk:4.1.18}
+Here is a more handy version of (a) $\Rightarrow$ (c) in \cref{lem:4.1.17}. For $z \in \mathbb{R}$ and 
+$\delta \geq 0$, 
+\[ |z^2 - 1| \leq \max_{}(\delta, \delta^2) \implies |z - 1| \leq \delta. \]
+Then substituting $\varepsilon = \max_{}(\delta, \delta^2)$, we get 
+\[ \lVert A^T A - I_n \rVert_{} \leq \max_{}(\delta, \delta^2)  
+\implies 1 - \delta \leq \sigma_n \leq \sigma_1 \leq 1 + \delta. \]
+\end{remark}
+
+
+
+% ----------4.2----------
+\subsection{Nets, Covering, and Packing}
+The $\varepsilon$-net argument is useful for analysis of random matrices. It is also connected to ideas like 
+covering, packing, entropy, volume, and coding.
+
+
