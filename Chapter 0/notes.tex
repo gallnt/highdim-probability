@@ -1,21 +1,15 @@
 \section{Appetizer: Using Probability to Cover a Set}
 
-\begin{definition}[]
-\label{def:0.0.1}
 A \underline{convex combination} of points $z_1, \dots, z_m \in \mathbb{R}^n$ is a linear combination with coefficients 
 that are nonnegative and sum to 1, i.e. it is a sum of the form
 \[ \sum_{i = 1}^{m} \lambda_i z_i, \quad \lambda_i \geq 0 \text{  and  } \sum_{i = 1}^{m} \lambda_i = 1. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:0.0.2}
 The \underline{convex hull} of a set $T \in \mathbb{R}^n$ is the set of all convex combinations of all finite 
 collections of points in $T$, i.e. 
 \[ \text{conv}(T) := \{\text{convex combinations of } z_1, \dots, z_m \in T \text{ for } m \in \mathbb{N}\}. \]
-\end{definition}
 
 \begin{theorem}[\textbf{Caratheodory Theorem}]
-\label{def:0.0.3}
+\label{thm:0.0.1}
 Every point in the convex hull of a set $T \subseteq \mathbb{R}^n$ can be expressed as a convex combination of at most 
 $n + 1$ points from $T$.
 \end{theorem}
@@ -42,7 +36,7 @@ at the case when $p$ consists of a combination of exactly $n + 1$ points, as des
 \end{proof}
 
 \begin{theorem}[\textbf{Approximate Caratheodory Theorem}]
-\label{thm:0.0.4}
+\label{thm:0.0.2}
 Consider a set $T \subseteq \mathbb{R}^n$ that is contained in the unit Euclidean ball. Then, for every point 
 $x \in \text{conv}(T)$ and every $k \in \mathbb{N}$, one can find points $x_1, \dots, x_k \in T$ such that 
 \[ \bigg\| x - \frac{1}{k} \sum_{j = 1}^{k} x_j \bigg\|_2 \leq \frac{1}{\sqrt{k}}. \]
@@ -96,7 +90,7 @@ Consider the set
 \text{ are vertices of } P \right\}. \]
 We claim that the family of balls centered at points in $\mathcal{N}$ cover the set $P$. To check this, we 
 can see that $P \subset \text{conv}(P) \subset \text{conv}(T)$ where $T = \{\text{Vertices of } P\}$. 
-Then we apply \cref{thm:0.0.4} to any point $x \in P \subseteq \text{conv}(T)$ and deduce that $x$ is within 
+Then we apply \cref{thm:0.0.2} to any point $x \in P \subseteq \text{conv}(T)$ and deduce that $x$ is within 
 distance $1/\sqrt{k}$ from some point in $\mathcal{N}$. This shows that the balls with radii $1/\sqrt{k}$ 
 centered at $\mathcal{N}$ indeed cover $P$. 
 

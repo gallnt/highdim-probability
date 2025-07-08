@@ -1,11 +1,10 @@
 \section{A Quick Refresher on Analysis and Probability}
 
 
+
 % ----------1.1----------
 \subsection{Convex Sets and Functions}
 
-\begin{definition}[]
-\label{def:1.1.1}
 A subset $K \subseteq \mathbb{R}^n$ is a \underline{convex set} if, for any pair of points in $K$, the line 
 segment connecting these two points is also contained in $K$, i.e. 
 \[ \lambda x + (1 - \lambda) y \in K \quad \forall x, y \in K, \lambda \in [0, 1]. \]
@@ -14,64 +13,45 @@ function} if
 \[ f(\lambda x + (1 - \lambda) y) \leq \lambda f(x) + (1 - \lambda) f(y) \quad \forall x, y \in K, 
 \lambda \in [0, 1]. \]	
 $f$ is \underline{concave} if the inequality above is reversed, or equivalently, if $-f$ is convex.
-\end{definition}
+
 
 
 % ----------1.2----------
 \subsection{Norms and Inner Products}
 
-\begin{definition}[]
-\label{def:1.2.1}
 The \underline{Euclidean norm} of a vector $x \in \mathbb{R}^n$ is 
 \[ \|x\|_2 = \biggl( \sum_{i = 1}^{n} x_i^2 \biggr)^{1/2}. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:1.2.2}
 The \underline{inner product (dot product)} of two vectors $x, y \in \mathbb{R}^n$ is 
 \[ \langle x, y \rangle = x^T y. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:1.2.3}
 For $p \in [1, \infty]$, the \underline{$\ell^p$ norm} of a vector $x \in \mathbb{R}^n$ is 
 \[ \|x\|_p = \biggl( \sum_{i = 1}^{n} |x_i|^p \biggr)^{1/p} \quad \text{ for } p \in [1, \infty), 
 \ \|x\|_{\infty} = \max_{i = 1, \dots, n} |x_i|. \]
-\end{definition}
 
-\begin{theorem}[Minkowski's inequality]
-\label{def:1.2.4}
 For any vector $x, y \in \mathbb{R}^n$, 
 \[ \|x + y\|_p \leq \|x\|_p + \|y\|_p. \]
-\end{theorem}
 It follows that the $\ell^p$ norm defines a norm on $\mathbb{R}^n$  for every $p \in [1, \infty]$.
 
-\begin{theorem}[Cauchy-Schwartz inequality]
-\label{thm:1.2.5}
 For all vectors $x, y \in \mathbb{R}^n$, 
 \[ |\langle x, y \rangle| \leq \lVert x \rVert_{2} \lVert y \rVert_{2}. \]
-\end{theorem}
 
-\begin{theorem}[Hölder's inequality]
-\label{thm:1.2.6}
 For all vectors $x, y \in \mathbb{R}^n$, 
 \[ |\langle x, y \rangle| \leq \lVert x \rVert_{p} \lVert y \rVert_{p'} \text{ if } 
 \frac{1}{p} + \frac{1}{p'} = 1 \]
 where $p, p'$ are called \underline{conjugate exponents}.
-\end{theorem}
+
 
 
 % ----------1.3----------
 \subsection{Random Variables and Random Vectors}
 
-We'll do a brief review of some important concepts about random variables first: 
-\begin{definition}[]
-\label{def:1.3.1}
+We'll do a brief review of some important concepts about random variables first:
+
 The \underline{expectation (mean)} of a random variable $X$ is 
 \[ \mathbb{E}[X] = \sum_{k = -\infty}^{\infty} k p_X(k) = \int_{-\infty}^{\infty} x f_X(x) \ dx. \]
 Its \underline{variance} is 
 \[ \mathrm{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2. \]
-\end{definition}
 
 The expectation is linear: 
 \[ \mathbb{E}[a_1 X_1 + \cdots + a_n X_n] = a_1 \mathbb{E}[X_1] + \cdots + a_n \mathbb{E}[X_n]. \]
@@ -86,14 +66,9 @@ The simplest example of a random variable is the \textit{indicator} of a given e
 Its expectation is given by 
 \[ \mathbb{E}[\mathbf{1}_E] = P(E). \]
 
-\begin{definition}[]
-\label{def:1.3.2}
 The \underline{moment generating function (mgf)} of a random variable $X$ is given by 
 \[ M_X(t) = \mathbb{E}[e^{tX}], t \in \mathbb{R}. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:1.3.3}
 For $p > 0$, the \underline{pth moment} of a random variable $X$ is $\mathbb{E}[X^p]$, and the 
 \underline{pth absolute moment} is $\mathbb{E}[|X|^p]$. By taking the $p$th root of the absolute moment, 
 we get the \underline{$L^p$ norm} of a random variable: 
@@ -104,31 +79,25 @@ where esssup denotes the essential supremum.
 The normed space consisting of all random variables on a given probability space that have finite 
 $L^p$ norm is called the \underline{$L^p$ space}:
 \[ L^p = \{ X: \ \lVert X \rVert_{L^p} < \infty \}. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:1.3.4}
 The \underline{standard deviation} of a random variable $X$ is 
 \[ \sigma = \sqrt{\mathrm{Var}(X)} = \lVert X - \mathbb{E}[X] \rVert_{L^2}. \]
 The \underline{covariance} of two random variables $X$ and $Y$ is 
 \[ \mathrm{Cov}(X, Y) = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])] 
 = \langle X - \mathbb{E}[X], Y - \mathbb{E}[Y] \rangle_{L^2}. \]
-\end{definition}
 
-\begin{definition}[]
-\label{def:1.3.5}
 A \underline{random vector} $X = (X_1, \dots, X_n)$ is a vector whose all $n$ coordinates $X_i$ 
 are random variables. Its expected value is
 \[ \mathbb{E}[X] = (\mathbb{E}[X_1], \dots, \mathbb{E}[X_n]). \]
 Its \underline{covariance matrix} is 
 \[ \mathrm{Cov}(X) = \mathbb{E}[(X - \mathbb{E}[X]) (X - \mathbb{E}[X])^T]. \]
 which is a $n \times n$ matrix whose $(i, j)$-th entry is $\mathrm{Cov}(X_i, X_j)$.
-\end{definition}
 
 
 % ----------1.4----------
 \subsection{Union Bound}
 \begin{lemma}[Union bound]
+\label{lem:1.4.1}
 For any events $E_1, \dots, E_n$, we have 
 \[ P \left( \bigcup_{i = 1}^n E_i \right) \leq \sum_{i = 1}^{n} P(E_i). \]
 \end{lemma}
@@ -141,6 +110,7 @@ Taking expectations and using the linearity of expectation completes the proof.
 \end{proof}
 
 \begin{example}[Dense random graphs have no isolated vertices]
+\label{ex:1.4.2}
 Consider the $G(n, p)$ graph from the Erdos-Renyi model, with $n \geq 2$. Show that if $p \geq 4 \ln{n}/n$ 
 then there are no isolated vertices with probability at least $1 - 1/n$.
 \end{example}
@@ -162,29 +132,104 @@ Therefore, by union bound, we have
 % ----------1.5----------
 \subsection{Conditioning}
 
-\begin{definition}[]
 Given a probability space, the \underline{conditional probability} of an event $E$ given an event $F$ 
 is 
 \[ P(E|F) = \frac{P(E \cap F)}{P(F)}. \]
-\end{definition}
+
+\begin{example}[Probability of a perfect cancellation]
+\label{ex:1.5.1}
+Let $a_1, \dots, a_n \in \mathbb{R}$, not all of which are zero. What is the probability that 
+\[ \pm a_1 + \cdots \pm a_n = 0 \]
+where the signs are chosen at random?
+
+We can show that this probability is always bounded by $1/2$. We model the random signs as independent 
+Rademacher random variables $X_1, \dots, X_n$. We claim that 
+\[ P(S_n = 0) \leq \frac{1}{2} \text{ where } S_n = \sum_{i = 1}^{n} a_i X_i. \]
+\end{example}
+
+\begin{proof}
+We can assume WLOG that $a_n \neq 0$ or else we can just rearrange. By conditioning on the random variables 
+$X_1, \dots, X_{n - 1}$, we get that 
+\[ P(S_n = 0 | \ X_1, \dots, X_{n - 1}) 
+= P \left( X_n = -\frac{S_{n - 1}}{a_n} \bigg| X_1, \dots, X-{n - 1} \right) \leq \frac{1}{2}. \]
+The inequality holds because $X_n$ is independent of $X_1, \dots, X_{n - 1}$, the value of $u = -S_n / a_n$ 
+is fixed by conditioning, and the definition of Rademacher distribution implies that $P(X_n = u) \leq 1/2$ 
+for all $u \in \mathbb{R}$. Then by applying the law of total expectation, we get 
+
+\[ P(S_n = 0) = \mathbb{E}[P(S_n = 0 | \ X_1, \dots, X_{n - 1})] \leq \mathbb{E}[1/2] = 1/2. \]
+\end{proof}
+In fact, the result for \cref{ex:1.5.1} is sharp: If there are exactly two nonzero coefficients $a_i$ which 
+are equal to each other, $P(S_n = 0) = 1/2$ because we need opposite signs!
+
 
 
 % ----------1.6----------
 \subsection{Probabilistic Inequalities}
-\begin{theorem}[Jensen's Inequality]
-For any random variable $X$ and a convex function $f: \ \mathbb{R} \to \mathbb{R}$, 
+Jensen inequality states for any random variable $X$ and a convex function $f: \ \mathbb{R} \to \mathbb{R}$, 
 \[ f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)]. \]
 This also holds for any random vector taking values in $\mathbb{R}^n$ and any convex function 
 $f: \mathbb{R}^n \to \mathbb{R}$.
-\end{theorem}
+
 In particular, since any norm on $\mathbb{R}^n$ is convex, we get
 \[ \lVert \mathbb{E}[X] \rVert_{} \leq \mathbb{E}[\lVert X \rVert_{}]. \]
 
-\begin{theorem}[Inequalities for random variables]
 Minkowski inequality states that for any $p \in [1, \infty]$ and any random variables $X, Y \in L^p$, 
 \[ \lVert X + Y \rVert_{L^p} \leq \lVert X \rVert_{L^p} + \lVert Y \rVert_{L^p}. \]
-\end{theorem}
 
+Cauchy-Schwartz inequality states that for any random variables $X, Y \in L^2$, 
+\[ \lVert XY \rVert_{L^1} \leq \lVert X \rVert_{L^2} \lVert Y \rVert_{L^2}. \]
+
+Hölder inequality generalized tha above to the $L^p$ norms. For any pair of conjugate exponents 
+$p, p' \in [1, \infty]$ and any pair of random of random variables $X \in L^p$, $Y \in L^{p'}$, we have 
+\[ \lVert XY \rVert_{L^1} \leq \lVert X \rVert_{L^p} \lVert Y \rVert_{L^{p'}}. \]
+
+The \underline{cumulative distribution function (CDF)} of $X$ is 
+\[ F_X(t) = P(X \leq t), t \in \mathbb{R}. \]
+
+The following result allows us to compute expectation in terms of the tail:
+\begin{lemma}[Integrated tail formula]
+\label{lem:1.6.1}
+Any nonnegative random variable $X$ satisfies 
+\[ \mathbb{E}[X] = \int_{0}^{\infty} P(X > t) \ dt. \]
+The two sides of the equation are either finite or infinite simultaneously.
+\end{lemma}
+
+\begin{proof}
+We can represent any nonnegative real number $x$ via the identity 
+\[ x = \int_{0}^{x} 1 \ dt = \int_{0}^{\infty} \mathbf{1}_{t < x} \ dt. \]
+Replace $x$ with the random variable $X$ and taking expectations on both sides gives
+\begin{align*}
+	\mathbb{E}[X] 
+	&= \mathbb{E}\left[ \int_{0}^{\infty} \mathbf{1}_{t < X} \ dt \right] \\
+	&= \int_{0}^{\infty} \mathbb{E}[\mathbf{1}_{t < X}] \ dt \quad \text{ (Fubini-Tonelli theorem) }  \\
+	&=\int_{0}^{\infty} P(t < X) \ dt.
+\end{align*}
+\end{proof}
+
+There are also some other concentration inequalities: 
+\begin{proposition}[Markov inequality]
+For any nonnegative random variable $X$ and $t > 0$, 
+\[ P(X \geq t) \leq \frac{\mathbb{E}[X]}{t}. \]
+\end{proposition}
+
+\begin{proof}
+Fix $t > 0$. We can represent any real number $X$ via the identity 
+\[ x = x \mathbf{1}_{x \geq t} + x \mathbf{1}_{x < t}. \]
+Replacing $x$ with the random variable $X$ and taking expectation gives 
+\[ \mathbb{E}[X] = \mathbb{E}[X \mathbf{1}_{X \geq t}] + \mathbb{E}[X \mathbf{1}_{X < t}] 
+\geq \mathbb{E}[t \mathbf{1}_{X \geq t}] + 0 = t P(X \geq t). \]
+Dividing both sides by $t$ gives the result.
+\end{proof}
+
+\begin{corollary}[Chebyshev inequality]
+Let $X$ be a random variable with mean $\mu$ and variance $\sigma^2$. Then for any $t > 0$, 
+\[ P(|X - \mu| \geq t) \leq \frac{\sigma^2}{t^2}. \]
+\end{corollary}
+
+\begin{proof}
+By Markov inequality (\cref{lem:1.6.1}), 
+\[ P((X - \mu)^2 \geq t^2) \leq \frac{\mathbb{E}[(X - \mu)^2]}{t^2} = \frac{\sigma^2}{t^2}. \]
+\end{proof}
 
 % ----------1.7----------
 \subsection{Limit Theorems}

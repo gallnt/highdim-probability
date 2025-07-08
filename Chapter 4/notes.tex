@@ -538,4 +538,81 @@ Use the volumetric argument from above using cardinality instead of the volume (
 
 % ----------4.4----------
 \subsection{Upper Bounds on Subgaussian Random Matrices}
+This section is mostly concerned with non-asymptotic theory of random matrices. Most of the questions here 
+will be about the distributions of singular values, eigenvalues, and eigenvectors.
+
+But before that, we need to know how $\varepsilon$-nets can help compute the operator norm of a matrix.
+
+\subsubsection{Computing the Norm on an \texorpdfstring{$\varepsilon$} -net}
+To evaluate $\lVert A \rVert_{}$, we need to control $\lVert Ax \rVert_{2}$ uniformly over the sphere 
+$S^{n - 1}$. However, we'll show that instead of the entire sphere, it is enough to control just an 
+$\varepsilon$-net of the sphere (in Euclidean metric).
+
+\begin{lemma}[Operator norm on a net]
+\label{lem:4.4.1}
+Let $A \in \mathbb{R}^{m \times n}$ and $\varepsilon \in (0, 1]$. Then for any $\varepsilon$-net $\mathcal{N}$ 
+of the sphere $S^{n - 1}$m we have 
+\[ \sup_{x \in \mathcal{N}} \lVert Ax \rVert_{2} \leq \lVert A \rVert_{} 
+\leq \frac{1}{1 - \varepsilon} \sup_{x \in \mathcal{N}} \lVert Ax \rVert_{2}. \]
+\end{lemma}
+
+\begin{proof}
+The lower bound is true since $\mathcal{N} \subset S^{n - 1}$. 
+
+To prove the upper bound, fix a vector $x \in S^{n - 1}$ for which $\lVert A \rVert_{} = \lVert Ax \rVert_{2}$ 
+and choose $x_0 \in \mathcal{N}$ such that $\lVert x - x_0 \rVert_{2} \leq \varepsilon$. By the definition 
+of the operator norm, this implies 
+\[ \lVert Ax - Ax_0 \rVert_{2} \leq \lVert A(x - x_0) \rVert_{2} 
+\leq \lVert A \rVert_{} \lVert x - x_0 \rVert_{2} \leq \varepsilon \lVert A \rVert_{}. \]
+By the triangle inequality, 
+\[ \lVert Ax_0 \rVert_{2} \geq \lVert Ax \rVert_{2} - \lVert Ax - Ax_0 \rVert_{2} 
+\geq \lVert A \rVert_{} 0 \varepsilon \lVert A \rVert_{} = (1 - \varepsilon)\lVert A \rVert_{}. \]
+Dividing by $1 - \varepsilon$ gives the result.
+\end{proof}
+
+There is alsoa version for quadratic forms from the way the operator norm is characterized. Since 
+\[ \lVert A \rVert_{} = \max_{x \in S^{n - 1}, y \in S^{m - 1}} 
+|\left\langle Ax, y \right\rangle|, \]
+we can take $x = y$ and use the spheres' corresponding nets:
+
+\begin{lemma}[Maximizing quadratic forms on a net]
+\label{lem:4.4.2}
+Let $A \in \mathbb{R}^{m \times n}$ and $\varepsilon \in [0, 1)$. Then for any $\varepsilon$-net $\mathcal{N}$ 
+of the sphere $S^{n - 1}$ and any $\varepsilon$ $\varepsilon$-net $\mathcal{M}$ of the sphere $S^{m - 1}$, 
+\[ \sup_{x \in \mathcal{N}, y \in \mathcal{M}} |\left\langle Ax, y \right\rangle| 
+\leq \lVert A \rVert_{} \leq \frac{1}{1 - 2 \varepsilon} \sup_{x \in \mathcal{N}, y \in \mathcal{M}} 
+|\left\langle Ax, y \right\rangle|. \]
+Moreover, if $m = n$, $A$ is symmetric, and $\mathcal{N} = \mathcal{M}$, we can take $x = y$.
+\end{lemma}
+
+\begin{proof}
+There are two methods - one by modifying the proof of \cref{lem:4.4.1} (Exercise 4.36), and a different method 
+using $\varepsilon$-net expansions (Exercise 4.34).
+\end{proof}
+
+\subsubsection{The Norms of Subgaussian Random Matrices}
+\begin{theorem}[Name]
+\label{thm:4.4.3}
+Let $A \in \mathbb{R}^{m \times n}$ be a random matrix with independent, mean zero, subgaussian entries 
+$A_{ij}$. Then for any $t > 0$, 
+\[ \lVert A \rVert_{} \leq CK(\sqrt{m} + \sqrt{n} + t) \]
+with probability at least $1 - 2\exp{(-t^2)}$. Here $K = \max_{i, j} \lVert A_{ij} \rVert_{\psi_2}$.
+\end{theorem}
+
+\begin{proof}
+The proof is an example of an \textit{$\varepsilon$-net argument}. We need to control 
+$\left\langle Ax, y \right\rangle$ for all $x, y$ in the unit sphere. To this end, we will discretize the sphere 
+using a net (Approximation), establish a tight control of $\left\langle Ax, y \right\rangle$ for fixed vectors 
+$x, y$ from the net (Concentration), and finish by taking a union bound over all $x, y$ in the net.
+
+(\textbf{Approximation}). Choose $\varepsilon = 1/4$. Using the result from \cref{cor:4.2.11}, we can find 
+respective $\varepsilon$-nets $\mathcal{N}, \mathcal{M}$ of $S^{n - 1}, S^{m - 1}$ with cardinalities 
+\[ |\mathcal{N}| \leq 9^n \text{ and } |\mathcal{M}| \leq 9^m. \]
+By \cref{lem:4.4.2}, the norm of $A$ can be bounded using these nets as 
+\[ \lVert A \rVert_{} \leq 2 \sup_{x \in \mathcal{N}, y \in \mathcal{M}} |\left\langle Ax, y \right\rangle|. \]
+
+(\textbf{Concentration}). Fix $x \in \mathcal{N}, y \in \mathcal{M}$. The quadratic form 
+\[ \left\langle Ax, y \right\rangle = \sum_{i = 1}^{n} \sum_{j = 1}^{m} A_{ij}x_iy_j \]
+is a sum of independent, subgaussian random variables. 
+\end{proof}
 
