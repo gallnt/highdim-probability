@@ -1,5 +1,8 @@
 \section{Concentration of Sums of Independent Random Variables}
 
+
+
+% ----------2.1----------
 \subsection{Why Concentration Inequalities?}
 From previous chapters, the simplest concentration inequality is Chebyshev's Inequality, which is quite 
 general but the bounds can often can be too weak. We can look at the following example:
@@ -7,6 +10,7 @@ general but the bounds can often can be too weak. We can look at the following e
 \begin{example}
 \label{ex:2.1.1}
 Toss a fair coin $N$ times. What is the probability that we get at least $\frac{3}{4}$ heads?
+\end{example}
 
 Let $S_N$ denote the number of heads, then $S_N \sim \text{Binom}(N, \frac{1}{2})$. We get 
 \[ \mathbb{E}[S_N] = \frac{N}{2}, \mathrm{Var}(S_n) = \frac{N}{4}. \]
@@ -39,14 +43,20 @@ of variables $x = t + y$,
 	\quad (e^{-y^2 / 2} \leq 1) \\
 	&= \frac{1}{t} \cdot \frac{1}{\sqrt{2 \pi}}e^{-t^2 / 2}.
 \end{align*}
+The lower bound is proven in Exercise 2.2.
 \end{proof}
 
-Therefore the probability of having at least $\frac{3}{4}N$ heads is bounded by 
+\begin{remark}[Tighter bounds]
+\cref{prop:2.1.2} is sufficient for most purpose. Exercise 2.3 has more precise approximation bounds.
+\end{remark}
+
+From above, the probability of having at least $\frac{3}{4}N$ heads is bounded by 
 \[ \frac{1}{\sqrt{2 \pi}}e^{-N / 8}, \]
 which is much better than the linear convergence we had above. However, this reasoning is not rigorous, 
 as the approximation error decays slowly, which can be shown via the CLT below: 
 
 \begin{theorem}[Berry-Esseen CLT]
+\label{thm:2.1.4}
 Let $X_1, X_2, \dots$ be a sequence of i.i.d. random variables with mean $\mu$ and variance 
 $\sigma^2$, and let $S_N = X_1 + Part of negotiations.\cdots + X_N$, and let 
 \[ Z_N = \frac{S_N - \mathbb{E}[S_N]}{\sqrt{\mathrm{Var}(S_N)}}. \]
@@ -60,18 +70,17 @@ as for even $N$, the probability of exactly half the flips being heads is
 where the last approximation uses Stirling approximation.
 
 All in all, we need theory for concentration which bypasses the Central Limit Theorem.
-\end{example}
 
 
+
+% ----------2.2----------
 \subsection{Hoeffding Inequality}
-\begin{definition}[]
 A random variable $X$ has the \underline{Rademacher Distribution} if it takes values $-1$ and $1$ 
 with probability $1/2$ each, i.e. 
 \[ P(X = -1) = P(X = 1) = \frac{1}{2}. \]
-\end{definition}
 
 \begin{theorem}[Hoeffding Inequality]
-\label{thm:2.2.2}
+\label{thm:2.2.1}
 Let $X_1, \dots, X_N$ be independent Rademacher random variables, and let $a = (a_1, \cdots, a_N) 
 \in \mathbb{R}^N$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \sum_{i = 1}^{N} a_iX_i \geq t \biggr) \leq \exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
@@ -119,17 +128,20 @@ Therefore the quantity is indeed minimized at $\lambda^*$, then plugging this va
 \end{proof}
 
 \begin{remark}[Exponentially light tails]
+\label{rmk:2.2.2}
 Hoeffding inequality can be seen as a concentrated version of the CLT. With normalization $\|a\|_2 = 1$, 
 we get an exponentially light tail $e^{-t^2 / 2}$, which is comparable to \cref{prop:2.1.2}.
 \end{remark}
 
 \begin{remark}[Non-asymptotic theory]
+\label{rmk:2.2.3}
 Unlike the classical limit theorems, Hoeffding inequality holds for every fixed $N$ instead of letting 
 $N \to \infty$. Non-asymptotic results are very useful in data science because we can use $N$ as the 
 sample size.
 \end{remark}
 
 \begin{remark}[The probability of $\frac{3}{4}N$ heads]
+\label{remark:2.2.4}
 Using Hoeffding, returning back to \cref{ex:2.1.1} and bound the probabiltiy of at least $\frac{3}{4}N$ 
 heads in $N$ tosses of a fair coin. Since $Y \sim \text{Bernoulli}(1/2)$, $2Y - 1$ is Rademacher. Since 
 $S_N$ is a sum of $N$ independent $\text{Be}(1/2)$ random variables, $2S_N - N$ is a sum of $N$ 
@@ -145,7 +157,9 @@ This is a rigorous bound comparable to what we had heuristically in the example.
 
 Hoeffding inequality can also be extended to two-sided tails and only suffers by a constant multiple 
 of 2: 
-\begin{theorem}[Hoeffding inequality, two-sided]Let $X_1, \dots, X_N$ be independent Rademacher random 
+\begin{theorem}[Hoeffding inequality, two-sided]
+\label{thm:2.2.5}
+Let $X_1, \dots, X_N$ be independent Rademacher random 
 variables, and let $a = (a_1, \cdots, a_N) \in \mathbb{R}^N$ be fixed. Then for any $t \geq 0$, 
 \[ P \biggl( \bigg| \sum_{i = 1}^{N} a_iX_i \bigg| \geq t \biggr) 
 \leq 2\exp{\biggl( -\frac{t^2}{2\|a\|_2^2} \biggr)}. \]
@@ -163,6 +177,7 @@ Then applying the exact process (exponential moment method) from above gives the
 
 Hoeffding inequality can be also be applied to general bounded random variables: 
 \begin{theorem}[Hoeffding inequality for bounded random variables]
+\label{thm:2.2.6}
 Let $X_1, \dots, X_N$ be independent random variables such that $X_i \in [a_i, b_i]$ for every $i$. Then 
 for any $t > 0$, we have 
 \[ P \biggl( \sum_{i = 1}^{N} (X_i - \mathbb{E}[X_i]) \geq t \biggr) 
@@ -188,7 +203,7 @@ Then
 \end{theorem}
 
 \begin{proof}
-We'll use the exponential moment method as from \cref{thm:2.2.2} again. Fix $\lambda > 0$.
+We'll use the exponential moment method as from \cref{thm:2.2.1} again. Fix $\lambda > 0$.
 \begin{align*}
 	P(S_n \geq t) 
 	&= P(\lambda S_N \geq \lambda t) \\
@@ -285,6 +300,7 @@ Summing up both bounds via union bound gives the result.
 \end{proof}
 
 \begin{remark}[Small and large deviations]
+\label{rmk:2.3.5}
 The phenomena of having Gaussian tails for small deviations and Poisson tails for large deviations 
 can be seen via the figure below, which uses a $\text{Binom}(N, \mu / N)$ distribution with 
 $N = 200, \ \mu = 10$:
@@ -294,32 +310,131 @@ $N = 200, \ \mu = 10$:
 \end{remark}
 
 
+
+% ----------2.4----------
 \subsection{Application: Median-of-means Estimator}
 In data science, estimates are made using data frequently. Perhaps the most basic example is estimating 
 the mean. Let $X$ be a random variable with mean $\mu$ (representing a population). Let $X_1, \dots, X_N$ 
 be independent copies of $X$ (representing a sample). We want an estimator $\Hat{\mu}(X_1, \dots, X_N)$ 
 to satisfy $\Hat{\mu} \approx \mu$ with high probability.
 
+The simplest estimator we can think of is the sample mean, i.e. 
+\[ \Hat{\mu} := \frac{1}{N} \sum_{i = 1}^{N} X_i. \]
+The expected value and the variance of this estimator is 
+\[ \mathbb{E}[\Hat{\mu}] = \mu, \ \mathrm{Var}(\Hat{\mu}) = \frac{1}{N^2}\sum_{i = 1}^{N} \mathrm{Var}(X_i) 
+= \frac{\sigma^2}{N}. \]
+Then by Chebyshev inequality, for every $t > 0$, 
+\[ P \left( |\Hat{\mu} - \mu| \geq \frac{t \sigma}{\sqrt{N}} \right) \leq \frac{1}{t^2}. \]
+For example, the error is at most $10 \sigma / \sqrt{N}$ with at least 99\% probability, which is an 
+acceptable solution to the mean estimation problem.
 
+Is the solution above \textbf{optimal} though? Could the probability decay quicker than the rate of $1 / t^2$?
+
+For the Gaussian distribution, the answer is yes.
+\[ X \sim N(\mu, \sigma^2) \implies \Hat{\mu} \sim N(\mu, \sigma^2 / N) 
+\implies \frac{\Hat{\mu} - \mu}{\sigma / \sqrt{N}} \sim N(0, 1). \]
+By using the Gaussian bound (\cref{prop:2.1.2}) twice, we get 
+\[ P \left( |\Hat{\mu} - \mu| \geq \frac{t \sigma}{\sqrt{N}} \right) \leq 
+\sqrt{\frac{2}{\pi}} e^{-t^2 / 2} \quad (t \geq 1). \]
+For example, the error is at most $3 \sigma / \sqrt{N}$ with at least 99\% probability. We might think that 
+Gaussian tail decay requires Gaussian distributions, but surprisingly, a mean estimator exists with Gaussian 
+tail decay that works for \textbf{any} distirbution with finite variance!
+
+\begin{theorem}[Median-of-means estimator]
+\label{thm:2.4.1}
+Let $X$ be a random variable with mean $\mu$ and variance $\sigma^2$, and let $X_1, \dots, X_N$ be independent 
+copies of $X$. For any $0 \leq t \leq \sqrt{N}$, there exists an estimator $\Hat{\mu} 
+= \Hat{\mu}(X_1, \dots, X_N)$ that satisfies 
+\[ P \left( |\Hat{\mu} - \mu| \geq \frac{t \sigma}{\sqrt{N}} \right) \leq 2e^{-ct^2}, \]
+where $c > 0$ is an absolute constant. This is the \underline{median-of-means estimator}.
+\end{theorem}
+
+\begin{proof}
+Assume for simplicity that $N = BL$ for some integers $B$ and $L$. Divide the sample $X_1, \dots, X_N$ into 
+$B$ blocks of length $L$. Compute each block's sample mean, and take their median:
+\[ \mu_b = \frac{1}{L}\sum_{i = (b - 1)L + 1}^{bL} X_i, \ \Hat{\mu} = \mathrm{Med}(\mu_1, \dots, \mu_B). \]
+Arguing that each variable $\mu_b$ has expected value $\mu$ and variance $\sigma^2 / L$. Then Chebyshev 
+inequality yields 
+\[ P \left( \mu_b \geq \mu + \frac{t \sigma}{\sqrt{N}} \right) \leq \frac{N}{t^2 L} = \frac{B}{t^2} 
+= \frac{1}{4} \]
+if we choose the number of blocks to be $B = t^2 / 4$. By the definition of the median, 
+\[ P \left( \mu_b \geq \mu + \frac{t \sigma}{\sqrt{N}} \right) 
+= P \left( \text{At least half of the numbers } \mu_1, \dots, \mu_b \text{ are } \geq 
+\mu + \frac{t \sigma}{\sqrt{N}} \right). \]
+We are looking at $B$ independent events, each occuring with probability at most $1/4$. Then by Hoeffding 
+inequality (\cref{thm:2.2.6}), 
+\[ P \left( \mu_b \geq \mu + \frac{t \sigma}{\sqrt{N}} \right) \leq \exp{(-c_0 B)} = \exp{(-c_0 t^2 / 4)} \]
+where $c_0 > 0$ is some absolute constant.
+
+Similarly, the probability $P \left( \mu_b \geq \mu - \frac{t \sigma}{\sqrt{N}} \right)$ has the same 
+bound. Combining the two bounds above completes the proof.
+
+Notice that we assumed $B$ must be an integer that divides $N$. The choice above, $B = t^2 / t$, only ensures 
+that $0 \leq B \leq N$ by the assumption on $t$. This issue can be fixed (Exercise 2.16).
+\end{proof}
+
+
+
+% ----------2.5----------
 \subsection{Application: Degrees of Random Graphs}
+Random graphs are interesting combinatorial objects worth of study. In particular, the Erdős–Rényi model, 
+$G(n, p)$, is the simplest random graph model in which each edge is independently connecting its vertices 
+with probability $p$. Here are two examples: 
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 2/fig2-2.png}
+\end{center}
+
+The \underline{degree} of a vertex in a graphis the number of edges connected to it. The expected degree of
+every vertex in $G(n, p)$ equals 
+\[ d := (n - 1)p. \]
+
+We can use the concentration inequalities (namely Chernoff) to prove some interesting properties of random 
+graphs:
+
+\begin{proposition}[Dense graphs are almost regular]
+\label{prop:2.5.1}
+There is an absolute constant $C$ such that the following holds:
+
+Consider a random graph $G \sim G(n, p)$ with expected degree satisfying $d \geq C \log{n}$. Then with 
+probability at least 0.99, all vertices of $G$ have degrees between $0.9d$ abd $1.1d$.
+\end{proposition}
+
+\begin{proof}
+We'll use a combination of concentration and union bound. Let's fix a vertex $i$ on the graph $G$. The 
+degree of $i$, denoted $d_i$, is a sum of $n - 1$ independent $\mathrm{Ber}(p)$ random variables. Then by 
+Chernoff inequality (\cref{cor:2.3.4}), 
+\[ P(|d_i - d| \geq 0.1d) \leq 2e^{-cd}. \]
+The bound above holds for each vertex $i$. Next, we can unfix $i$ by taking the union bound (\cref{lem:1.4.1}) 
+for all $n$ vertices:
+\[ P(\exists i \leq n: \ |d_i - d| \geq 0.1 d) \leq \sum_{i = 1}^{n} P(|d_i - d| \geq 0.1d) 
+\leq n \cdot e^{-cd}. \]
+If $d >= C \log{n}$ for sufficiently large $C$, the probability is bounded by 0.01. This means that with 
+probability 0.99, the complementary event occurs: 
+\[ P(\forall i \leq n: |d_i - d| \leq 0.1d) \geq 0.99 \]
+and the proof is complete.
+\end{proof}
+
+\begin{remark}[Sparse random graphs are far from regular]
+The condition $d \geq C \log{N}$ in \cref{prop:2.5.1} is indeed optimal. If $d < (1 - \varepsilon) \ln{n}$, 
+an isolated vected appears (Exercise 1.10), making the minimum degree zero.
+\end{remark}
 
 
+
+% ----------2.6----------
 \subsection{Subgaussian Distributions}
 Standard form for Hoeffding Inequality (including subgaussian distributions): 
 \[ P \biggl( \bigg| \sum_{i = 1}^{N} a_i X_i \bigg| \geq t \biggr) \leq 
 2 \exp{\biggl( -\frac{ct^2}{\|a\|_2^2} \biggr)} \text{ for all } t \geq 0. \]
 
-\begin{definition}[]
-\label{def:2.6.1}
 A random variable $X$ has a \underline{subgaussian distribution} if 
 \[ P(|X_i| > t) \leq 2e^{-ct^2} \text{ for all } t \geq 0. \]
-\end{definition}
 
 There are also other equivalent representations of subgaussian distributions due to their importance, and 
 they all convey the same meaning: The distribution is bounded by a normal distribution. 
 
 \begin{proposition}[Subgaussian properties]
-\label{prop:2.6.2}
+\label{prop:2.6.1}
 Let $X$ be a random variable. The following peoperties are equivalent, with the parameters $K_i$ differing 
 by at most an absolute constant factor, i.e. There exists an absolute constant $C$ such that property $i$ 
 implies property $j$ with parameter $K_j \leq CK_i$ for any two properties $i, j$.
@@ -411,12 +526,12 @@ Hence property $(a)$ is true with $K_1 = 2$, and the proof is complete.
 \end{proof}
 
 \begin{remark}[Zero mean]
-\label{rmk:2.6.3}
+\label{rmk:2.6.2}
 For property $(d)$ above, $\mathbb{E}[X]$ is a necessary and sufficient condition (Exercise 2.23)!
 \end{remark}
 
 \begin{remark}[On constant factors]
-\label{rmk:2.6.4}
+\label{rmk:2.6.3}
 The constant '2' in properties $(a)$ and $(c)$ don't have any special meaning. Any absolute constant 
 greater than 1 works!
 \end{remark}
@@ -424,15 +539,15 @@ greater than 1 works!
 
 \subsubsection{The Subgaussian Norm}
 \begin{definition}[]
-\label{def:2.6.5}
+\label{def:2.6.4}
 A random variable $X$ is called \underline{subgaussian} if it satisfies any of the equivalent properties 
-in \cref{prop:2.6.2}. Its \underline{subgaussian norm} is 
+in \cref{prop:2.6.1}. Its \underline{subgaussian norm} is 
 \[ \|X\|_{\psi_2} := \inf\{ K > 0: \ \mathbb{E}[\exp{(X^2 / K^2)}] \leq 2 \}. \]
 This represents how quickly the tails of $X$ decays compared to a normal distribution.
 \end{definition}
 
 \begin{example}[]
-\label{ex:2.6.6}
+\label{ex:2.6.5}
 The following random variables are subgaussian: 
 \begin{enumerate}
 	\item Normal,
@@ -445,9 +560,9 @@ The exponential, Poisson, geometric, chi-squared, Gamma, Cauchy, and Pareto dist
 subgaussian (Exercise 2.25).
 \end{example}
 
-We can replace the results from \ref{prop:2.6.2} with those having the subgaussian norm:
+We can replace the results from \ref{prop:2.6.1} with those having the subgaussian norm:
 \begin{proposition}[Subgaussian bounds]
-\label{prop:2.6.7}
+\label{prop:2.6.6}
 Every subgaussian random variable $X$ satisfies the following bounds:
 \begin{enumerate}
 	\item (Tails) $P(|X| \geq t) \leq 2\exp{(-ct^2 / \lVert X \rVert_{\psi_2}^2)}$ for all $t \geq 0$.
@@ -483,10 +598,10 @@ We can compute the MGF of the sum $S_N = \sum_{i = 1}^{N} X_i$. For any $\lambda
 	\mathbb{E}[\exp{(\lambda S_N)}] 
 	&= \prod_{i = 1}^{N} \mathbb{E}[\exp{(\lambda X_i)}] \quad \text{(independence)} \\
 	&\leq \prod_{i = 1}^{N} \exp{(C \lambda^2 \lVert X_i \rVert_{\psi_2}^2)} 
-	\quad \text{(\cref{prop:2.6.7} (d))} \\
+	\quad \text{(\cref{prop:2.6.6} (d))} \\
 	&= \exp{(\lambda^2 K^2)}, K^2 = C \sum_{i = 1}^{N} \lVert X_i \rVert_{\psi_2}^2.
 \end{align*}
-Then by \cref{prop:2.6.2}, $(d) \Rightarrow (c)$ hence 
+Then by \cref{prop:2.6.1}, $(d) \Rightarrow (c)$ hence 
 \[ \mathbb{E}[\exp{(x S_N^2 / K^2)}] \leq 2 \]
 where $c > 0$ is some constant. Then by the definition of the subgaussian norm, $\lVert S_N \rVert_{\psi_2} 
 \leq K / \sqrt{c}$, and we are done.
@@ -544,7 +659,7 @@ we use \cref{prop:2.7.1} to get
 \[ \left\lVert \sum_{i = 1}^{N} a_i X_i \right\rVert_{\psi_2} 
 \leq C \biggl( \sum_{i = 1}^{N} a_i^2 \lVert X_i \rVert_{\psi_2}^2 \biggr)^{1/2} 
 \leq CK \biggl( \sum_{i = 1}^{N} a_i^2 \biggr)^{1/2}. \]
-We then get the factor of $\sqrt{p}$ in the final result from (b) of \cref{prop:2.6.7}.
+We then get the factor of $\sqrt{p}$ in the final result from (b) of \cref{prop:2.6.6}.
 
 
 \subsubsection{Maximum of Subgaussians}
@@ -565,13 +680,13 @@ Two proof methods are provided in the book.
 Method 1: Union bound. WLOG, we can assume that $\max_{i} \lVert X_i \rVert_{\psi_2} = 1$. 
 This is because we can just scale down all the random variables if needed. For any $t \geq 0$, we have 
 \[ P(\max_{i = 1, \dots, N} X_i \geq t) \leq \sum_{i = 1}^{N} P(X_i \geq t) \leq 2N \exp{(-ct^2)} \]
-where the last inequality comes from (a) of \cref{prop:2.6.7}. If $N < \exp{(ct^2 / 2)}$, then the 
+where the last inequality comes from (a) of \cref{prop:2.6.6}. If $N < \exp{(ct^2 / 2)}$, then the 
 probability above is bounded by $2\exp{(-ct^2 / 2)}$, which is stronger than needed. If 
 $N > \exp{(ct^2 / 2)}$, the probability of any event is bounded by $2\exp{(ct^2 / 3 \ln{N})}$ as by definition 
 this quantity is greater than 1. Then in either case, 
 \[  P(\max_{i = 1, \dots, N} X_i \geq t) \leq 2 \exp{\biggl( -\frac{ct^2}{3 \ln{N}} \biggr)} 
 \text{ for any } t \geq 0. \]
-Then by \cref{prop:2.6.7} ($(c) \iff (a)$) we get $\lVert \max_{i} X_i \rVert_{\psi_2} \leq C \sqrt{\ln{N}}.$
+Then by \cref{prop:2.6.6} ($(c) \iff (a)$) we get $\lVert \max_{i} X_i \rVert_{\psi_2} \leq C \sqrt{\ln{N}}.$
 
 Method 2: Maximum with sum. Again, assume that $\max_{i} \lVert X_i \rVert_{\psi_2} = 1$ and denote 
 $Z = \max_{i = 1, \dots, N} |X_i|$. Then 
@@ -582,7 +697,7 @@ Let $M := \sqrt{2 \ln{2N}} \geq 1$. Then Jensen's inequality yields
 \[ \mathbb{E}[e^{Z^2 / M^2}] \leq (\mathbb{E}[e^{Z^2}])^{1 / M^2} 
 \leq (2N)^{1 / 2 \ln{(2N)}} = \sqrt{e} < 2. \]
 Then $\lVert Z \rVert_{\psi_2} \leq M = \sqrt{2 \ln{(2N)}}$, proving the first statement. 
-The second statement follows from the first statement via (b) of \cref{prop:2.6.7} for $p = 1$.
+The second statement follows from the first statement via (b) of \cref{prop:2.6.6} for $p = 1$.
 \end{proof}
 
 \begin{remark}[Gaussian samples have no outliers]
@@ -615,7 +730,7 @@ variable $a$, $\lVert a \rVert_{\psi_2} \lesssim |a|$. Then using $a = \mathbb{E
 for $f(x) = |x|$, we get
 \[ \lVert \mathbb{E}[X] \rVert_{\psi_2} \lesssim |\mathbb{E}[X]| \leq \mathbb{E}[|X|] 
 = \lVert X \rVert_{L^1} \lesssim \lVert X \rVert_{\psi_2}, \]
-where the last step comes from (b) of \cref{prop:2.6.7} with $p = 1$. Substituting this back into the 
+where the last step comes from (b) of \cref{prop:2.6.6} with $p = 1$. Substituting this back into the 
 equation for the triangle inequality and we are done.
 \end{proof}
 
