@@ -15,7 +15,7 @@ where $K = \max_{i} \lVert X_i \rVert_{\psi_2}$ and $C$ is an absolute constant.
 \end{theorem}
 
 \begin{proof}
-Using \cref{prop:2.6.7}, we can rewrite the above as 
+Using \cref{prop:2.6.6}, we can rewrite the above as 
 \[ P(\lVert X \rVert_2 - \sqrt{2} \geq t) \leq 2\exp{\left( -\frac{ct^2}{K^4} \right)} \text{ for all } 
 t \geq 0. \]
 We can prove the bound using Bernstein inequality. If we consider the quantity 
@@ -31,7 +31,7 @@ Applying Bernstein inequality ($N = n$ and $a_i = 1/n$), we get that for any $u 
 	&\leq 2 \exp{\left[ -\frac{cn}{K^4} \min_{}(u^2, u) \right]}.
 \end{align*}
 where in the last step, we used the fact that $K$ is bounded below by an absolute constant, since 
-\[ 1 = \lVert X_1 \rVert_{L^2} \leq C \lVert X_1 \rVert_{\psi_2} \leq CK \text{ by } \cref{prop:2.6.7}. \]
+\[ 1 = \lVert X_1 \rVert_{L^2} \leq C \lVert X_1 \rVert_{\psi_2} \leq CK \text{ by } \cref{prop:2.6.6}. \]
 
 We'll now use the concentration inequality for $\lVert X \rVert_{2}^2$ to deduce one for 
 $\lVert X \rVert_{2}$. We'll use the following propery for all $z, \delta \geq 0$: 
@@ -67,20 +67,17 @@ to deviate by $O(1)$ around $\sqrt{n}$ because
 
 % ----------3.2----------
 \subsection{Covariance Matrices and PCA}
-\begin{definition}[]
-\label{def:3.2.1}
 The \underline{covariance matrix} of a random vector $X$ taking values in $\mathbb{R}^n$ is 
 \[ \mathrm{Cov}(X) = \mathbb{E}[(X - \mu)(X - \mu)^T] = \mathbb{E}[XX^T] - \mu \mu^T, \ \mu = \mathbb{E}[X]. \]
 The \underline{second moment matrix} of $X$ is
 \[ \Sigma(X) = \mathbb{E}[XX^T]. \]
 By translation, the covariance and the second moment matrices are the same, hence many problems can first 
 be reduced into the mean zero case.
-\end{definition}
 
 \subsubsection{Learning from the Covariance Matrix}
 The covariance matrix can tell us much more than just the covariance of $X$'s coordinates: 
 \begin{proposition}[]
-\label{prop:3.2.2}
+\label{prop:3.2.1}
 Let $X$ be a random vector in $\mathbb{R}^n$ with second moment matrix $\Sigma = \mathbb{E}[XX^T]$. Then 
 \begin{enumerate}
 	\item (1D marginals) For any fixed vector $v \in \mathbb{R}^n$, 
@@ -119,7 +116,7 @@ Here $\lambda_i$ are the real eigenvalues, and $v_i$ are the corresponding rando
 interpretation for eigenvalues from an optimization perspective: 
 
 \begin{proposition}[]
-\label{prop:3.2.3}
+\label{prop:3.2.2}
 Let $\Sigma$ be an $n \times n$ symmetric matrix with eigenvalues $\lambda_1 \geq \cdots \geq \lambda_n$ 
 and corresponding unit eigenvectors $v_1, \dots, v_n$. Then for every $k = 1, \dots, n$, we have 
 \[ \lambda_k = \max_{v \perp \{v_1, \dots, v_{k - 1}\}, \lVert v \rVert_{2} = 1} v^T \Sigma v. \]
@@ -142,7 +139,7 @@ hence the proof is complete.
 
 Therefore we have the following corollary: 
 \begin{corollary}[PCA]
-\label{cor:3.2.4}
+\label{cor:3.2.3}
 Let $X$ be a random vector in $\mathbb{R}^n$ whose covariance matrix has eigenvalues $\lambda_1 \geq \cdots 
 \geq \lambda_n \geq 0$ and eigenvectors $v_1, \dots, v_n$. Then 
 \[ \lambda_k = \max_{v \perp \{v_1, \dots, v_{k - 1}, \lVert v \rVert_{2} = 1} 
@@ -155,7 +152,7 @@ the top eigenvector of the covariance matrix gives the first \textit{principle c
 direction with has the largest spread, with $\lambda_1$ as the variance in that direction.
 
 \begin{remark}[Dimensionality reduction]
-\label{rmk:3.2.5}
+\label{rmk:3.2.4}
 It often happens with real data that only a few eigenvalues are large and informative, while the rest are 
 small and treated as noise. Therefore even if the data comes in high-dimensionsal, it is basically 
 low-dimensional hence you just have to project onto the lower dimensional subspace to perform PCA.
@@ -164,43 +161,42 @@ low-dimensional hence you just have to project onto the lower dimensional subspa
 
 \subsubsection{Isotropic Distributions}
 \begin{definition}[]
-\label{def:3.2.6}
+\label{def:3.2.5}
 A random vector $X$ in $\mathbb{R}^n$ is called \underline{isotropic} if 
 \[ \mathbb{E}[XX^T] = I_n \]
 where $I_n$ denotes the identity matrix in $\mathbb{R}^n$.
 \end{definition}
 
-\cref{prop:3.2.2} implies that $X$ is isotropic if and only if 
+\cref{prop:3.2.1} implies that $X$ is isotropic if and only if 
 \[ \mathbb{E}[\left\langle X, v \right\rangle^2] = \lVert v \rVert_{2}^2 \text{ for any fixed 
 vector } v \in \mathbb{R}^n. \]
 The above implies that isotropic distributions spread equally in all directions, because the RHS of the 
 equation does not depend on the direction of $v$.
 
-\begin{remark}[Standardizing]
-\label{rmk:3.2.7}
+\begin{note}[Standardizing]
 In one dimension, a random variable $X$ can be standardized to a zero mean, unit variance random variable 
 $Z$ by doing 
 \[ Z = \frac{X - \mu}{\sqrt{\mathrm{Var}(X)}} \implies X = \mu + \mathrm{Var}(X)^{1/2}Z. \]
 This is also true in higher dimensions: 
 \[ Z = \mathrm{Cov}(X)^{-1/2}(X - \mu) \implies X = \mu + \mathrm{Cov}(X)^{1/2}Z. \]
 Moreover, the idea still holds even if the covariance matrix is not invertible (Exercise 3.10)!
-\end{remark}
+\end{note}
 
 
 
 % ----------3.3----------
 \subsection{Examples of High-dimensional Distributions}
+
+
 \subsubsection{Standard Normal}
-\begin{definition}[]
-\label{def:3.3.1}
 A random vector $Z$ has the \underline{standard normal distribution in $\mathbb{R}^n$} if its coordinates 
 are independent standard normal variables. Its density is 
 \[ f_Z(z) = \frac{1}{(2 \pi)^{n/2}} e^{-\lVert z \rVert_{2}^2 / 2}, z \in \mathbb{R}^n. \]
-\end{definition}
+
 The standard normal distribution is isotropic. Moreover, it is \textit{rotation-invariant}:
 
 \begin{proposition}[Rotation invariance]
-\label{prop:3.3.2}
+\label{prop:3.3.1}
 Consider a random vector $Z \sim N(0, I_n)$ and a fixed orthogonal matrix $U$. Then 
 \[ UZ \sim N(0, I_n). \]
 \end{proposition}
@@ -210,15 +206,15 @@ In particular, by looking at the first coordinate of $UZ$, we get
 where $U_1$ is the first row of $U$. Since this is an arbitrary unit vector, all 1D marginals of the 
 multivariate standard normal distribution are $N(0, 1)$. More generally: 
 
-\begin{corollary}[Name]
-\label{cor:3.3.3}
+\begin{corollary}[1D marginals of the standard normal distribution]
+\label{cor:3.3.2}
 Consider $Z \sim N(0, I_n)$ and any fixed $v \in \mathbb{R}^n$. Then 
 \[ \left\langle Z, v \right\rangle \sim N(0, \lVert v \rVert_{2}^2). \]
 \end{corollary}
 
 From the above, we get 
 \begin{corollary}[Sum of independent normals is normal]
-\label{cor:3.3.4}
+\label{cor:3.3.3}
 Consider independent normal random variables $X_i \sim N(\mu_i, \sigma_i^2)$. Then, 
 \[ \sum_{i = 1}^{n} X_i \sim N(\mu, \sigma^2), \ \mu = \sum_{i = 1}^{n}\mu_i, 
 \sigma^2 = \sum_{i = 1}^{n} \sigma_i^2. \]
@@ -236,7 +232,7 @@ Then by \cref{cor:3.3.3}, $\left\langle Z, v \right\rangle \sim N(0, \sigma^2)$ 
 
 \subsubsection{General Normal}
 \begin{definition}[]
-\label{def:3.3.5}
+\label{def:3.3.4}
 A random vector $X$ in $\mathbb{R}^n$ is \underline{normally distribute} if it can be obtained via an 
 affine transformation of a standard normal random vector $Z \sim I(0, I_k)$, i.e.
 \[ X = \mu + AZ, \ \mu \in \mathbb{R}^n, \ A \in \mathbb{R}^{n \times k}. \]
@@ -244,7 +240,7 @@ Here $X$ has mean $\mu$ and covariance matrix $\Sigma = AA^T$.
 \end{definition}
 
 \begin{proposition}[Uniqueness of normal]
-\label{prop:3.3.6}
+\label{prop:3.3.5}
 The distribution of $X$ is uniquely determined by $\mu$ and $\Sigma$. Specifically, $X$ has the same 
 distribution as 
 \[ Y = \mu + \Sigma^{1/2}Z', \ \Sigma = AA^T, \ Z' \sim N(0, I_n). \]
@@ -266,7 +262,7 @@ Therefore the proof is complete.
 
 If $\Sigma$ is invertible, the density has the formula below: 
 \begin{proposition}[]
-\label{prop:3.3.7}
+\label{prop:3.3.6}
 If $\Sigma$ is invertible, the PDF of a multivariate normal distribution is 
 \[ f(x) = \frac{1}{(2 \pi)^{n/2}|\Sigma|^{1/2}} \exp{\left( -\frac{1}{2}(x - \mu)^T \Sigma^{-1} 
 (x - \mu)\right)}, x \in \mathbb{R}^n. \]
@@ -278,8 +274,8 @@ Exercise 3.15.
 
 A special property for normal distributions is that independence and uncorrelation are equivalent, which 
 it not true generally: 
-\begin{corollary}[Name]
-\label{cor:3.3.8}
+\begin{corollary}[Jointly normal random variables]
+\label{cor:3.3.7}
 Random variables $X_1, \dots, X_n$ are jointly normal if the random vector $X = (X_1, \dots, X_n)$ is 
 normally distributed. Jointly normal random variables are independent if and only if they are uncorrelated.
 \end{corollary}
@@ -294,7 +290,7 @@ The joint density of random variables $X_i$ factors if and only if $X_i$ are ind
 
 \subsubsection{Uniform on the Sphere}
 \begin{proposition}[A sphere is isotropic]
-\label{prop:3.3.9}
+\label{prop:3.3.8}
 The uniform distribution on $S^{n - 1}$ with radius $\sqrt{n}$ is isotropic.
 \end{proposition}
 
@@ -312,7 +308,7 @@ are uncorrelated with second moment equal to 1, hence $\sqrt{n}X$ is isotropic.
 In the high-dimensional world, pick two random points, and they most likely will be orthogonal!
 
 Consider $X, Y \sim \text{Unif}(S^{n - 1})$. Then $\sqrt{n}X, \sqrt{n}Y$ are i.i.d. and isotropic by 
-\cref{prop:3.3.9}. By (c) from \cref{prop:3.2.2}, 
+\cref{prop:3.3.8}. By (c) from \cref{prop:3.2.1}, 
 \[ \mathbb{E}[\left\langle \sqrt{n}X, \sqrt{n}Y \right\rangle^2] = \mathrm{tr}(I_n) = n. \]
 Fividing the above by $n^2$ we obtain 
 \[ \mathbb{E}[\left\langle X, Y \right\rangle^2] = \frac{1}{n}. \]
@@ -331,7 +327,7 @@ in high dimensions.
 
 To say this in rigorous terms: 
 \begin{theorem}[Projective CLT]
-\label{thm:3.3.10}
+\label{thm:3.3.9}
 Let $X \sim \mathrm{Unif}(S^{n - 1})$. Then 
 \[ \sqrt{n}\left\langle X, v \right\rangle \to N(0, 1) \text{ in distribution as } n \to \infty. \]
 In fact, the CDF converges uniformly: 
@@ -371,7 +367,7 @@ zero. Combining the two bounds completes the proof.
 \end{proof}
 
 \begin{remark}[Density of 1D marginals of the sphere]
-\label{rmk:3.3.11}
+\label{rmk:3.3.10}
 The density of the 1D marginals of the uniform distribution on the sphre of radius $\sqrt{n}$ can be 
 computed. It is in fact proportional to $(1 - x^2 / n)^{\frac{n-3}{2}}$ (Exercise 3.27). For large $n$, 
 this approximates $e^{-x^2 / 2}$, which is exactly the Gaussian limit.
@@ -379,12 +375,9 @@ this approximates $e^{-x^2 / 2}$, which is exactly the Gaussian limit.
 
 
 \subsubsection{Uniform on a Convex Set}
-\begin{definition}[]
-\label{def:3.3.12}
 Let $K \subset \mathbb{R}^n$ be a convex set. A random variable $X$ is uniformly distributed 
 in $K$, denoted $X \sim \mathrm{Unif}(K)$, if its density is $1/\mathrm{Vol}(K)$ on $K$ and zero everywhere 
 else.
-\end{definition}
 
 The mean of $X$ is 
 \[ \mu = \mathbb{E}[X] = \frac{1}{\mathrm{Vol}(K)} \int_{K}^{}  \ dx, \]
@@ -401,7 +394,7 @@ better.
 A frame extends the concept of a basis, but drops the requirement of linear independence. Frames are intimately 
 connected to discrete isotropic distributions: 
 \begin{proposition}[Parseval frames]
-\label{prop:3.3.13}
+\label{prop:3.3.11}
 For any vectors $u_1, \dots, u_N$, the following are equivalent: 
 \begin{enumerate}[label=(\roman*)]
 	\item (Parseval identity) $\lVert x \rVert_{2}^2 = \sum_{i = 1}^{N} \left\langle u_i, x \right\rangle^2$ 
@@ -434,7 +427,7 @@ Taking the inner product with the vector $x$ gives the result.
 \end{proof}
 
 \begin{example}[Coordinate distribution]
-\label{ex:3.3.14}
+\label{ex:3.3.12}
 The standard basis $\{e_1, \dots, e_n\}$ in $\mathbb{R}^n$ is a Parseval frame. Therefore, a coordinate 
 random vector 
 \[ X \sim \mathrm{Unif}\{\sqrt{n}e_1, \dots, \sqrt{n}e_n\} \]
@@ -443,7 +436,7 @@ coordinate distribution is the worst.
 \end{example}
 
 \begin{example}[Mercedes-Benz frame]
-\label{ex:3.3.15}
+\label{ex:3.3.13}
 An example of a Parseval frame that is not linearly independent is the set of $N$ equispaced points on the 
 circle of radius $\sqrt{2/N}$, shown below:
 \begin{center}
@@ -454,14 +447,14 @@ circle of radius $\sqrt{2/N}$, shown below:
 Here are two more examples of isotropic distributions:
 
 \begin{example}[Uniform on the discrete cube]
-\label{ex:3.3.16}
+\label{ex:3.3.14}
 Let $X$ be a Rademacher random vector, that is, 
 \[ X \sim \mnathrm{Unif}(\{-1, 1\}^n). \]
 Then $X$ is isotropic.
 \end{example}
 
 \begin{example}[Product distributions]
-\label{ex:3.3.17}
+\label{ex:3.3.15}
 Any random vector $X = (X_1, \dots, X_n)$ whose coordinates $X_i$ are independent random variables with zero 
 mean and unit variance is isotropic. 
 \end{example}
@@ -522,7 +515,7 @@ $Y \sim N(0, \Sigma)$ is also subgaussian (Exercise 3.38).
 The projective CLT (\cref{thm:3.3.10}) tells us that the uniform distribution on $\sqrt{n}S^{n - 1}$ has 
 approximately Gaussian 1D marginals. In fact, these marginals ar subgaussian:
 
-\begin{theorem}[Name]
+\begin{theorem}[Uniform distribution on the sphere is subgaussian]
 \label{thm:3.4.5}
 Let $X \sim \mathrm{Unif}(S^{n - 1})$. Then for any $v \in S^{n - 1}$ and $t \geq 0$, we have 
 \[ P(\left\langle X, v \right\rangle \geq t) \leq 2\exp{\left( -\frac{t^2 n}{2} \right)}. \]
@@ -601,6 +594,7 @@ Therefore it is not useful to think of $X$ as subgaussian.
 \end{example}
 
 \begin{example}[Discrete distributions]
+\label{ex:3.4.8}
 Some isotropic discrete distributions have subgaussian norm bounded by a constant, like the Rademacher 
 distribution. However, they must take exponentially many values (Exercise 3.46). In particular, this prevents 
 frames (\cref{prop:3.3.13}) as good subgaussian distributions as they take way too many values and are mostly 
@@ -610,7 +604,18 @@ useless in practice.
 
 % ----------3.5----------
 \subsection{Application: Grothendieck Inequality and Semidefinite Programming}
+In this section, we will used high-dimensional Gaussians to tackle problems that are seemingly not related 
+to probability at all. We first present the Grothendieck inequality.
 
+\begin{theorem}[Grothendieck inequality]
+\label{thm:3.5.1}
+Consider $a \in \mathbb{R}^{m \times n}$. Assume that 
+\[ \left| \sum_{i, j}^{} a_{ij} x_i y_j \right| \leq 1 \text{ for any numbers } x_i, y_j \in \{-1, 1\}. \]
+Then for any Hilbert space $H$, we have 
+\[ \left| \sum_{i, j}^{} a_{ij} \left\langle u_i, v_j \right\rangle \right| \leq K \text{ for any unit 
+vectors } u_i, v_j \in H. \]
+Here $K \leq 1.783$ is an absolute constant.
+\end{theorem}
 
 
 % ----------3.6----------

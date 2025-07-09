@@ -578,7 +578,7 @@ we can take $x = y$ and use the spheres' corresponding nets:
 \begin{lemma}[Maximizing quadratic forms on a net]
 \label{lem:4.4.2}
 Let $A \in \mathbb{R}^{m \times n}$ and $\varepsilon \in [0, 1)$. Then for any $\varepsilon$-net $\mathcal{N}$ 
-of the sphere $S^{n - 1}$ and any $\varepsilon$ $\varepsilon$-net $\mathcal{M}$ of the sphere $S^{m - 1}$, 
+of the sphere $S^{n - 1}$ and any $\varepsilon$-net $\mathcal{M}$ of the sphere $S^{m - 1}$, 
 \[ \sup_{x \in \mathcal{N}, y \in \mathcal{M}} |\left\langle Ax, y \right\rangle| 
 \leq \lVert A \rVert_{} \leq \frac{1}{1 - 2 \varepsilon} \sup_{x \in \mathcal{N}, y \in \mathcal{M}} 
 |\left\langle Ax, y \right\rangle|. \]
@@ -591,7 +591,7 @@ using $\varepsilon$-net expansions (Exercise 4.34).
 \end{proof}
 
 \subsubsection{The Norms of Subgaussian Random Matrices}
-\begin{theorem}[Name]
+\begin{theorem}[]
 \label{thm:4.4.3}
 Let $A \in \mathbb{R}^{m \times n}$ be a random matrix with independent, mean zero, subgaussian entries 
 $A_{ij}$. Then for any $t > 0$, 
@@ -609,10 +609,172 @@ $x, y$ from the net (Concentration), and finish by taking a union bound over all
 respective $\varepsilon$-nets $\mathcal{N}, \mathcal{M}$ of $S^{n - 1}, S^{m - 1}$ with cardinalities 
 \[ |\mathcal{N}| \leq 9^n \text{ and } |\mathcal{M}| \leq 9^m. \]
 By \cref{lem:4.4.2}, the norm of $A$ can be bounded using these nets as 
-\[ \lVert A \rVert_{} \leq 2 \sup_{x \in \mathcal{N}, y \in \mathcal{M}} |\left\langle Ax, y \right\rangle|. \]
+\[ \lVert A \rVert_{} \leq 2 \sup_{x \in \mathcal{N}, y \in \mathcal{M}} 
+\left|\left\langle Ax, y \right\rangle\right|. \]
 
 (\textbf{Concentration}). Fix $x \in \mathcal{N}, y \in \mathcal{M}$. The quadratic form 
 \[ \left\langle Ax, y \right\rangle = \sum_{i = 1}^{n} \sum_{j = 1}^{m} A_{ij}x_iy_j \]
-is a sum of independent, subgaussian random variables. 
+is a sum of independent, subgaussian random variables. By \cref{prop:2.7.1}, the sum is subgaussian, and 
+\begin{align*}
+	\lVert \left\langle Ax, y \right\rangle \rVert_{\psi_2}^2 
+	&\leq C \sum_{i = 1}^{n} \sum_{j = 1}^{m} \lVert A_{ij}x_iy_j \rVert_{\psi_2}^2 \\
+	&\leq CK^2 \sum_{i = 1}^{n} \sum_{j = 1}^{m} x_i^2 y_j^2 \\
+	&= CK^2 \left( \sum_{i = 1}^{n} x_i^2 \right) \left( \sum_{j = 1}^{m} y_j^2 \right) \\
+	&= CK^2.
+\end{align*}
+Using (i) from \cref{prop:2.6.6}, we an restate this as a tail bound:
+\[ P(\left| \left\langle Ax, y \right\rangle \right| \geq u) 
+\leq 2 \exp{(-cu^2 / K^2)}, \ u \geq 0. \]
+
+(\textbf{Union bound}) Next, we unfix $x$ and $y$ and use a union bound. The event 
+\[ \max_{x \in \mathcal{N}, y \in \mathcal{M}} \left| \left\langle Ax, y \right\rangle \right| \geq u 
+\implies \exists x \in \mathcal{N}, y \in \mathcal{M} \text{ such that } 
+\left| \left\langle Ax, y \right\rangle \right| \geq u. \]
+Therefore union bound gives 
+\[ P \left( \max_{x \in \mathcal{N}, y \in \mathcal{M}} \left| \left\langle Ax, y \right\rangle \right| 
+\geq u \right) \leq \sum_{x \in \mathcal{N}, y \in \mathcal{M}}^{} 
+P \left( \left|\left\langle Ax, y \right\rangle\right| \geq u \right). \]
+Using the tail bound above and the estimates on $|\mathcal{N}|$ and $|\mathcal{M}|$, the probability is 
+bounded above by 
+\[ 9^{n + m} \cdot 2 \exp{(-cu^2 / K^2)} \quad (*) \]
+Choose 
+\[ u = CK(\sqrt{n} + \sqrt{m} + t). \]
+Then $u^2 \geq C^2 K^2 (n + m + t^2)$, and if the constnat $C$ is chosen sufficiently large, the exponent 
+in (*) is large enough, say $cu^2 / K^2 \geq 3(n + m) + t^2$. Thus 
+\[ P \left( \max_{x \in \mathcal{N}, y \in \mathcal{M}} \left| \left\langle Ax, y \right\rangle \right| 
+\geq u \right) \leq 9^{n + m} \cdot 2 \exp{(-3(n + m) - t^2)} \leq 2 \exp{(-t^2)}. \]
+Combining with the approximation step, 
+\[ P(\lVert A \rVert_{} \geq 2u) \leq 2 \exp{(-t^2)}. \]
+By the choice of $u$ that we had, the proof is complete.
 \end{proof}
 
+\begin{remark}[Expectation bounds]
+\label{rmk:4.4.4}
+High-probability bounds like \cref{thm:4.4.3} can be usually turned into simpler but less informative 
+expectatiom bounds using the integrated tail formula (\cref{lem:1.6.1}). In Exercise 4.41, we get 
+\[ \mathbb{E}[\lVert A \rVert_{}] \leq CK(\sqrt{m} + \sqrt{n}). \]
+\end{remark}
+
+\begin{remark}[Optimality]
+\label{rmk:4.4.5}
+\cref{thm:4.4.3} is typically tight since the matrix's operator norm is bounded below 
+by the Euclidean norm of any row/column of the matrix (Exercise 4.7). For example, if $A$ has Rademacher 
+entries, its columns have norm $\sqrt{m}$ and rows $\sqrt{n}$, so 
+\[ \lVert A \rVert_{} \geq \max_{}(\sqrt{m}, \sqrt{n}) \geq \frac{1}{2}(\sqrt{m} + \sqrt{n}) \]
+with probability 1. There is also a fully general lower bound (Exercise 4.42).
+\end{remark}
+
+\begin{remark}[Relaxing independence]
+The independence assumption in \cref{thm:4.4.3} can be relaxed: We just need the rows (or columns) of $A$ to be 
+independent, even with dependent entries (Exercise 4.43).
+\end{remark}
+
+
+\subsubsection{Symmetric Matrices}
+\cref{thm:4.4.3} also extends to symmetric matrices:
+
+\begin{corollary}[]
+Let $A \in \mathbb{R}^{n \times n}$ be a symmetric random matric with independent, mean zero, subgaussian 
+entries $A_{ij}$ on and above the diagonal. Then for any $t > 0$, 
+\[ \lVert A \rVert_{} \leq CK (\sqrt{n} + t) \]
+with probability at least $1 - 4 \exp{(-t^2)}$. Here $K = \max_{i, j} \lVert A_{ij} \rVert_{\psi_2}$.
+\end{corollary}
+
+\begin{proof}
+Split $A$ into the upper triangular-part $A^+$ and the lower-triangular part $A^-$. The diagonal can go 
+either way, so let's just assume it's in $A^+$. Then $A = A^+ + A^-$.
+
+Applying \cref{thm:4.4.3} to $A^+$ and $A^-$ gives (each with probability at least $1 - 4 \exp{(-t^2)}$)
+\[ \lVert A^+ \rVert_{} \leq CK(\sqrt{n} + t) \text{ and } \lVert A^- \rVert_{} \leq CK(\sqrt{n} + t). \]
+By the triangle inequality, $\lVert A \rVert_{} \leq \lVert A^+ \rVert_{} + \lVert A^- \rVert_{}$ hence the 
+proof is complete.
+\end{proof}
+
+
+
+% ----------4.5----------
+\subsection{Application: Community Detection in Networks}
+
+
+
+% ----------4.6----------
+\subsection{Two-sided Bounds on Subgaussian Matrices}
+\cref{thm:4.4.3} gives an upper bound on the singular values of an $\mathbb{R}^{m \times n}$ subgaussian 
+random matrix $A$, which says 
+\[ \sigma_1 \leq \lVert A \rVert_{} \leq C (\sqrt{m} + \sqrt{n}) \]
+with high probability. 
+
+In fact, there is a sharper two-sided bound on the \textbf{entire spectrum} of $A$:
+\[ \sqrt{m} - C \sqrt{n} \leq \sigma_i \leq \sqrt{m} + C \sqrt{n}. \]
+In other words, the below shows that a tall random matrix $\frac{1}{\sqrt{m}}A$ with $m \gg n$ is an 
+approximate isometry.
+
+\begin{theorem}[Name]
+\label{thm:4.6.1}
+Let $A \in \mathbb{R}^{m \times n}$ be a random matrix with independent, mean zero, subgaussian, isotropic 
+tows $A_i$. Then for any $t \geq 0$ we have 
+\[ \sqrt{m} - CK^2 (\sqrt{n} + t) \leq \sigma_n \leq \sigma_1 \leq \sqrt{m} + CK^2 (\sqrt{n} + t) \]
+with probability at least $1 - 2 \exp{(-t^2)}$. Here $K = \max_{i} \lVert A_i \rVert_{\psi_2}$.
+\end{theorem}
+
+\begin{proof}
+We'll prove a slightly stronger conclusion than the theorem statement, namely 
+\[ \lVert \frac{1}{m}A^TA - I_n \rVert_{} \leq K^2 \max_{}(\delta, \delta^2) \text{ where } 
+\delta = C \left( \sqrt{\frac{n}{m}} + \frac{t}{\sqrt{m}} \right). \]
+Proving this implies proving the theorem (I haven't checked yet).
+
+Again, we'll apply an $\varepsilon$-net argument, but use Bernstein inequality for the concentration step 
+instead of Hoeffding which we did in \cref{thm:4.4.3}.
+
+(\textbf{Approximation}) Using \cref{cor:4.2.11}, we can find an $\frac{1}{4}$-net $\mathcal{N}$ of the unit 
+sphere $S^{n - 1}$ with cardinality 
+\[ |\mathcal{N}| \leq 9^n. \]
+Using \cref{lem:4.4.2}, we can evaluate the operator norm in the equation above on $\mathcal{N}$:
+\[ \lVert \frac{1}{m}A^T A - I_n \rVert_{} \leq 2 \max_{x \in \mathcal{N}} 
+\left| \left\langle (\frac{1}{m}A^T A - I_n)x, x \right\rangle \right| 
+= 2 \max_{x \in \mathcal{N}} \left| \frac{1}{m} \lVert Ax \rVert_{2}^2 - 1 \right|. \]
+Therefore, to prove the statement, it is enough to show that, with the required probability, 
+\[ \max_{x \in \mathcal{N}} \left| \frac{1}{m} \lVert Ax \rVert_{2}^2 - 1 \right| \leq \frac{\varepsilon}{2} 
+\text{ where } \varepsilon = K^2 \max_{}(\delta, \delta^2). \]
+
+(\textbf{Concentration}) Fix $x \in \mathcal{N}$ and express $\lVert Ax \rVert_{2}^2$ as a sum of 
+independent random variables: 
+\[ \lVert Ax \rVert_{2}^2 = \sum_{i = 1}^{m} \left\langle A_i, x \right\rangle^2 =: \sum_{i = 1}^{m} X_i^2. \]
+By assumption, the wors $A_i$ are independent, isotropic, and subgaussian random vectors with 
+$\lVert A_i \rVert_{\psi_2} \leq K$. Thus $X_i = \left\langle A_i, x \right\rangle$ are independent subgaussian 
+random variables with $\mathbb{E}[X_i^2] = 1$ and $\lVert X_i \rVert_{\psi_2} \leq K$. This makes 
+$X_i^2 - 1$ independent, mean zero, and subexponential random variables with 
+\[ \lVert X_i^2 - 1 \rVert_{\psi_1} \leq CK^2. \]
+Thus we can use Bernstein inequality (\cref{cor:2.9.2}) and obtain 
+\begin{align*}
+	P \left( \left| \frac{1}{m}\lVert Ax \rVert_{2}^2 - 1 \right| \geq \frac{\varepsilon}{2} \right) 
+	&= P \left( \left| \frac{1}{m} \sum_{i = 1}^{m} X_i^2 - 1 \right| \geq \frac{\varepsilon}{2} \right) \\
+	&\leq 2 \exp{\left[ -c_1 \min_{}\left( \frac{\varepsilon^2}{K^4}, \frac{\varepsilon}{k^2} 
+	\right)m \right]} \\
+	&= 2 \exp{(-c_1 \delta^2 m)} \\
+	&\leq 2 \exp{(-c_1 C^2(n + t^2))}.
+\end{align*}
+The last inequality comes from the definition of $\delta$ and using the inequality 
+\[ (a + b)^2 \geq a^2 + b^2 \text{ for } a, b \geq 0. \]
+
+(\textbf{Union bound}) Now unfix $x \in \mathcal{N}$. By union bound, 
+\[ P \left( \max_{x \in \mathcal{N}} \left| \frac{1}{m}\lVert Ax \rVert_{2}^2 - 1 \right| 
+\geq \frac{\varepsilon}{2} \right) 
+\leq 9^n \cdot 2 \exp{(-c_1 C^2(n + t^2))} \leq 2 \exp{(-t^2)} \]
+if we choose the constant $C$ to be large enough. Then by the necessary condition in the approximation step, 
+the proof is complete.
+\end{proof}
+
+\begin{remark}[Expectation bound]
+\label{rmk:4.6.2}
+From \cref{rmk:4.4.4}, we can convert high-probability bounds to expectation bounds. Exercise 4.41 yields the 
+following form for \cref{thm:4.6.1}:
+\[ \mathbb{E}\left[ \lVert \frac{1}{m}A^T A - I_n \rVert_{} \right] \leq 
+CK^2 \left( \sqrt{\frac{n}{m}} + \frac{n}{m} \right). \]
+There is another version of the proof for \cref{thm:4.6.1} in Exercise 4.46.
+\end{remark}
+
+
+
+% ----------4.7----------
+\subsection{Application: Covariance Estimation and Clustering}
