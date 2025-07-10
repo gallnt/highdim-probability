@@ -382,7 +382,7 @@ else.
 The mean of $X$ is 
 \[ \mu = \mathbb{E}[X] = \frac{1}{\mathrm{Vol}(K)} \int_{K}^{}  \ dx, \]
 which is the center of gravity of $K$. If $\Sigma$ is the covaraince matrix of $K$, then the standard score 
-$Z := \Sigma^{-1/2}(X - \mu)$ is an isotropic random vector from \cref{rmk:3.2.7}. In fact, $Z$ is uniformly 
+$Z := \Sigma^{-1/2}(X - \mu)$ is an isotropic random vector from \cref{def:3.2.5}. In fact, $Z$ is uniformly 
 distributed in the affinely transformed copy of $K$: 
 \[ Z \sim \mathrm{Unif}\left( \Sigma^{-1/2}(K - \mu) \right). \]
 Therefore there is an affine transformation $T$ which makes $T(K)$ isotropic. In convex geometry, we can 
@@ -511,8 +511,9 @@ We can also get from the above that if $X \sim N(0, I_n)$, then $X$ is subgaussi
 $Y \sim N(0, \Sigma)$ is also subgaussian (Exercise 3.38).
 \end{example}
 
+
 \subsubsection{Uniform on the Sphere}
-The projective CLT (\cref{thm:3.3.10}) tells us that the uniform distribution on $\sqrt{n}S^{n - 1}$ has 
+The projective CLT (\cref{thm:3.3.9}) tells us that the uniform distribution on $\sqrt{n}S^{n - 1}$ has 
 approximately Gaussian 1D marginals. In fact, these marginals ar subgaussian:
 
 \begin{theorem}[Uniform distribution on the sphere is subgaussian]
@@ -597,7 +598,7 @@ Therefore it is not useful to think of $X$ as subgaussian.
 \label{ex:3.4.8}
 Some isotropic discrete distributions have subgaussian norm bounded by a constant, like the Rademacher 
 distribution. However, they must take exponentially many values (Exercise 3.46). In particular, this prevents 
-frames (\cref{prop:3.3.13}) as good subgaussian distributions as they take way too many values and are mostly 
+frames (\cref{prop:3.3.11}) as good subgaussian distributions as they take way too many values and are mostly 
 useless in practice.
 \end{example}
 
