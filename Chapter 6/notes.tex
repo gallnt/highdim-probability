@@ -1,0 +1,55 @@
+\section{Quadratic Forms, Symmetrization, and Contraction}
+This section concerns mostly with decoupling, concentration of quadratic forms, symmetrization, and contraction, 
+which are a number of basic toold of high-dimensional probability.
+
+
+
+% ----------6.1----------
+\subsection{Decoupling}
+We'll look at \underline{quadratic forms} of the form
+\[ \sum_{i, j = 1}^{n} a_{ij} X_i X_j = X^T AX = \left\langle X, AX \right\rangle \]
+where $A = (a_{ij})$ is an $n \times n$ coefficient matrix and $X = (X_1, \dots, X_n)$ is a random vector 
+with independent coordinates. Such quadratic forms are known as \underline{chaos}.
+
+We can compute the expectation of a chaos. If $X_i$ have zero means and unit variances, then 
+\[ \mathbb{E}[X^T AX] = \sum_{i, j = 1}^{n} a_{ij} \mathbb{E}[X_i X_j] 
+= \sum_{i = 1}^{n} a_{ii} = \mathrm{tr}(A). \]
+
+However, establishing concentration on a chaos is harder, because the terms of the sum above are not 
+independent. However, we can overcome this difficulty via \underline{decoupling}. We'll replace the quadratic 
+form above with the bilinear form 
+\[ \sum_{i, j = 1}^{n} a_{ij}  X_iX_j' = X^T AX' = \left\langle X, AX' \right\rangle,  \]
+where $X' = (X_1', \dots, X_n')$ is an independent copy of $X$. Bilinear forms are easier to analyze than 
+quadratic forms as they are linear in $X$. Therefore if we condition on $X'$, we may treat the bilinear form 
+as a sum of independent random variables
+\[ \sum_{i = 1}^{n} \left( \sum_{j = 1}^{n} a_{ij} X_j' \right) X_i = \sum_{i = 1}^{n} b_i X_i \]
+with fixed coefficients $b_i$.
+
+\begin{theorem}[Decoupling]
+Let $A$ be an $n \times n$ diagonal free matrix, i.e. all diagonal entries are zero. Let $X$ be a random vector 
+in $\mathbb{R}^n$ with independent mean zero coordinates, and let $X'$ be an independent copy. Then for every 
+convex function $F: \mathbb{R} \to \mathbb{R}$, 
+\[ \mathbb{E}[F(X^T AX)] \leq \mathbb{E}[F(4X^T AX')]. \]
+\end{theorem}
+
+\begin{proof}
+We'll replace the chaos by a partial chaos, which we extend back to the original chaos later via Jensen's 
+inequality.
+
+(\textbf{Step 1: Randomly selecting a partial sum}) To specify a random subset of indices $I$, we'll use 
+\underline{selectors} - independent Bernoulli random variables $\delta_1, \dots, \delta_n \sim_{iid} 
+\mathrm{Ber}(1/2)$. We define the index set 
+\[ I := \{ i: \delta_i = 1 \}. \]
+Condition on $X$. Since by assumption $a_{ii} = 0$ and 
+\[ \mathbb{E}[\delta_i(1 - \delta_j)] = \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4} \text{ for all } i \neq j \]
+we may express the chaos as 
+\[ X^T AX = \sum_{i \neq j}^{} a_{ij} X_iX_j 
+= 4 \mathbb{E}_{\delta}\left[ \sum_{i \neq j}^{} \delta_i(1 - \delta_j) a_{ij} X_iX_j \right] 
+= 4 \mathbb{E}_I \left[ \sum_{(i, j_ \in I \times I^C)}^{} a_{ij}X_iX_j \right]. \]
+(In the expression above, the subscripts $\delta$ and $I$ indicate the source of randomness in the conditional 
+expectations. Since $X$ is fixed, the expectations are taken over the random selection of $\delta$, or 
+equivalently, the random index set $I$).
+
+(\textbf{Step 2: Applying $F$}) 
+\end{proof}
+
