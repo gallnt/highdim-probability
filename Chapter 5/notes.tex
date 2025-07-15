@@ -514,13 +514,156 @@ If $X$ is a random matrix, then Lieb and Jensen inequalities imply that
 Applying this with $X = e^Z$, we obtain the following:
 
 \begin{lemma}[Lieb inequality for random matrices]
-\label{em:5.4.9}
+\label{lem:5.4.9}
 Let $H$ be a fixed $n \times n$ symmetric matrix and $Z$ be a random $n \times n$ symmetric matrix. Then 
 \[ \mathbb{E}[\mathrm{tr}(\exp{(H + Z)})] \leq \mathrm{tr}(\exp{(H + \log_{}{\mathbb{E}[e^Z]})}). \]
 \end{lemma}
 
 
 \subsubsection{Proof of Matrix Bernstein Inequality}
+(\textbf{Step 1: Reduction of MGF}) To bound the norm of the sum 
+\[ S := \sum_{i = 1}^{N} X_i, \]
+we need to control the largest and smallest eigenvalues of $S$. Consider the largest eigenvalue 
+\[ \lambda_{\mathrm{max}}(S) := \max_{i} \lambda_i(S) \]
+and note that 
+\[ \lVert S \rVert_{} = \max_{i}|\lambda_i(S)| 
+= \max_{}(\lambda_{\mathrm{max}}(S), \lambda_{\mathrm{max}}(-S)). \]
+To bound $\lambda_{\mathrm{max}}(S)$, we'll use the exponential moment method again. Fix $\lambda > 0$. Via 
+the typical procedure, 
+\[ P(\lambda_{\mathrm{max}}(S) \geq t) 
+= P(e^{\lambda \cdot \lambda_{\mathrm{max}}} \geq e^{\lambda t}) 
+\leq e^{-\lambda t} \mathbb{E}[e^{\lambda \cdot \lambda_{\mathrm{max}}}]. \]
+Then by \cref{def:5.4.2}, the eigenvalues of $e^{\lambda S}$ are $e^{\lambda \cdot \lambda_i(S)}$ so 
+\[ E := \mathbb{E}[e^{\lambda \cdot \lambda_{\mathrm{max}}(S)}] 
+= \mathbb{E}[\lambda_{\mathrm{max}}(e^{\lambda S})]. \]
+Since the the eigenvalues of $e^{\lambda S}$ are all positive, the maximal eigenvalue is bounded by the sum of 
+all eigenvalues, which is the trace. Therefore 
+\[ E \leq \mathbb{E}[\mathrm{tr}(e^{\lambda S})]. \]
+
+(\textbf{Step 2: Application of Lieb Inequality}) To use the Lieb inequality (\cref{lem:5.4.9}), we seperate 
+the last term from the sum $S$:
+\[ E \leq \mathbb{E}\left[ \mathrm{tr}\left( \exp{\left( \sum_{i = 1}^{N - 1} \lambda X_i 
++ \lambda X_N \right)} \right) \right]. \]
+Condition on $(X_i)_{i = 1}^{N - 1}$ and apply \cref{lem:5.4.9} for the fixed matrix $H := \sum_{i = 1}^{N - 1} 
+\lambda X_i$ and the random matrix $Z := \lambda X_N$. We get 
+\[ E \leq \mathbb{E}[\mathrm{tr}(\exp{\left( \sum_{i = 1}^{N - 1} \lambda X_i 
++ \log_{}{\mathbb{E}[e^{\lambda X_N}]} \right)})]. \]
+Then we continue the same procedure above: seperate $\lambda X_{N - 1}$ and apply \cref{lem:5.4.9}, and do the 
+same thing for $N$ times to get 
+\[ E \leq \mathrm{tr}\left( \exp{\left[ \sum_{i = 1}^{N} \log_{}{\mathbb{E}[e^{\lambda X_i}]} 
+\right]} \right). \]
+
+(\textbf{Step 3: MGF of the individual terms}) We'll bound the matrix-values MGF via the following lemma:
+\begin{lemma}[Matrix MGF]
+\label{lem:5.4.10}
+Let $X$ be an $n \times n$ symmetric mean zero random matrix such that $\lVert X \rVert_{} \leq K$ almost 
+surely. Then 
+\[ \mathbb{E}[\exp{(\lambda X)}] \preceq \exp{(g(\lambda)\mathbb{E}[X^2]} 
+\text{ where } g(\lambda) = \frac{\lambda^2 / 2}{1 - |\lambda|K / 3} \]
+provided that $|\lambda| < 3 / K$.
+\end{lemma}
+
+\begin{proof}
+First, we can bound the (scalar) exponential function by the first few terms via Taylor expansion:
+\[ e^z \leq 1 + z + \frac{1}{1 - |z| / 3} \cdot \frac{z^2}{2}, \ |z| < 3. \]
+(To get this inequality, write $e^Z = 1 + z + z^2 \sum_{p = 2}^{\infty} z^{p - 2} / p!$ and use the bound 
+$p! \geq 2 \cdot 3^{p - 2}$). Next, apply this inequality to $z = \lambda x$. If $|x| \leq K$ and 
+$|\lambda| < 3/K$ then we obtain 
+\[ e^{\lambda x} \leq 1 + \lambda x + g(\lambda)x^2, \]
+where $g(\lambda)$ is the same as how we defined in the statement.
+
+Then we can upgrade this to a matrix inequality using \cref{prop:5.4.4} (d). If $\lVert X \rVert_{} \leq K$ and 
+$|\lambda| < 3 / K$, then 
+\[ e^{\lambda X} \preceq I + \lambda X + g(\lambda) X^2. \]
+Taking expectations on both sides, since $\mathbb{E}[X] = 0$, 
+\[ \mathbb{E}[e^{\lambda X}] \preceq I + g(\lambda) \mathbb{E}[X^2]. \]
+To complete the proof of the lemma, let's use the inequality $1 + z \leq e^z$. We can transform this into a 
+matrix inequality via \cref{prop:5.4.4} (d) and get $I + Z \preceq e^Z$ holds for all matrices $Z$, and in 
+particular for $Z = g(\lambda)\mathbb{E}[X^2]$.
+\end{proof}
+
+(\textbf{Step 4: Completion of the proof}) Using \cref{lem:5.4.10}, we obtain 
+\[ E \leq \mathrm{tr}\left( \exp{\left( \sum_{i = 1}^{N} \log_{}{\mathbb{E}[e^{\lambda X_i}]} 
+\right)} \right) \leq \mathrm{tr}(\exp{(g(\lambda)Z)}), \text{ where } Z := \sum_{i = 1}^{N} \mathbb{E}[X_i^2]. \]where we used matric monotonicity of $\ln{x}$ (\cref{rmk:5.4.6}) to take logarithms on both sides, summed up 
+the results, and used trace monotonicity (\cref{prop:5.4.4} (b)) to take traces of the exponential of both sides.
+
+Since the trace of $\exp{(g(\lambda)Z)}$ is a sum of $n$ positive eigenvalues, it is bounded by $n$ times the 
+maximum eigenvalue, hence 
+\begin{align*}
+	E 
+	&\leq n \lambda_{\mathrm{max}}(\exp{(g(\lambda)Z)}) \\
+	&= m \exp{(g(\lambda) \lambda_{\mathrm{max}}(Z))} \\
+	&= n \exp{(g(\lambda) \lVert Z \rVert_{})} \quad (\text{Since } Z \succeq 0) \\
+	&= n \exp{(g(\lambda)\sigma^2)} \quad (\text{By definition of } \sigma).
+\end{align*}
+Plugging in this bounde for $E = \mathbb{E}[e^{\lambda \cdot \lambda_{\mathrm{max}}(S)}]$ into the original 
+equation gives
+\[ P(\lambda_{\mathrm{max}}(S) \geq t) \leq n \exp{(-\lambda t + g(\lambda)\sigma^2)}. \]
+The above is a bound that holds for any $\lambda > 0$ as long as $|\lambda| < 3/K$, so we can minimize it in 
+$\lambda$. Better yet, instead of compuiting the exact minimum (which can be quite ugly), we can choose the 
+following value: $\lambda = t / (\sigma^2 + Kt / 3)$, and substituting this value back gives 
+\[ P(\lambda_{\mathrm{max}}(S) \geq t) \leq n \exp{\left( -\frac{t^2 / 2}{\sigma^2 + Kt / 3} \right)}. \]
+Repeating the argument for $-S$, we will get the same bound as the above, and summing up the two bounds 
+completes the proof. $\square$
+
+\begin{remark}[Matrix Bernstein Inequality: expectation]
+\label{rmk:5.4.11}
+Matrix Bernstein inequality gives a high-probability bound. It can be turned into a simpler (but less 
+informative) expectation bound in a standard way. Using \cref{thm:5.4.1} and the integrated tail formula 
+(\cref{lem:1.6.1}), we can deduce that (Exercise 5.20)
+\[ \mathbb{E}\left[ \lVert \sum_{i = 1}^{N} X_i \rVert_{} \right] 
+\lesssim \lVert \sum_{i = 1}^{N} \mathbb{E}[X_i^2] \rVert_{}^{1/2} \sqrt{\log_{}{(2n)}} + K \log_{}{(2n)} \]
+where the $\lesssim$ symbol hides an absolute constant factor. In the scalar case $(n = 1)$, an expectation 
+bound is trivial: the variance of sum formula gives 
+\[ \mathbb{E}\left[ \left| \sum_{i = 1}^{N} X_i \right| \right] 
+\leq \left( \mathbb{E}\left[ \left| \sum_{i = 1}^{N} X_i \right|^2 \right] \right)^{1/2} 
+= \left( \sum_{i = 1}^{N} \mathbb{E}[X_i^2] \right)^{1/2}. \]
+\end{remark}
+
+\begin{remark}[The logarithmic price]
+For the equation in \cref{rmk:5.4.11}, the high-dimensional version differs the 1-dimensional one by just 
+a logarithmic factor. This is a surprisingly small price for high dimensions! Moreover, this price is in 
+essentially optimal - Exercise 5.28 gives an example of why we can't get rid of it.
+\end{remark}
+
+
+\subsubsection{Matrix Hoeffding and Khintchine Inequalities}
+\begin{theorem}[Matrix Hoeffding inequality]
+\label{thm:5.4.13}
+Let $\varepsilon_1, \dots, \varepsilon_N$ be independent Rademacher random variables and $A_1, \dots A_N$ be 
+any (fixed) symmetric $n \times n$ matrices. Then for any $t > 0$, 
+\[ P \left( \lVert \sum_{i = 1}^{N} \varepsilon_i A_i \rVert_{} \geq t \right) 
+\leq 2n \exp{\left( -\frac{t^2}{2 \sigma^2} \right)} \]
+where $\sigma^2 = \lVert \sum_{i = 1}^{N} A_i^2 \rVert_{}$.
+\end{theorem}
+
+\begin{proof}
+Exercise 5.21.
+\end{proof}
+
+\begin{theorem}[Matric Khintchine inequality]
+\label{thm:5.4.14}
+Let $\varepsilon_1, \dots, \varepsilon_N$ be independent Rademacher random variables and $A_1, \dots A_N$ be 
+any (fixed) symmetric $n \times n$ matrices. Then for every $p \in [1, \infty)$, we have 
+\[ \left( \mathbb{E}\left[ \lVert \sum_{i = 1}^{N} \varepsilon_i A_i \rVert_{}^p \right] \right)^{1/p} 
+\leq C \sqrt{p + \log_{}{n}} \lVert \sum_{i = 1}^{N} A_i^2 \rVert_{}^{1/2}. \]
+\end{theorem}
+
+\begin{proof}
+Exercise 5.22. Use the matrix Hoeffding inequality.
+\end{proof}
+
+\begin{remark}[Non-symmetric, rectangular matrices]
+\label{brmk:5.4.15}
+Matrix concentration inequalities easily extend to rectangular matrices using the \textit{Hermitian dilation} 
+introduced in Exercise 4.14. Replace each matrix $X_i$ with the symmetric block matrix 
+\[ \begin{bmatrix}
+0 & X_i \\
+X_i^T & 0 \\
+\end{bmatrix} \]
+and apply usual matrix concentration. We can get the matrix Bernstein (Exercise 5.23) and Khintchine (Exercise 
+5.24) inequalities for rectangular matrices this way.
+\end{remark}
 
 
 
