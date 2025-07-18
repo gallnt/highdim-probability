@@ -654,7 +654,7 @@ Exercise 5.22. Use the matrix Hoeffding inequality.
 \end{proof}
 
 \begin{remark}[Non-symmetric, rectangular matrices]
-\label{brmk:5.4.15}
+\label{rmk:5.4.15}
 Matrix concentration inequalities easily extend to rectangular matrices using the \textit{Hermitian dilation} 
 introduced in Exercise 4.14. Replace each matrix $X_i$ with the symmetric block matrix 
 \[ \begin{bmatrix}
@@ -669,7 +669,18 @@ and apply usual matrix concentration. We can get the matrix Bernstein (Exercise 
 
 % ----------5.5----------
 \subsection{Application: Community Detection in Sparse Networks}
+In section 4.5, the method of \textit{spectral clustering} was introduced, which is a basic method for 
+community detection in networks. We showed that it works for relatively dense networks, where the expected 
+average degree is $\gtrsim \sqrt{n}$. Now, using the matrix Bernstein inequality, we will show that spectral 
+clustering actually works for much sparser networks, with an expected average degree as low as $O(\log_{}{n})$.
 
+\begin{theorem}[Spectral clustering for sparse stochastic block model]
+\label{thm:5.5.1}
+Let $G \sim G(n, p, q)$ where $p = a/n, q = b/n$ and $b < a < 3b$. Assume that 
+\[ (a - b)^2 \geq Ca \log_{}{n}. \]
+Then, with probability at least 0.99, the spectral clustering algorithm identifies the communities of $G$ 
+with 99\% accuracy, i.e. misclassifying at most $0.01n$ vertices.
+\end{theorem}
 
 
 % ----------5.6----------

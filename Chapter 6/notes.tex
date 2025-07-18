@@ -26,6 +26,7 @@ as a sum of independent random variables
 with fixed coefficients $b_i$.
 
 \begin{theorem}[Decoupling]
+\label{thm:6.1.1}
 Let $A$ be an $n \times n$ diagonal free matrix, i.e. all diagonal entries are zero. Let $X$ be a random vector 
 in $\mathbb{R}^n$ with independent mean zero coordinates, and let $X'$ be an independent copy. Then for every 
 convex function $F: \mathbb{R} \to \mathbb{R}$, 
@@ -34,7 +35,9 @@ convex function $F: \mathbb{R} \to \mathbb{R}$,
 
 \begin{proof}
 We'll replace the chaos by a partial chaos, which we extend back to the original chaos later via Jensen's 
-inequality.
+inequality. The partial chaos is defined by 
+\[ \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j \]
+where $I \subset \{1, \dots, n\}$ is a randomly chosen subset of indices.
 
 (\textbf{Step 1: Randomly selecting a partial sum}) To specify a random subset of indices $I$, we'll use 
 \underline{selectors} - independent Bernoulli random variables $\delta_1, \dots, \delta_n \sim_{iid} 
@@ -47,9 +50,302 @@ we may express the chaos as
 = 4 \mathbb{E}_{\delta}\left[ \sum_{i \neq j}^{} \delta_i(1 - \delta_j) a_{ij} X_iX_j \right] 
 = 4 \mathbb{E}_I \left[ \sum_{(i, j_ \in I \times I^C)}^{} a_{ij}X_iX_j \right]. \]
 (In the expression above, the subscripts $\delta$ and $I$ indicate the source of randomness in the conditional 
-expectations. Since $X$ is fixed, the expectations are taken over the random selection of $\delta$, or 
-equivalently, the random index set $I$).
+expectations. Since $X$ is fixed, the expectations are taken over the random selection of 
+$\delta = (\delta_1, \dots, \delta_n)$, or equivalently, the random index set $I$).
 
-(\textbf{Step 2: Applying $F$}) 
+(\textbf{Step 2: Applying $F$}) Applying the function $F$ to both sides and take expectation over $X$. By 
+Jensen inequality and Fubini theorem, we get 
+\[ \mathbb{E}_X[F(X^T AX)] \leq \mathbb{E}_I \left[ \mathbb{E}_X \left[ 
+F \left( 4 \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j \right) \right] \right]. \]
+It follows that there exists a realization of a subset $I$ such that 
+\[ \mathbb{E}_X[F(X^T AX)] \leq \mathbb{E}_X \left[ 
+F \left( 4 \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j \right) \right]. \]
+Fix such a realization $I$ until the end of the proof, and drop the subscript $X$ on the expectation for 
+convenience. Since the random variables $(X_i){i \in I}$ are independent from $(X_j)_{j \in I^c}$, the 
+distribution of the sum in the right side will not change if we replace $X_j$ by $X_j'$ hence
+\[ \mathbb{E}_X[F(X^T AX)] \leq \mathbb{E} \left[ 
+F \left( 4 \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j' \right) \right]. \]
+
+(\textbf{Step 3: Completing the partial sum}) It remains to complete the sum on the RHS to the sum over all 
+pairs of indices. We want to show that 
+\[ \mathbb{E} \left[ F \left( 4 \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j' \right) \right] \leq 
+\mathbb{E} \left[ F \left( 4 \sum_{(i, j) \in [n] \times [n]}^{} a_{ij}X_iX_j' \right) \right] \]
+where $[n] = \{1, \dots, n\}$. To do this, we can decompose the sum on the right side as 
+\[ \sum_{(i, j) \in [n] \times [n]}^{} a_{ij}X_iX_j' 
+= \underbrace{ \sum_{(i, j) \in I \times I^c}^{} a_{ij}X_iX_j' }_{Y} 
++ \underbrace{\sum_{(i, j) \in I \times I}^{} a_{ij}X_iX_j' 
++ \sum_{(i, j) \in I^c \times [n]}^{} a_{ij}X_iX_j'}_{Z}\]
+Condition on all $(X_i)_{i \in I}$ and $(X_j')_{j \in I^c}$, and denote this expectation by $\mathbb{E}'$. 
+This fixes $Y$, while $Z$ has zero conditional expectation (check). Thus, by Jensen inequality, we get 
+\[ F(4Y) = F(4Y + \mathbb{E}'[4Z]) = F(\mathbb{E}'[4Y + 4Z]) \leq \mathbb{E}'[F(4Y + 4Z)]. \]
+Finally, taking expectations over all remaining random variables, we get 
+\[ \mathbb{E}[F(4Y)] \leq \mathbb{E}[F(4Y + 4Z)]. \]
+Hence the proof is complete.
 \end{proof}
 
+\begin{remark}[Diagonal-free assumption]
+\label{rmk:6.1.2}
+The assumption is essential in \cref{thm:6.1.1}, since the conclusion fails for diagonal matrices when 
+$F(x) = x$. But we can include the diagonal on the right hand side: for any $n \times n$ matrix $A = (a_{ij})$, 
+we get 
+\[ \mathbb{E}\left[ F \left( \sum_{i \neq j}^{} a_{ij}X_iX_j \right) \right] 
+\leq \mathbb{E}\left[ F \left( 4 \sum_{i, j}^{} a_{ij}X_iX_j' \right) \right] \]
+This is shown in Exercise 6.1, and there are other variants of decoupling (Exercises 6.2-6.4).
+\end{remark}
+
+
+
+% ----------6.2----------
+\subsection{Hanson-Wright Inequality}
+If $X$ is a subgaussian random vector in $\mathbb{R}^n$, what can we say about its norm? If $X$ has 
+indepdendent entries, then it concentrated (\cref{thm:3.1.1}). But in general, it does not have to - it can be 
+too small with high probability (Exercise 3.37). However, it can't be too large:
+
+\begin{proposition}[Norm of subgaussian random vector]
+\label{prop:6.2.1}
+Let $X$ be a mean zero subgaussian random vector in $\mathbb{R}^n$ with $\lVert X \rVert_{\psi_2} \leq K$. Then 
+for every $t \geq 0$, 
+\[ P(\lVert X \rVert_{2} \geq CK(\sqrt{n} + t)) \leq e^{-t^2}. \]
+\end{proposition}
+
+\begin{proof}
+WLOG, we can assume that $K = 1$.
+\end{proof}
+
+
+% ----------6.3----------
+\subsection{Symmetrization}
+A random variable $X$ is called \underline{symmetric} if it has the same distribution as $-X$. A basic example 
+is the Rademacher random variable, which takes values $-1$ and $1$ with equal probabilities. Mean-zero normal 
+random variables are also symmetric, while the exponential and Poisson distributions are not.
+
+This section introduces \underline{symmetrization}, a useful trick for reducing problems to symmetric 
+distributions - and sometimes even to the Rademacher distribution. It is based on the following:
+
+\begin{lemma}[Constructing symmetric distributions]
+\label{lem:6.3.1}
+Let $X$ be a random variable and $\xi$ be an independent Rademacher random variables. Then 
+\begin{enumerate}
+	\item $\xi X$ and $\xi |X|$ are identically distributed and symmetric.
+	\item If $X$ is symmetric, both $\xi X$ and $\xi |X|$ have the same distribution as $X$. 
+	\item If $X'$ is an independent copy of $X$, then $X - X'$ is symmetric.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+We'll check that $\xi X$ is symmetric. For any interval $A \subset \mathbb{R}$, the law of total probability 
+gives 
+\begin{align*}
+	P(\xi X \in A) 
+	&= P(\xi X \in A | \ \xi = 1) \cdot \frac{1}{2} + P(\xi X \in A | \ \xi = -1) \cdot \frac{1}{2} \\
+	&= \frac{1}{2}(P(X \in A) + P(-X \in A)).
+\end{align*}
+Let's also do this for $-\xi X$: 
+\begin{align*}
+	P(-\xi X \in A) 
+	&= P(-\xi X \in A | \ \xi = 1) \cdot \frac{1}{2} + P(-\xi X \in A | \ \xi = -1) \cdot \frac{1}{2} \\
+	&= \frac{1}{2}(P(-X \in A) + P(X \in a)).
+\end{align*}
+Therefore $\xi X$ and $-\xi X$ have the same CDF, meaning they have the same distribution.
+
+The rest of the proof is in Exercise 6.16.
+\end{proof}
+
+\begin{lemma}[Symmetrization]
+\label{lem:6.3.2}
+Let $X_1, \dots, X_N$ be independent, mean zero random vectors in a normed space, and let $\varepsilon_1, 
+\dots, \varepsilon_N$ be independent Rademacher random variables. Then 
+\[ \frac{1}{2}\mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i X_i \right\rVert_{} \right] 
+\leq \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} X_i \right\rVert_{} \right] 
+\leq 2 \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i X_i \right\rVert_{} \right]. \]
+\end{lemma}
+
+\begin{proof}
+(\textbf{Upper bound}) Let $(X_i')$ be an independent copy of $(X_i)$. Since $\sum_{i = 1}^{} X_i'$ has mean 
+zero, we have 
+\[ p := \mathbb{E}\left[ \left\lVert \sum_{i}^{} X_i \right\rVert \right] 
+\leq \mathbb{E}\left[ \left\lVert \sum_{i}^{} X_i - \sum_{i}^{} X_i' \right\rVert \right] 
+= \mathbb{E}\left[ \left\lVert \sum_{i}^{} (X_i - X_i') \right\rVert \right]. \]
+The inequality above comes from the fact that for independent random vectors $Y$ and $Z$, 
+\[ \mathbb{E}[Z] = 0 \implies \mathbb{E}[\lVert Y \rVert_{}] \leq \mathbb{E}[\lVert Y + Z \rVert_{}]. \]
+Since $X_i - X_i'$ are symmetric random vectors, they have the same distribution as 
+$\varepsilon_i (X_i - X_i')$ by \cref{lem:6.3.1} (b). Then 
+\begin{align*}
+	p 
+	&\leq \mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i (X_i - X_i') \right\rVert \right] \\
+	&\leq \mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i X_i \right\rVert \right] 
+	+ \mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i X_i' \right\rVert \right] \quad 
+	\text{(Triangle inequality)} \\
+	&= 2 \mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i X_i \right\rVert \right] \quad 
+	\text{(The two terms are identically distributed)}.
+\end{align*}
+
+(\textbf{Lower bound}) The argument is similar as the proof for the upper bound:
+\begin{align*}
+	\mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i X_i \right\rVert \right] 
+	&\leq \mathbb{E}\left[ \left\lVert \sum_{i}^{} \varepsilon_i (X_i - X_i') \right\rVert \right] \\
+	&= \mathbb{E}\left[ \left\lVert \sum_{i}^{} (X_i - X_i') \right\rVert \right] \quad 
+	\text{(Same distribution)} \\
+	&\leq \mathbb{E}\left[ \left\lVert \sum_{i}^{} X_i \right\rVert \right] 
+	+ \mathbb{E}\left[ \left\lVert \sum_{i}^{} X_i' \right\rVert \right] \quad \text{(Triangle inequality)} \\
+	&= 2 \mathbb{E}\left[ \left\lVert \sum_{i}^{} X_i \right\rVert \right] \quad 
+	\text{(Identical distribution)}.
+\end{align*}
+Question: Where did we use $X_i$'s independence? Do we need mean zero for both upper and lower bounds?
+\end{proof}
+
+There are also other versions of symmetrization lemmas (Exercises 6.19-6.21).
+
+
+
+% ----------6.4----------
+\subsection{Random Matrices with non-i.i.d. Entries}
+A typical application of symmetrization consist of two steps: First, replace random variables $X_i$ with 
+symmetric ones $\varepsilon_i X_i$, then condition on $X_i$ so that all randomness comes from the signs 
+$\varepsilon_i$. Hence this reduces the problems to Rademacher random variables. To illustrate this techinique, 
+let's bound the operator norm of a random matric with independent, non-identically distributed entries:
+
+\begin{theorem}[Norm of random matrices with non-i.i.d. entries]
+\label{thm:6.4.1}
+Let $A$ be an $n \times n$ symmetric random matrix with independent, mean zero entries above and on the 
+diagonal. Then 
+\[ \mathbb{E}\left[ \max_{i} \lVert A_i \rVert_{2} \right] \leq \mathbb{E}\left[ \lVert A \rVert_{} \right] 
+\leq C \sqrt{\log_{}{n}} \cdot \mathbb{E}\left[ \max_{i} \lVert A_i \rVert_{2} \right], \]
+where $A_i$ denotes the rows of $A_i$.
+\end{theorem}
+
+\begin{proof}
+The lower bound is already done in Exercise 4.7.
+
+For the upper bound, we will use symmetrization and the matrix Khintchine inequality (\cref{thm:5.4.14}). 
+
+Let's decompose $A$ entry-by-entry, keeping symmetry in mind, like the proof of \cref{thm:5.5.1}. Denote the 
+standard basis of $\mathbb{R}^n$ by $e_1, \dots, e_n$, then $A$ can be expressed as a sum of independent, 
+mean zero random matrices:
+\[ A = \sum_{i \leq j}^{} Z_{ij}, \text{ where } Z_{ij} = \begin{cases}
+	A_{ij}(e_i e_j^T + e_j e_i^T) &\text{ if } i < j, \\
+	A_{ii}e_i e_i^T &\text{ if } i = j
+\end{cases}. \]
+By applying symmetrization (\cref{lem:6.3.2}), we get 
+\[ \mathbb{E}\left[ \lVert A \rVert_{} \right] 
+= \mathbb{E}\left[ \left\lVert \sum_{i \leq j}^{} Z_{ij} \right\rVert \right] 
+\leq 2 \mathbb{E}\left[ \left\lVert \sum_{i \leq j}^{} \varepsilon_{ij} Z_{ij} \right\rVert \right] 
+\quad (*) \]
+where $\varepsilon_{ij}$ are independent Rademacher random variables.
+
+Condition on $(Z_{ij})$, apply the matrix Khintchine inequality (\cref{thm:5.4.14}) for $p = 1$, and take 
+expectation over $(Z_{ij})$ using the law of total expectation, which gives 
+\[ \mathbb{E}\left[ \left\lVert \sum_{i \leq j}^{} \varepsilon_{ij} Z_{ij} \right\rVert \right] 
+\leq C \sqrt{\log_{}{n}}\mathbb{E}\left[ \left\lVert \sum_{i \leq j}^{}Z_{ij}^2 \right\rVert^{1/2} \right]. 
+\quad (**) \]
+Since $(Z_{ij})$ is a diagonal matrix, 
+\[ Z_{ij}^2 = \begin{cases}
+	A_{ij}^2 (e_i e_j^T + e_je_i^T) &\text{ if } i < j, \\
+	A_{ii}^2 e_i e_i^T &\text{ if } i = j
+\end{cases}. \]
+Therefore, 
+\[ \sum_{i \leq j}^{} Z_{ij}^2 
+= \sum_{i = 1}^{n} \left( \sum_{j = 1}^{n} A_{ij}^2 \right) e_ie_i^T 
+= \sum_{i = 1}^{n} \lVert A_i \rVert_{2}^2 e_i e_i^T. \]
+In other words, this is a diagonal matrix with diagonal entries equal to $\lVert A_i \rVert_{2}^2$. Since 
+the operator norm of a diagonal matrix is the maximal absolute value of its entries, we get 
+\[ \left\lVert \sum_{i \leq j}^{} Z_{ij}^2 \right\rVert = \max_{i} \lVert A_i \rVert_{2}^2. \]
+Substitute the bound above into (**) then into (*) completes the proof.
+\end{proof}
+
+There is more practice on symmetrization as well (Exercises 6.22-6.29).
+
+
+
+% ----------6.5----------
+\subsection{Application: Matrix Completion}
+
+
+
+
+% ----------6.6----------
+\subsection{Contraction Principle}
+There is one more useful inequality the text covers in the chapter:
+
+\begin{theorem}[Contraction principle]
+\label{thm:6.6.1}
+Let $x_1, \dots, x_N$ be any vectors in a normed space, $(a_1, \dots, a_N) \in \mathbb{R}^N$, and 
+$\varepsilon_1, \dots, \varepsilon_N$ be independent Rademacher random variables. Then 
+\[ \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} a_i \varepsilon_i x_i \right\rVert \right] 
+\leq \lVert a \rVert_{\infty} \cdot \mathbb{E}\left[ \left\lVert 
+\sum_{i = 1}^{N} \varepsilon_i x_i \right\rVert \right]. \]
+\end{theorem}
+
+\begin{proof}
+WLOG, assume that $\lVert a \rVert_{\infty} \leq 1$. Define the function 
+\[ f(a) := \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} a_i \varepsilon_i x_i \right\rVert \right]. \]
+Then $f: \mathbb{R}^n \to \mathbb{R}$ is convex (Exercise 6.35).
+
+We want to bound for $f$ the set of points $a$ satisfying $\lVert a \rVert_{\infty} \leq 1$, i.e. on the unit 
+cube $[-1, 1]^N$. By the maximum principle (Exercises 1.4 \& 1.5), the maximum of a convex function on the 
+cube is attained at a vertex, where all $a_i = \pm 1$. For such $a$, the random variables $(\varepsilon_i a_i)$ 
+have the same distribution as $\varepsilon_i$ by symmetry. Thus 
+\[ \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} a_i \varepsilon_i x_i \right\rVert \right] 
+= \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i x_i \right\rVert \right], \]
+thus 
+\[ f(a) \leq \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i x_i \right\rVert \right] 
+\text{ whenever } \lVert a \rVert_{\infty} \leq 1, \]
+which completes the proof.
+\end{proof}
+
+As an application, we can prove a version of symmetrization but with Gaussian random variables 
+$g_i \sim N(0, 1)$ instead of Rademachers.
+
+\begin{lemma}[Symmetrization with Gaussians]
+\label{lem:6.6.2}
+Let $X_1, \dots, X_N$ be independent, mean zero random vectors in a normed space. Let $g_1, \dots, g_N 
+\sim N(0, 1)$ be independent Gaussian random variables, which are also independent of $X_i$. Then 
+\[ \frac{c}{\sqrt{\log_{}{N}}} \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} g_iX_i \right\rVert \right] 
+\leq \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} X_i \right\rVert \right] 
+\leq 3 \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} g_i X_i \right\rVert \right]. \]
+\end{lemma}
+
+\begin{proof}
+\textbf{(Upper bound)} By symmetrization (\cref{lem:6.3.2}), we have 
+\[ E := \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} X_i \right\rVert \right] 
+\leq 2 \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i X_i \right\rVert \right]. \]
+To interject Gaussian random variables, recall that $\mathbb{E}\left[ |g_i| \right] = \sqrt{2 / \pi}$. Then 
+we can continue the bound as follows: 
+\begin{align*}
+	E 
+	&\leq 2 \sqrt{\frac{\pi}{2}} \mathbb{E}_X\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i 
+	\mathbb{E}_g\left[ |g_i| \right] X_i \right\rVert \right] \\
+	&\leq 2 \sqrt{\frac{\pi}{2}} \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} 
+	\varepsilon_i |g_i| X_i \right\rVert \right] \quad \text{(Jensen inequality)} \\
+	&= 2 \sqrt{\frac{\pi}{2}} \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} 
+	g_i X_i \right\rVert \right]. 
+\end{align*}
+The last equality holds since the random variables $(\varepsilon_i |g_i|)$ have the same joint distribution as 
+$(g_i)$ (\cref{lem:6.3.1} (b)).
+
+\textbf{(Lower bound)} We have 
+\begin{align*}
+	\mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} g_i X_i \right\rVert \right] 
+	&= \mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i g_i X_i \right\rVert \right] \quad 
+	\text{(Symmetry of $g_i$)} \\
+	&\leq \mathbb{E}_g\left[ \mathbb{E}_X\left[ \lVert g \rVert_{\infty} 
+	\mathbb{E}_{\varepsilon}\left[ \left\lVert \sum_{i = 1}^{N} \varepsilon_i X_i 
+	\right\rVert \right] \right] \right] \quad \text{(\cref{thm:6.6.1})} \\
+	&= \mathbb{E}_g\left[ \lVert g \rVert_{\infty} \mathbb{E}_{\varepsilon}\left[ \mathbb{E}_X\left[ 
+	\left\lVert \sum_{i = 1}^{N} \varepsilon_i X_i \right\rVert \right] \right] \right] \quad 
+	\text{(Independence)} \\
+	&\leq 2 \mathbb{E}_g\left[ \lVert g \rVert_{\infty} \mathbb{E}_X\left[ \left\lVert 
+    \sum_{i = 1}^{N} X_i\right\rVert \right] \right] \quad \text{(\cref{lem:6.3.2})} \\
+	&= 2 \mathbb{E}\left[ \lVert g \rVert_{\infty} \right] \cdot 
+	\mathbb{E}\left[ \left\lVert \sum_{i = 1}^{N} X_i \right\rVert \right] \quad \text{(Independence).}
+\end{align*}
+Moreover, by \cref{prop:2.7.6}, 
+\[ \mathbb{E}\left[ \lVert g \rVert_{\infty} \right] \leq C \sqrt{\log_{}{N}}. \]
+Plugging back gives the result.
+\end{proof}
+
+\begin{remark}[Log factor is unavoidable]
+\label{rmk:6.6.3}
+The logarithmic factor in \cref{lem:6.6.2} is necessary and optimal in general (Exercise 6.37), making 
+Gaussian symmetrization weaker than Rademacher's.
+\end{remark}
