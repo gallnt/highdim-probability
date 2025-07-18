@@ -1,0 +1,70 @@
+\section{Concentration Without Independence}
+
+
+% Exercise 1
+\section*{Exercise 1}
+\subsection*{(a)}
+Let $\varepsilon > 0$ be given, and $f:X \to Y$ with $X, Y$ being metric spaces. Choose $p, q \in X$ such that 
+$d_X(p, q) < \varepsilon / L$ where $L$ is the Lipschitz constant of the function $f$. Then 
+\[ d_Y(f(p), f(q)) \leq L d_X(p, q) < L \cdot \frac{\varepsilon}{L} = \varepsilon \]
+so that $f$ is uniformly continuous.
+
+\subsection*{(b)}
+(Assume that we have bounded gradient or else the statement would be false) By the mean value theorem, 
+for $x, y \in \mathbb{R}^n$, 
+\begin{align*}
+	|f(y) - f(x)| 
+	&= |\nabla f(\lambda x + (1 - \lambda)y)^T (y - x)| \quad \text{(Mean value theorem)} \\
+	&\leq \lVert \nabla f(\lambda x + (1 - \lambda) y) \rVert_{2} \lVert y - x \rVert_{2} \quad 
+	\text{(Cauchy-Schwartz inequality)} \\
+	&\leq \sup_{x \in \mathbb{R}^n} \lVert \nabla f(x) \rVert_{2} \lVert y - x \rVert_{2}.
+\end{align*}
+
+\subsection*{(c)}
+Define 
+\[ f(x) = \begin{cases}
+	x \sin{\left( \frac{1}{x} \right)} &\text{ if } x \neq 0, \\
+	0 &\text{ if } x = 0
+\end{cases}. \]
+We can check that $f$ is indeed continuous. The squeeze theorem gives
+\[ 0 \leq \left| x \sin{\frac{1}{x}} \right| \leq |x|, \]
+meaning that the limit of $f(x)$ as $x \to 0$ is indeed 0.
+Since $f$ is continuous on the compact interval $[-1, 1]$, by the Heine-Cantor theorem, $f$ is uniformly 
+continuous. However, if we look at the derivative of $f$, 
+\[ f'(x) = \begin{cases}
+	\sin{\frac{1}{x}} - \frac{\cos{(1/x)}}{x} &\text{ if } x \neq 0, \\
+	\text{undefined} &\text{ if } x = 0.
+\end{cases} \]
+As we take $x \to 0$, the derivative becomes unbounded, hence it cannot be the case that $f$ is Lipschitz.
+
+\subsection*{(d)}
+Let $f(x) = |x|$. Then clearly $f(x)$ is not differentiable at $x = 0$. However, $f(x)$ is 1-Lipschitz as 
+the supremum of the absolute value of the derivative in the interval $[-1, 1]$ is 1.
+
+
+% Exercise 2
+\newpage
+\section*{Exercise 2}
+\subsection*{(a)}
+\begin{align*}
+	|f(y) - f(x)| 
+	&= |\left\langle y, \theta \right\rangle - \left\langle x, \theta \right\rangle| \\
+	&= |\left\langle y - x, \theta \right\rangle| \\
+	&\leq \lVert \theta \rVert_{2} \lVert y - x \rVert_{2}. \quad \text{(Cauchy-Schwartz inequality)}
+\end{align*}
+
+\subsection*{(b)}
+\begin{align*}
+	|f(y) - f(x)| 
+	&= |Ay - Ax| \\
+	&= |A(y - x)| \\
+	&\leq \lVert A \rVert_{} \lVert y - x \rVert_{2}.
+\end{align*}
+
+\subsection*{(c)}
+\begin{align*}
+	|f(y) - f(x)| 
+	&= |\lVert y \rVert_{} - \lVert x \rVert_{}| \\
+	&\leq \lVert y - x \rVert_{} \quad \text{(Reverse triangle inequality)} \\
+	&\leq L \lVert y - x \rVert_{2}.
+\end{align*}
