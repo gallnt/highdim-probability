@@ -618,9 +618,118 @@ vectors } u_i, v_j \in H. \]
 Here $K \leq 1.783$ is an absolute constant.
 \end{theorem}
 
+There is nothing random in the statement above, but we'll approach it using probabilistic reasoning. In fact, 
+there will be two proofs for Grothendieck inequality, one with a much worse bound of $K \leq 14.1$ in this 
+section, and the other one with $K \leq 1.783$ in section 3.7. Before going into the first argument, 
+there is a simple observation that we state here.
+
+\begin{remark}[Homogeneous form of Grothendieck inequality]
+\label{rmk:3.5.2}
+The assumption of Grothendieck inequality can be equivalently stated as 
+\[ \left| \sum_{i, j}^{} a_{ij}x_iy_j \right| \leq \max_{i}|x_i| \cdot \max_{j}|y_j| \]
+for any real numbers $x_i$ and $y_j$ (Exercise 3.47). The conclusion of Grothendieck inequality can be 
+equivalently stated as
+\[ \left| \sum_{i, j}^{} a_{ij} \left\langle u_i, v_j \right\rangle \right| 
+\leq K \max_{i} \lVert u_i \rVert_{} \cdot \max_{j} \lVert v_j \rVert_{} \]
+for any Hilbert space $H$ and any vectors $u_i, v_j, \in H$ via rescaling.
+\end{remark}
+
+\begin{proof}[Proof of \cref{thm:3.5.1} with worse bound]
+(\textbf{Step 1: Reductions}) Note that Grothendieck inequality becomes trivial if we allow the value of $K$ to 
+depende on the matrix $A = (a_{ij})$. For example, $K = \sum_{i, j}^{} |a_{ij}|$ would work! Let $A(K)$ be the 
+smallest number that makes the conclusion in \cref{rmk:3.5.2} holds for a given matrix $A$ and any Hilbert 
+space $H$ and any vectors $u_i, v_j \in H$. Our goal is to show that $K$ is actually \textit{independent} of 
+both the matrix $A$ and the dimensions $m$ and $n$.
+
+WLOG, we may show this for a specific Hilbert space $H$, namely for $\mathbb{R}^N$ equipped with the Euclidean 
+norm $\lVert \cdot \rVert_{2}$. This is because we can replace $H$ with the subspace spanned by the vectors 
+$u_i$ and $v_j$, which has dimension at most $N = m + n$ and inherits the norm from $H$. Then, we use the fact 
+that all $N$-dimensional Hilbers spaces are isometric to $\mathbb{R}^N$ with the usual Euclidean norm 
+$\lVert \cdot \rVert_{2}$. This isometry can be built by matching a given orthonormal basis of $H$ with the 
+canonical bases of $\mathbb{R}^N$.
+
+By the definition of $K = K(A)$, there exist vectors $u_i, v_j \in \mathbb{R}^N$ satisfying 
+\[ \sum_{i, j}^{} a_{ij}\left\langle u_i, v_j \right\rangle = K, \ 
+\lVert u_i \rVert_{2} = \lVert v_j \rVert_{2} = 1. \]
+
+(\textbf{Step 2: Introducing randomness}) The key idea of the proof is to express the vectors $u_i, v_j$ 
+using Gaussian random variables 
+\[ U_i := \left\langle g, u_i \right\rangle \text{ and } V_j := \left\langle g, v_j \right\rangle, 
+\text{ where } g \sim N(0, I_N). \]
+Then $U_i$ and $V_j$ are standard normal random variables whose correlations follow exactly the inner products 
+of the vectors $u_i$ and $v_j$ (\cref{cor:3.3.2} and Exercise 3.9):
+\[ \mathbb{E}\left[ U_iV_j \right] = \left\langle u_i, v_j \right\rangle. \]
+Thus 
+\[ K = \sum_{i, j}^{}a_{ij} \left\langle u_i, v_j \right\rangle 
+= \mathbb{E}\left[ \sum_{i, j}^{}a_{ij}U_iV_j \right] \quad (*). \]
+
+Suppose for a moment that the random variables $|U_i|$ and $|V_j|$ were to be almost surely bounded by some 
+constant, say $R$. Then from the assumption in \cref{rmk:3.5.2}, 
+\[ \left| \sum_{i, j}^{} a_{ij}U_iV_j \right| \leq R^2 \text{ almost surely. } \]
+Plugging this into the equation above will give $K \leq R^2$, completing the proof.
+
+(\textbf{Step 3: Truncation}) The above is flawed, because the Gaussian random variables $U_i, V_j$ are 
+unbounded. But their tails are light enough that they are close to being bounded. To act on this heuristic, we 
+use a \textit{truncation} trick. Pick a level $R \geq 1$ and split the random variables like this:
+\[ U_i = U_i^- + U_i^+ \text{ where } U_i^- = U_i \mathbf{1}_{\{|U_i| \leq R\}} \text{ and } 
+U_i^+ = U_i \mathbf{1}_{\{|U_i| > R\}}. \]
+We similarly decompose $V_j = V_j^- + V_j^+$. Nor $U_i^-$ and $V_j^-$ are bounded by $R$, as desired. The 
+remainder terms $U_I^+$ and $V_j^+$ are small in the $L^2$ norm: by Exercise 2.4 (b), a Gaussian tail bound 
+gives 
+\[ \lVert U_i^+ \rVert_{L^2}^2 \leq 2 \left( R + \frac{1}{R} \right) \frac{1}{\sqrt{2 \pi}}e^{-R^2 / 2} 
+< \frac{4}{R^2} \quad (**). \]
+A similar bound holds for $V_j^+$.
+
+(\textbf{Step 4: Breaking up the sum}) Replacing $U_i V_j$ with $(U_i^- + U_i^+)(V_j^- + V_j^+)$ in $(*)$ and 
+expanding the sum, we get 
+\[ K = \underbrace{\mathbb{E}\left[ \sum_{i, j}^{} a_{ij} U_i^- V_j^- \right]}_{S_-}
++ \underbrace{\mathbb{E}\left[ \sum_{i, j}^{} a_{ij} U_i^+ V_j^- \right]}_{S_{\pm}}
++ \underbrace{\mathbb{E}\left[ \sum_{i, j}^{} a_{ij} U_i^- V_j^+ \right]}_{S_{\mp}} 
++ \underbrace{\mathbb{E}\left[ \sum_{i, j}^{} a_{ij} U_i^+ V_j^+ \right]}_{S_+}. \]
+Let's bound each term! $S_-$ is the easiest to bound: by construction, $|U_i|$ and $|V_j|$ are bounded by $R$, 
+so from step 2 we can directly get that 
+\[ S_- \leq R^2. \]
+
+We cannot use the same reasoning for $S_{\pm}$, since the random variable $U_i^+$ is unbounded. Instead, let 
+us treat the random variables $U_i^+$ and $V_j^-$ as elements of the Hilbert space $L^2$ with the inner product 
+$\left\langle X, Y \right\rangle_{L^2} = \mathbb{E}\left[ XY \right]$. Thus write 
+\[ S_{\pm} = \sum_{i, j}^{} a_{ij} \left\langle U_i^+, V_j^- \right\rangle_{L^2}. \]
+We have $\lVert U_i^+ \rVert_{L^2} < 2/R$ by $(**)$, and $\lVert V_j^- \rVert_{L^2} \leq 
+\lVert V_j \rVert_{L^2} = 1$ by construction. Then, applying the conclusion from \cref{rmk:3.5.2} for the 
+Hilbert space $H = L^2$, we find that 
+\[ S_{\pm} = K \cdot \frac{2}{R}. \]
+(It might seem odd that we are using the inequality that we are trying to prove. However, we picked 
+$K = K(A)$ at that start to be the smallest value to make Grothendieck inequality work. That is the $K$ that 
+we are using here).
+
+The last two terms, $S_{\mp}$ and $S_+$, can be bounded just like the above (Check).
+
+(\textbf{Step 5: Putting everything together}) Plugging the bounde on all four terms, we conclude that 
+\[ K \leq R^2 + \frac{6K}{R}. \]
+Setting $R = 12$ and rearranging the terms gives $K \leq 288$. A litte finer analysis, skipping the rough 
+$4 / R^2$ bound in $(**)$ yields $K \leq 14.1$ (Exercise 3.48).
+\end{proof}
+
+\begin{remark}[Quadratic Grothendieck]
+\label{rmk:3.5.3}
+We can often relax Grothendieck inequality by taking $x_i = y_i$, bounding a quadratic instead of a bilinear 
+form. The statement becomes: Let $A \in \mathbb{R}^{n \times n}$ be symmetric PSD or diagonal-free. Assume that 
+\[ \left| \sum_{i, j}^{} a_{ij}x_ix_j \right| \leq 1 \text{ for any numbers } x_i \in \{-1, 1\}. \]
+Then for any Hilbert space $H$, we have 
+\[ \left| \sum_{i, j}^{} a_{ij}\left\langle u_i, v_j \right\rangle \right| \leq 2K \text{ for any unit vectors} 
+u_i, v_j \in H. \]
+Here $K$ is the the absolute constant from Grothendieck inequality.
+\end{remark}
+
+\begin{proof}
+Exercises 3.49 \& 3.50.
+\end{proof}
+
+
 
 % ----------3.6----------
 \subsection{Application: Maximum Cut for Graphs}
+
 
 
 
