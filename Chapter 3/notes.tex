@@ -31,7 +31,7 @@ Applying Bernstein inequality ($N = n$ and $a_i = 1/n$), we get that for any $u 
 	&\leq 2 \exp{\left[ -\frac{cn}{K^4} \min_{}(u^2, u) \right]}.
 \end{align*}
 where in the last step, we used the fact that $K$ is bounded below by an absolute constant, since 
-\[ 1 = \lVert X_1 \rVert_{L^2} \leq C \lVert X_1 \rVert_{\psi_2} \leq CK \text{ by } \cref{prop:2.6.6}. \]
+\[ 1 = \lVert X_1 \rVert_{L^2} \leq C \lVert X_1 \rVert_{\psi_2} \leq CK \text{ by \cref{prop:2.6.6}}. \]
 
 We'll now use the concentration inequality for $\lVert X \rVert_{2}^2$ to deduce one for 
 $\lVert X \rVert_{2}$. We'll use the following propery for all $z, \delta \geq 0$: 
@@ -726,14 +726,404 @@ Exercises 3.49 \& 3.50.
 \end{proof}
 
 
+\subsubsection{Semidefinite Programming}
+Some hard computational problems can be relazed into easier, more computationally tractable programs via 
+semidefinite programming, and Grothendieck inequality can help guarantee its quality.
+
+\begin{definition}[]
+\label{def:3.5.4}
+A \underline{semidefinite program (SDP)} is an optimization problem of the following type: 
+\[ \text{maximize } \left\langle A, X \right\rangle: \ X \succeq 0, \ 
+\left\langle B_i, X \right\rangle \leq b_i \text{ for } i = 1, \dots, N. \]
+\end{definition}
+Here $A, B$ are given $n \times n$ matrices, and $b_i$ are given numbers. The variable $X$ is an $n \times n$ 
+symmetric PSD matrix, indicated by the notation $X \succeq 0$. The inner product is the standard one on the 
+space of $n \times n$ matrices: 
+\[ \left\langle A, X \right\rangle = \mathrm{tr}(A^T X) = \sum_{i, j = 1}^{n}A_{ij}X_{ij}. \]
+Note that if we \textit{minimize} instead of maximize, we still get a semidefinite program. Same goes for 
+replacing any signs ``$\leq$" by ``$\geq$" or ``$=$".
+
+\begin{remark}[An SDP program is a convex program]
+\label{rmk:3.5.5}
+Every SDP is a convex program because it involves maximizing a \textit{linear} function $\left\langle A, X 
+\right\rangle$ over a convex set of matrices (the set of PSD matrices is convex, and so is its intersection 
+with the half-spaces defined by the constraints $\left\langle B_i, X \right\rangle \leq b_i$). This is good news 
+because convex programs are \textit{algorithmically tractable}, i.e. there are efficient solvers for general 
+convex programs, and specifically for SDPs.
+\end{remark}
+
+\begin{center}
+	\textit{Semidefinite Relaxations}
+\end{center}
+
+SDPs can provide efficient relaxations of computationally hard problems, such as 
+\[ \text{maximize } \sum_{i, j = 1}^{n}A_{ij}x_ix_j: \ x_i = \pm 1 \text{ for } i = 1, dots, n \]
+where $A$ is a given $n \times n$ matrix. This is a \textit{quadratic integer optimization problem}, whose 
+feasible set consists of $2^n$ vectors $x \in \{-1, 1\}^n$. Finding the maximum via brute force takes 
+exponential time. Moreover, there is probably not a smarter way because it is a computationally hard problem 
+(NP-hard).
+
+However, we can relax the problem into a SDP program than approximates the maximum within a constant factor. 
+To do this, we replace the numbers $x_i = \pm 1$ by random variables $X_i$ in $\mathbb{R}^n$. We get 
+\[ \text{maximize } \sum_{i, j = 1}^{n}A_{ij}\left\langle X_i, X_j \right\rangle: 
+\ \lVert X_i \rVert_{2} = 1 \text{ for } i = 1, \dots, n. \]
+
+\begin{proposition}[The relaxation is an SDP]
+\label{prop:3.5.6}
+The optimization problem above is equivalent to the following SDP:
+\[ \text{maximize } \left\langle A, Z \right\rangle: \ Z \succeq 0, Z_{ii} = 1 \text{ for } i = 1, \dots, n. \]
+\end{proposition}
+
+\begin{proof}
+Recall that the \underline{Gram matrix} of vectors $X_1, \dots, X_n$ is the $n \times n$ matrix $Z$ with entries 
+$Z_{ij} = \left\langle X_i, X_j \right\rangle$. Then the two problems are equivalent thanks to two linear 
+algebra facts: (a) the Gram matrix of any set of vectors is symmetric and PSD, and (b) conversely, any 
+symmetric PSD matrix is a Gram matric of some set of vectors (Exercise 3.51).
+\end{proof}
+
+\begin{center}
+	\textit{The guarantee of relaxation}
+\end{center}
+
+Let's show that the probabilistic SDP approximates the exact SDP within a constant factor:
+
+\begin{theorem}[]
+\label{thm:3.5.7}
+Let $A \in \mathbb{R}^{n \times n}$ be symmetric PSD. Let $\mathrm{\int}(A)$ denote the maximum in the integer 
+optimization problem, and $\mathrm{sdp}(A)$ denote the maximum in the probabilistic SDP. Then 
+\[ \mathrm{\int}(A) \leq \mathrm{sdp}(A) \leq 2K \cdot \mathrm{\int}(A) \]
+where $K \leq 1.783$ is the constant in Grothendieck inequality.
+\end{theorem}
+
+\begin{proof}
+The first bound follows with $X_i = (x_i, 0, \dots, 0)^T$. The second comes directly from the quadratic 
+Grothendieck inequality in \cref{rmk:3.5.3}.
+\end{proof}
+
+Although \cref{thm:3.5.7} helps us approximate the maximum value in the integer SDP, it is not obvious how to 
+find the actual solution that attain this maximum value. Can we convert the vectors $X_i$ that give a solution 
+to the probabilistic SDP into labels $x_i = \pm 1$ that approximately solve the integer SDP?
+
+The answer is yes! But we need some knowledge of max-cuts first. After reading, we can create an even better 
+approximation constant than $2K$ (Exercise 3.58).
+
+
 
 % ----------3.6----------
 \subsection{Application: Maximum Cut for Graphs}
+Semidefinite relaxations can be useful for tackling one of the well known NP-hard problems: finding the maximum 
+cut of a graph.
 
+An undirected graph $G = (V, E)$ is defined as a set of vertices $V$ together with a set of edges $E$; each 
+edge is an unordered pair of vertices. We focus on finite, simple graphs - no loops or multiple edges. For 
+convenience, label the vertices by integers, setting $V = \{1, \dots, n\}$.
+
+\begin{definition}[]
+\label{def:3.6.1}
+If we partition th evertices of a graph $G$ into two disjoint subsets, the \underline{cut} is the number of 
+edges between them. Then \underline{maximum cut} of $G$, denoted $\mathrm{maxcut}(G)$, is the largest possible 
+cut over all partitions of vertices. The figure below is an illustration:
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 3/fig3-8.png}
+\end{center}
+\end{definition}
+Finding the maximum cut is generally a computationally hard problem (NP-hard).
+
+
+\subsubsection{A Simple 0.5-approximation Algorithm}
+We can relax the maximum cut problem into a SDP, but we have to translate the problem into linear algebra first.
+
+\begin{definition}[]
+\label{def:3.6.2}
+The \underline{Adjacency matrix} $A$ of a graph $G$ with vertices $V = \{1, \dots, n\}$ is a symmetric 
+$n \times n$ matrix where $A_{ij} = 1$ if vertices $i$ and $j$ are connected by an edge, and $A_{ij} = 0$ 
+otherwise.
+\end{definition}
+
+A partition of the vertices into two sets can be described by a vector of labels 
+\[ x = (x_i) \in \{-1, 1\}^n \]
+where the sign of $x_i$ shows which subset $x_i$ belongs to. For example, in Figure 3.8 from above, the three 
+black vertices might have $x_i = 1$ and the four white vertices $x_i = -1$. The cut for $G$ for this partition 
+is simply the number of edges between vertices with opposite labels:
+\[ \mathrm{cut}(G, x) = \frac{1}{2}\sum_{i, j: x_ix_j = -1}^{} A_{ij} 
+= \frac{1}{4} \sum_{i, j = 1}^{n} A_{ij}(1 - x_ix_j). \]
+The maximum cut is found by maximizing $\mathrm{cut}(G, x)$ over all partitions $x$: 
+\[ \mathrm{maxcut}(G) = \frac{1}{4} \max_{}\left\{ \sum_{i, j = 1}^{n} A_{ij}(1 - x_ix_j): \ x_i = \pm 1 
+\forall i\right\}. \]
+Let's start with a simple 0.5-approximation algorithm for the maximum cut - one that finds a vut with at least 
+half of the edges of $G$.
+
+\begin{proposition}[0.5-approximation algorithm for maximum cut]
+\label{prop:3.6.3}
+If we split the vertices of $G$ into two sets at random, uniformly over all $2^n$ partitions, the expected cut 
+is at least $0.5 \mathrm{maxcut}(G)$.
+\end{proposition}
+
+\begin{proof}
+A random cut is generated by a Rademacher random vector $x$. Then, in the formula for $\mathrm{cut}(G, x)$ 
+we hvae $\mathbb{E}\left[ x_ix_j \right] = 0$ for $i \neq j$ and $A_{ij} = 0$ for $i = j$ since the graph has 
+no loops. Thus, by linearity of expectation, 
+\[ \mathbb{E}\left[ \mathrm{cut}(G, x) \right]
+= \frac{1}{4} \sum_{i, j = 1}^{n} A_{ij} = \frac{1}{2}|E| \geq \frac{1}{2}\mathrm{maxcut}(G). \]
+\end{proof}
+
+
+\subsubsection{Semidefinite Relaxation}
+We can get a 0.878-approximation algorithm due to Goemans and Williamson. It is based on a semidefinite 
+relaxation of the NP-hard problem. We consider the SDP 
+\[ \mathrm{sdp}(G) := \frac{1}{4} \max_{}\left\{ \sum_{i, j = 1}^{n} A_{ij} 
+(1 - \left\langle X_i, X_j \right\rangle): \ X_i \in \mathbb{R}^n, \ \lVert X_i \rVert_{2} = 1 \ 
+\forall i \right\}. \]
+
+We'll show that the $\mathrm{sdp}(G)$ approximates $\mathrm{maxcut}(G)$ within a 0.878 factor, and how to turn 
+the solution $(X_i)$ into labels $x_i = \pm 1$ for an actual partition of the graph. We do this by 
+\textit{randomized rounding}: Pick a random hyperplane through the origin in $\mathbb{R}^n$ and assign $x_i = 1$ 
+to the vectors $X_i$ on one side, $x_i = -1$ to the other (see figure below). More formally, consider a standard 
+normal random vector $g \sim N(0, I_n)$ and define 
+\[ x_i := \mathrm{sign}\left\langle X_i, g \right\rangle, \ i = 1, \dots, n. \]
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 3/fig3-9.png}
+\end{center}
+
+\begin{theorem}[]
+\label{thm:3.6.4}
+Let $G$ be a graph with adjacency matrix $A$. Let $(X_i)$ be a solution of the SDP, and $x = (x_i)$ be the 
+result of a randomized rounding of $(X_i)$. Then 
+\[ \mathbb{E}\left[ \mathrm{cut}(G, x) \right] \geq 0.878 \mathrm{sdp}(G) \geq 0.878 \mathrm{maxcut}(G). \]
+\end{theorem}
+
+The proof is based on an elementary inequality. In proving Grothendieck inequality (\cref{thm:3.5.1}), we 
+relied on the fact that if $g \sim N(0, I_n)$ then 
+\[ \mathbb{E}\left[ \left\langle g, u \right\rangle \left\langle g, v \right\rangle \right] 
+= \left\langle u, v \right\rangle \]
+for any fixed vectors $u, v \in \mathbb{R}^n$ (Exercise 3.9). We will need a slightly more advanced version of 
+this identity:
+
+\begin{lemma}[Grothendieck identity]
+\label{lem:3.6.5}
+Consider a random vector $g \sim N(0, I_n)$. Then for any fixed vectors $u, v \in S^{n - 1}$, we have 
+\[ \mathbb{E}\left[ \mathrm{sign}\left\langle g, u \right\rangle \mathrm{sign}\left\langle g, v 
+\right\rangle \right] = \frac{2}{\pi} \arcsin{\left\langle u, v \right\rangle}. \]
+\end{lemma}
+
+\begin{proof}
+Exercise 3.53.
+\end{proof}
+
+A downside of the Grothendieck inequality is the nonlinear function arcsin, which is hard to work with. We can 
+replace it with a linear bound using the inequality 
+\[ 1 - \frac{2}{\pi}\arcsin{t} = \frac{2}{\pi} \arccos{t} \geq 0.878(1 - t), t \in [-1, 1]. \]
+which can be checked easily with software (shown below).
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 3/fig3-10.png}
+\end{center}
+
+\begin{proof}[Proof of Theorem 3.6.4]
+By the formula for $\mathrm{cut}(G, x)$ and linearity of expectation, we have 
+\[ \mathbb{E}\left[ \mathrm{cut}(G, x) \right] = \frac{1}{4}\sum_{i, j = 1}^{n}
+A_{ij}(1 - \mathbb{E}\left[ x_ix_j \right]). \]
+The definiton of the labels $x_I$ in the rounding step gives 
+\begin{align*}
+	1 - \mathbb{E}\left[ x_ix_j \right] 
+	&= 1 - \mathbb{E}\left[ \mathrm{sign}\left\langle X_i, g \right\rangle 
+	\mathrm{sign}\left\langle X_j, g \right\rangle \right] \\
+	&= 1 - \frac{2}{\pi}\arcsin{\left\langle X_i, X_j \right\rangle} \quad \text{(\cref{lem:3.6.5})} \\
+	&\geq 0.878(1 - \left\langle X_i, X_j \right\rangle).
+\end{align*}
+Therefore 
+\[ \mathbb{E}\left[ \mathrm{cut}(G, x) \right] 
+\geq 0.878 \cdot \frac{1}{4} \sum_{i, j = 1}^{n} A_{ij}(1 - \left\langle X_i, X_j \right\rangle) 
+= 0.878 \mathrm{SDP}(G). \]
+This proves the first inequality. The second inequality is trivial since $\mathrm{sdp}(G) 
+\geq \mathrm{maxcut}(G)$.
+\end{proof}
 
 
 
 % ----------3.7----------
-\subsection{Kernel Trick and Tightening of Grothendieck Inequaltity}
+\subsection{Kernel Trick and Tightening of Grothendieck Inequality}
+This section takes a different approach to the proof of Grothendieck inequality for (almost) the best known 
+bound: $K \leq 1.783$.
+
+We'll again use Grothendieck identity (\cref{lem:3.6.5}), but the nonlinearity of the arcsin function is a big 
+challenge. If there were no nonlinearity, we would have
+\[ \mathbb{E}\left[ \mathrm{sign}\left\langle g, u \right\rangle 
+\mathrm{sign}\left\langle g, v \right\rangle \right] = \frac{2}{\pi}\left\langle u, v \right\rangle, \]
+of which Grothendieck inequality would easily follow:
+\[ \frac{2}{\pi}\sum_{i, j}^{}a_{ij}\left\langle u_i, v_j \right\rangle 
+= \mathbb{E}\left[ \sum_{i, j}^{}a_{ij}\mathrm{sign}\left\langle g, u_i \right\rangle 
+\mathrm{sign}\left\langle g, v_j \right\rangle \right] \leq 1. \]
+This would give $K \leq \pi / 2 \approx 1.57$.
+
+The above is obviously wrong because of nonlinearity. To handle the nonlinear function, of an inner product 
+$\left\langle u, v \right\rangle$, we can use a remarkably powerful trickL rewrite it as a (linear) inner 
+product $\left\langle u', v' \right\rangle$ for some other vectors $u', v'$ in some Hilbert space $H$. In the 
+literature of machine learning, this is known as the \textit{kernel trick}.
+
+We will explicitly construct the nonlinear transformations $u' = \Phi(u)$, $v' = \Psi(v)$ that will do the job. 
+The best way to describe them is to use tensors, which generalize matrices to higher dimensions.
 
 
+\subsubsection{Tensors}
+\begin{definition}[]
+\label{def:3.7.1}
+An \underline{order $k$ tensor} $(a_{i_1 \dots i_k})$ is an $n_1 \times n_2 \times \cdots \times n_k$ array 
+of real numbers $a_{i_1 \dots i_k}$. The canonical inner product on $\mathbb{R}^{n_1 \times \cdots \times n_k}$ 
+defines the inner product of tensors: For $A, B$ tensors (of the same dimensions), 
+\[ \left\langle A, B \right\rangle := \sum_{i_1, \dots, i_k}^{} a_{i_1 \dots i_k} b_{i_1 \dots i_k}. \]
+\end{definition}
+
+\begin{example}[Vectors and matrices]
+\label{ex:3.7.2}
+Vectors are order 1 tensors, and matrices are order 2 tensors. The inner product for tensors generalized the 
+inner product for vectors and matrices.
+\end{example}
+
+\begin{example}[Rank-one tensors]
+\label{ex:3.7.3}
+For a vector $u \in \mathbb{R}^n$, the order $k$ tensor product $u \otimes \cdots \otimes u$ is the tensor whose 
+entries are the products of all $k$-tuples of the entries of $u$:
+\[ u \otimes \cdots \otimes u = u^{\otimes k} := (u_{i_1} \cdots u_{i_k}) \in 
+\mathbb{R}^{n \times \cdots \times n}. \]
+For example, if $k = 2$, the tensor product $u \otimes u$ is the $n \times n$ matrix 
+\[ u \otimes u = (u_iu_j)_{i, j = 1}^n = uu^T. \]
+\end{example}
+
+\begin{lemma}[Powers]
+\label{lem:3.7.4}
+For any vectors $u, v \in \mathbb{R}^n$ and $k \in \mathbb{N}$, we have 
+\[ \left\langle u^{\otimes k}, v^{\otimes k} \right\rangle = \left\langle u, v \right\rangle^k. \]
+\end{lemma}
+
+\begin{proof}
+For $n = 3$: 
+\begin{align*}
+	\left\langle u^{\otimes 3}, v^{\otimes 3} \right\rangle 
+	&= \sum_{i, j, k = 1}^{n} (u_i u_j u_k)(v_iv_jv_k) \\
+	&= \left( \sum_{i = 1}^{n}u_iv_i \right) \left( \sum_{i = 1}^{n}u_iv_i \right)
+    \left( \sum_{i = 1}^{n}u_iv_i \right) \\
+	&= \left\langle u, v \right\rangle^3.
+\end{align*}
+The general case is similar to the above.
+\end{proof}
+
+\cref{lem:3.7.4} reveals something interesting: non-linear expressions like $\left\langle u, v \right\rangle^k$ 
+can be written as a stardard \textit{linear} inner product in a different space. Specifically, there is a 
+Hilbert space $H$ and a transformation $\Phi: \mathbb{R}^n \to H$ such that 
+\[ \left\langle \Phi(u), \Phi(v) \right\rangle = \left\langle u, v \right\rangle^k 
+\text{ for any } u, v \in \mathbb{R}^n. \]
+In fact we can take $H = \mathbb{R}^{n^k}$, the space of $k$-th order tensors and $\Phi(u) = u^{\otimes k}$. 
+
+Now, we can move to general nonlinearities: 
+\begin{example}[Polynomials with nonnegative coefficients]
+\label{ex:3.7.5}
+There exists a Hilbert space $H$ and a transformation $\Phi: \mathbb{R}^n \to H$ such that 
+\[ \left\langle \Phi(u), \Phi(v) \right\rangle = 2 \left\langle u, v \right\rangle^2 
++ 5 \left\langle u, v \right\rangle^3 \text{ for all } u, v \in \mathbb{R}^n. \]
+We can take 
+\[ \Phi(u) = (\sqrt{2}u \otimes u) \oplus (\sqrt{5}u \otimes u \otimes u) \]
+where $\oplus$ denotes concatenation. So, the target space is $\mathbb{R}^{n^2 + n^3}$.
+\end{example}
+
+\begin{example}[General polynomials]
+\label{ex:3.7.6}
+Polynomials with negative coefficients can make our task impossible since $\left\langle \phi(u), 
+\Phi(v) \right\rangle$ is always nonnegative. But here is a neat workaround: we can find \textit{two} 
+transformations, possibly different, such that 
+\[ \left\langle \Phi(u), \Phi(v) \right\rangle = 2 \left\langle u, v \right\rangle^2 
+- 5 \left\langle u, v \right\rangle^3 \text{ for all } u, v \in \mathbb{R}^n. \]
+In this case, we can take 
+\[ \Phi(u) = (\sqrt{u} \otimes u) \oplus (\sqrt{5}u \otimes u \otimes u), 
+\Psi(v) = (\sqrt{2}v \otimes v) \oplus (-\sqrt{5}v \otimes v \otimes v). \]
+Note that the transformations keep the lengths of vectors under control. For any unit vector $u$, 
+\[ \lVert \Phi(u) \rVert_{2}^2 = \lVert \Psi(u) \rVert_{2}^2 
+= 2 \left\langle u, u \right\rangle^2 + 5 \left\langle u, u \right\rangle^3 = 2 + 5 = 7, \]
+which is just the sum of the absolute values of the coefficients.
+\end{example}
+
+Following this approach, we can handle any polynomial $f(x) = \sum_{k = 1}^{N} a_k x^k$. Moreover, by taking 
+limits on polynomials, we can handle even more functions:
+
+\begin{lemma}[Real analytic functions]
+\label{lem:3.7.7}
+Consider a function $f(x) = \sum_{k = 0}^{\infty} a_kx^k$ where the series converges for all $x \in 
+\mathbb{R}$. There exists a Hilbert space $H$ and transformations $\Phi, \Psi: \mathbb{R}^n \to H$ such that 
+\[ \left\langle \Phi(u), \Psi(v) \right\rangle = f(\left\langle u, v \right\rangle) \text{ for all } 
+u, v \in \mathbb{R}^n. \]
+Moreover, for any unit vector $u$, we have 
+\[ \lVert \Phi(u) \rVert_{2}^2 = \lVert \Psi(u) \rVert_{2}^2 = \sum_{k = 0}^{\infty}|a_k|. \]
+\end{lemma}
+
+\begin{proof}
+Exercise 3.55.
+\end{proof}
+
+\begin{example}[Sine function]
+\label{ex:3.7.8}
+Let $c > 0$. The function $f(x) = \sin{(cx)}$ is real analytic: 
+\[ \sin{(cx)} = cx - \frac{(cx)^3}{3!} + \frac{(cx)^5}{5!} - \frac{(cx)^7}{7!} + \cdots \]
+Thus, there exists a Hilbert space $H$ and transformations $\Phi, \Psi: \mathbb{R}^n \to H$ such that 
+\[ \left\langle \Phi(u), \Psi(v) \right\rangle = \sin{(c \left\langle u, v \right\rangle )} 
+\text{ for all } u, v \in \mathbb{R}^n. \]
+Also, $\Phi$ and $\Psi$ map unit vectors to unit vectors if 
+\[ 1 = c + \frac{c^3}{3!} + \frac{c^5}{5!} - \frac{c^7}{7!} + \cdots = \frac{e^c + e^{-c}}{2}. \]
+Solving this equation yields $c = \ln{(1 + \sqrt{2})}$.
+\end{example}
+
+
+\subsubsection{Proof of Theorem 3.5.1}
+We're going to prove Grothendieck inequality (\cref{thm:3.5.1}) with constant 
+\[ K \leq \frac{\pi}{2 \ln{(1 + \sqrt{2})}} \approx 1.783. \]
+We can assume WLOG that $u_i, v_j \in \mathbb{R}^N$ with $N = n + m$, just like in the proof of Grothendieck 
+inequality in Section 3.5. Then, by \cref{ex:3.7.8} with $c = \ln{(1 + \sqrt{2})}$, we can find unit vectors 
+$u_i', v_j'$ in some Hilbert space $H$ satisfying 
+\[ \left\langle u_i', v_j' \right\rangle = \sin{(c \left\langle u_i, v_j \right\rangle)} 
+\text{ for all } i, j. \]
+Again, we can assume WLOG that $H = R^N$. Applying Grothendieck identity (\cref{lem:3.6.5}), we get 
+\[ \mathbb{E}\left[ \mathrm{sign}\left\langle g, u_i' \right\rangle 
+\mathrm{sign}\left\langle g, v_j' \right\rangle \right] 
+= \frac{2}{\pi}\arcsin{\left\langle u_i', v_j' \right\rangle} 
+= \frac{2c}{\pi}\left\langle u_i, v_j \right\rangle. \]
+Thys 
+\[ \frac{2c}{\pi} \sum_{i, j}^{}a_{ij}\left\langle u_i, v_j \right\rangle 
+= \mathbb{E}\left[ \sum_{i, j}^{}a_{ij} \underbrace{\mathrm{sign}\left\langle g, u_i' \right\rangle}_{X_i}
+\underbrace{\mathrm{sign}\left\langle g, v_j' \right\rangle}_{Y_i} \right] \leq 1. \]
+The last step follows from the assumption of Grothendieck inequality since $X_i, Y_j \in \{-1, 1\}$. The 
+proof is complete since $c = \ln{(1 + \sqrt{2})}$. $\square$
+
+\begin{remark}[An algorithmic viewpoint]
+\label{rmk:3.7.9}
+This proof gives a randomized algorithm that takes a matrix $A$ and unit vectors $u_i, v_j$ and finds labels 
+$x_i, y_j \in \{-1, 1\}$ satisfying 
+\[ \mathbb{E}\left[ \sum_{i, j}^{}a_{ij}x_iy_j \right] \geq \frac{1}{K} \sum_{i, j}^{}a_{ij} 
+\left\langle u_i, v_j \right\rangle. \]
+Here is how it works: First, find unit vectors $u_i', v_j' \in \mathbb{R}^{n + m}$ with prescribed inner 
+products. Then use randomized rounding: pick $g \sim N(0, I_n)$ and set $x_i = \mathrm{sign}\left\langle 
+gm u_i' \right\rangle$ and $y_i = \mathrm{sign}\left\langle g, v_i' \right\rangle$.
+\end{remark}
+
+
+\subsubsection{Kernels and Feature Maps}
+Since the kernel trick worked so well for Grothendieck inequality, we might wonder - what other nonlinearities 
+can it handle? Given a function of two variables $K: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ on some 
+set $\mathcal{X}$, when can we find a Hilbert space $H$ and a transformation $\Phi: \mathcal{X} \to H$ such 
+that 
+\[ \left\langle \Phi(u), \Phi(v) \right\rangle = K(u, v) \text{ for all } u, v \in \mathcal{X}? \quad (*) \]
+
+The answer is given by Mercer's Theorem, and more precisely, the Moore-Aronszajn Theorem. The necessary 
+and sufficient condition is that $K$ be a \textit{positive semidefinite kernel}, meaning that for any points 
+$u_1, \dots, U_N \in \mathcal{X}$, the kernel matrix $(K(u_i, u_j))_{i, j = 1}^N$ has to be symmetric PSD. 
+The transformation $\Phi$ is called a \textit{feature map}, and the Hilbert space $H$ is called a 
+\textit{Reproducing Kernel Hilbert Space} (RKHS). 
+
+Popular PSD kernels in machine learning include the Gaussian and polynomial kernels, given by:
+\[ K(u, v) = \exp{\left( -\frac{\lVert u - v \rVert_{2}^2}{2 \sigma^2} \right)}, \ 
+K(u, v) = (\left\langle u, v \right\rangle + r)^k, \ u, v \in \mathbb{R}^n, \]
+where $\sigma > 0, r > 0, k \in \mathbb{N}$ are hyperparameters. The kernel trick, which expresses a kernel 
+$K(u, v)$ as an inner product, is widely used in machine learning because it lets us handle nonlinear models 
+(determined by $K$) with techniques designed for linear models (e.g. Kernel Ridge Regression). The exact 
+details of the Hilbert space $H$ and feature map $\Phi$ are usually not needed. Moreover, to compute the inner 
+product $\left\langle \Phi(u), \Phi(v) \right\rangle$ in $H$, we don't even need to know $\Phi$ - the identity 
+above ($*$) let's us calculate $K(u, v)$ directly!
