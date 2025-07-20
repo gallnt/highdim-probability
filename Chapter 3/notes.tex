@@ -1107,9 +1107,9 @@ gm u_i' \right\rangle$ and $y_i = \mathrm{sign}\left\langle g, v_i' \right\rangl
 
 \subsubsection{Kernels and Feature Maps}
 Since the kernel trick worked so well for Grothendieck inequality, we might wonder - what other nonlinearities 
-can it handle? Given a function of two variables $K: \mathcal{X} \times \mathcal{X} \to \mathbb{R}$ on some 
-set $\mathcal{X}$, when can we find a Hilbert space $H$ and a transformation $\Phi: \mathcal{X} \to H$ such 
-that 
+can it handle? Given a (very possibly nonlinear) function of two variables $K: \mathcal{X} \times \mathcal{X} 
+\to \mathbb{R}$ on some set $\mathcal{X}$, when can we find a Hilbert space $H$ and a transformation 
+$\Phi: \mathcal{X} \to H$ such that 
 \[ \left\langle \Phi(u), \Phi(v) \right\rangle = K(u, v) \text{ for all } u, v \in \mathcal{X}? \quad (*) \]
 
 The answer is given by Mercer's Theorem, and more precisely, the Moore-Aronszajn Theorem. The necessary 
@@ -1126,4 +1126,4 @@ $K(u, v)$ as an inner product, is widely used in machine learning because it let
 (determined by $K$) with techniques designed for linear models (e.g. Kernel Ridge Regression). The exact 
 details of the Hilbert space $H$ and feature map $\Phi$ are usually not needed. Moreover, to compute the inner 
 product $\left\langle \Phi(u), \Phi(v) \right\rangle$ in $H$, we don't even need to know $\Phi$ - the identity 
-above ($*$) let's us calculate $K(u, v)$ directly!
+above ($*$) lets us calculate $K(u, v)$ directly!
