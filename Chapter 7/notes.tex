@@ -554,7 +554,204 @@ g \sim N(0, I_n). \]
 Try to think of Gaussian width as a fundamental geometric measure of a set $T \subset \mathbb{R}^n$, like 
 volume or surface area.
 
+\begin{proposition}[Simple properties of Gaussian width]
+\label{prop:7.5.2}
+\begin{enumerate}
+	\item (Finiteness) $w(T)$ is finite if and only if $T$ is bounded.
+	\item (Invariance) $w(UT + y) = w(T)$ for any orthogonal matrix $U$ and vector $y$.
+	\item (Convex hulls) $w(\mathrm{conv}(T)) = w(T)$.
+	\item (Minkowski addition and scaling) $w(T + S) = w(T) + w(S)$ and $w(aT) = aw(T)$ for any $T, S \subset 
+	\mathbb{R}^n$ and $a \in \mathbb{R}$.
+	\item (Symmetry) 
+	\[ w(T) = \frac{1}{2}w(T - T) = \frac{1}{2}\mathbb{E}\left[ \sup_{x, y \in T} 
+	\left\langle g, x - y \right\rangle \right]. \]
+	\item (Width and diameter) 
+	\[ \frac{1}{\sqrt{2 \pi}} \cdot \mathrm{diam}(T) \leq w(T) \leq \frac{\sqrt{n}}{2} \cdot \mathrm{diam}(T). \]
+	\item (Linear maps) For any $m \times n$ matrix $A$, $w(AT) \leq \lVert A \rVert_{} w(T)$.
+\end{enumerate}
+\end{proposition}
 
+\begin{proof}
+Only the proof for (f) is demonstrated here, with the rest left to Exercise 7.15.
+
+For the lower bound, fix any $x, y \in T$. Since both $x - y$ and $y - x$ are in $T - T$, property (e) gives 
+\[ w(T) \geq \frac{1}{2}\mathbb{E}\left[ \max_{}(\left\langle x - y, g \right\rangle, 
+\left\langle y - x, g \right\rangle) \right] = \frac{1}{2}\mathbb{E}\left[ 
+|\left\langle x - y, g \right\rangle| \right] = \frac{1}{2} \sqrt{\frac{2}{\pi}} \lVert x - y \rVert_{2}. \]
+The last equality holds since $\left\langle x - y, g \right\rangle \sim N(0, \lVert x - y \rVert_{2})$ and 
+$\mathbb{E}\left[ |X| \right] = \sqrt{2 / \pi}$ for $X \sim N(0, 1)$. Taking the supremum over all $x, y \in T$ 
+gives the result.
+
+For the upper bound, use property (e) again to get 
+\[ w(T) \leq \frac{1}{2}\mathbb{E}\left[ \sup_{x, y \in T} \left\langle g, x - y \right\rangle \right] 
+\leq \frac{1}{2}\mathbb{E}\left[ \sup_{x, y \in T} \lVert g \rVert_{2} \lVert x - y \rVert_{2} \right] 
+\leq \frac{1}{2}\mathbb{E}\left[ \lVert g \rVert_{2} \right] \cdot \mathrm{diam}(T). \]
+Since $\mathbb{E}\left[ \lVert g \rVert_{2} \right] \leq \mathbb{E}\left[ \lVert g \rVert_{2}^2 \right]^{1/2} 
+= \sqrt{n}$, the proof is complete.
+\end{proof}
+
+\begin{remark}[Width and diameter]
+\label{rmk:7.5.3}
+Both upper and lower bounds in \cref{prop:7.5.2} (f) are optimal and the $O(\sqrt{n})$ gap between them cannot 
+be improved (Exercise 7.16). So, diameter is not a great way to capture Gaussian width.
+\end{remark}
+
+
+\subsubsection{Geometric Meaning of Width}
+Gaussian width has a nice geometric meaning: it's about how wide the set $T \subset \mathbb{R}^n$ looks in 
+random directions. The width of $T$ in the direction $\theta \in S^{n - 1}$ is the width of the smallest slab 
+(between parallel hyperplanes orthogonal to $\theta$) that contains $T$ (See Figure 7.3 below), which can be 
+expressed as $\sup_{x, y \in T}\left\langle \theta, x - y \right\rangle$. 
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 7/fig7-3.png}
+\end{center}
+
+If we average the width over all unit directions $\theta$, we get the following definition:
+
+\begin{definition}[]
+\label{def:7.5.4}
+The \underline{spherical width} of a set $T \subset \mathbb{R}^n$ is 
+\[ w_s(T) := \mathbb{E}\left[ \sup_{x \in T} \left\langle \theta, x \right\rangle \right] 
+\text{ where } \theta \sim \mathrm{Unif}(S^{n - 1}). \]
+\end{definition}
+
+The only difference between the Gaussian and spherical widths is in the random vectors we average over: 
+$g \sim N(0, I_n)$ versus $\theta \sim \mathrm{Unif}(S^{n - 1})$. Both are rotation invariant, but $g$ is 
+approximately $\sqrt{n}$ times longer than $\theta$. Thus we get 
+
+\begin{lemma}[Gaussian v.s. spherical widths]
+\label{lem:7.5.5}
+Ths Gaussian width is approximately $\sqrt{n}$ times the spherical width:
+\[ \left( \sqrt{n} - \frac{C}{\sqrt{n}} \right)w_s(T) \leq w(T) \leq \sqrt{n}w_s(T). \]
+\end{lemma}
+
+\begin{proof}
+Express the Gaussian vector $g$ throughits length and direction: $g = r \theta$, where $r = \lVert g \rVert_{2}$ 
+and $\theta = g / \lVert g \rVert_{2}$. Now, $\theta \sim \mathrm{Unif}(S^{n - 1})$ is independent of $r$ 
+(Exercise 3.22). Thus 
+\[ w(T) = \mathbb{E}\left[ \sup_{x \in T} \left\langle r \theta, x \right\rangle \right] 
+= \mathbb{E}\left[ r \right] \cdot \mathbb{E}\left[ \sup_{x \in T}\left\langle \theta, x \right\rangle \right]
+= \mathbb{E}\left[ \lVert g \rVert_{2} \right] \cdot w_s(T). \]
+Then by using concentration of the norm (Exercise 3.2), this gives 
+\[ \sqrt{n} - \frac{C}{\sqrt{n}} \leq \mathbb{E}\left[ \lVert g \rVert_{2} \right] \leq \sqrt{n}, \]
+which completes the proof.
+\end{proof}
+
+
+\subsubsection{Examples}
+\begin{example}[Euclidean ball and sphere]
+\label{ex:7.5.6}
+The Gaussian widths of the unit ball and sphere are 
+\[ w(S^{n - 1}) = w(B_2^n) = \mathbb{E}\left[ \lVert g \rVert_{2} \right] = \sqrt{n} \pm \frac{C}{\sqrt{n}}, \]
+where we used concentration of the norm (Exercise 3.2) for the last step. The spherical width of these sets 
+of course equal to 1.
+\end{example}
+
+\begin{example}[Cube]
+\label{ex:7.5.7}
+The unit ball of the $\ell^\infty$ norm in $\mathbb{R}^n$ is the cube $[-1, 1]^n$. So, by using the duality 
+formula 
+\[ \max_{}\{ \left\langle x, y \right\rangle: \ y \in B_{p'}^n \} = \lVert x \rVert_{p}, \]
+we get 
+\[ w(B_{\infty}^n) = \mathbb{E}\left[ \lVert g \rVert_{1} \right] 
+= \mathbb{E}\left[ |g_1| \right] \cdot n = \sqrt{\frac{2}{\pi}} \cdot n. \]
+\end{example}
+
+\begin{example}[Cross-polytope]
+\label{ex:7.5.8}
+The unit ball of the $\ell^1$ norm in $\mathbb{R}^n$ is the cross-polytope 
+\[ B_1^n = \{ x \in \mathbb{R}^n: \ \lVert x \rVert_{1} \leq 1 \}. \]
+Its Gaussian width satisfies 
+\[ w(B_1^n) \asymp \sqrt{\log_{}{N}} \]
+where the notation $\asymp$ hides the absolute constant factors. This is because 
+\[ w(B_1^n) = \mathbb{E}\left[ \lVert g \rVert_{\infty} \right] = \mathbb{E}\left[ \max_{i = 1, \dots, n} 
+|g_i| \right], \]
+where the first equation uses duality. Then the result follows from Exercise 2.38 (b).
+\end{example}
+
+\begin{example}[Finite point sets]
+\label{ex:7.5.9}
+Any finite set of points $T \subset \mathbb{R}^n$ satisfies 
+\[ w(T) \leq C \sqrt{\log_{}{|T|}} \cdot \mathrm{diam}(T). \]
+To prove this, we can assume that $\mathrm{diam}(T) = 1/2$ (by rescaling), and that $T$ lies in the unit 
+Euclidean ball (by translation). Then the result follows from the bound provided in \cref{cor:7.4.3}.
+\end{example}
+
+\begin{remark}[Surprising behavior of width in high dimensions]
+As we can see from \cref{ex:7.5.6} to \cref{ex:7.5.8}, the Gaussian width of the cube $B_{\infty}^n$ is 
+roughly (up to a constant factor) the same as that of its \textit{circumscribed ball} $\sqrt{n}B_2^n$. But 
+for the cross-polytope $B_1^n$, the width is roughly (up to a log factor) like that of its \textit{inscribed 
+ball} $\frac{1}{\sqrt{n}}B_2^n$, whiich is tiny! Why?
+
+The cube $B_{\infty}^n$ has so many vertices $(2^n)$ that in most directions it sticks out to roughly the 
+circumscribed ball, which drives the width. But the cross-polytops $B_1^n$ only has $2n$ vertices, so a random 
+direction $g \sim N(0, I_n)$ is likely to be far from all of them. The width is not only driven by those lonely 
+$2n$ ``spikes" - it's driven by the ``bulk". which is roughly the inscribed ball.
+
+Figure 7.4a shows Milmen's \textit{hyperbolic sketch} of $B_1^n$, highlighting how the bulk (the inscribed ball) 
+dominates since the set has few vertices (spikes). We can make similar sketches to general convex sets too 
+(Figure 7.4b) - they are great for building high-dimensional intuition, even if we lose convexity in the picture.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 7/fig7-4.png}
+\end{center}
+\end{remark}
+
+
+\subsubsection{Gaussian Complexity and Effective Dimension}
+There are also a number of helpful cousins of the Gaussian width $w(T)$. Normally, we would take the expected 
+max of $\left\langle g, t \right\rangle$, but sometime it's easier to work with $L^1$ or $L^2$ averages:
+\[ w(T) = \mathbb{E}\left[ \sup_{x \in T}\left\langle g, x \right\rangle \right], \ 
+\gamma(T) := \mathbb{E}\left[ \sup_{x \in T}|\left\langle g, x \right\rangle| \right], \ 
+h(T) := \left( \mathbb{E}\left[ \sup_{x \in T}\left\langle g, x \right\rangle^2 \right] \right)^{1/2}. \]
+where $g \sim N(0, I_n)$. We call $\gamma(T)$ the \textit{Gaussian complexity} of $T$. Clearly,  
+\[ w(T) \leq \g(T) \leq h(T). \]
+
+The reverse bounds are basically true too:
+\begin{lemma}[ALmost equivalent versions of Gaussian width]
+\label{lem:7.5.11}
+For any bounded set $T \subset \mathbb{R}^n$, we have:
+\begin{enumerate}
+	\item $\gamma(T - T) = 2w(T)$.
+	\item $h(t) \asymp \gamma(T) \asymp w(T) + \lVert y \rVert_{2}$ for any point $y \in T$.
+\end{enumerate}
+In particular, if $T$ contains the origin, all three versions are equivalent:
+\[ h(t) \asymp \gamma(T) \asymp w(T). \]
+\end{lemma}
+
+\begin{proof}
+(a) follows from \cref{prop:7.5.2} (e), since $T - T$ is origin-symmetric.
+
+(b) Let's prove the first equivalence here, and we'll leave the second equivalence to Exercise 7.20. We 
+trivially have $\gamma(T) \leq h(T)$. For the reverse, look at the function $z \mapsto \sup_{x \in T} 
+|\left\langle z, x \right\rangle|$ on $\mathbb{R}^n$. Its LIpschitz norm is bounded by the radius 
+\[ \sup_{x \in T} \lVert x \rVert_{2} = r(T). \]
+Then by Gaussian concentration (\cref{thm:5.2.3}), 
+\[ \lVert \sup_{x \in T}|\left\langle g, x \right\rangle| - \gamma(T) \rVert_{\psi_2} \lesssim r(T). \]
+So by the triangle inequality and \cref{prop:2.6.6} (ii), we get 
+\[ h(T) = \lVert \sup_{x \in T}|\left\langle g, x \right\rangle| \rVert_{L^2} \lesssim 
+\lVert \sup_{x \in T}|\left\langle g, x \right\rangle| \rVert_{\psi_2} \lesssim \gamma(T) + r(T) 
+\lesssim \gamma(T) \]
+where in the last step, we used the fact that $\gamma(T) \gtrsim r(T)$, which comes from the second part of (b) 
+- just take the supremum over $y \in T$.
+\end{proof}
+
+The Gaussian width helps us define a robust version of the notion of dimension. The usual linear-algebraic 
+dimension of a set $T \subset \mathbb{R}^n$, which is the dimension of the smallest affine space containing it, 
+can be susceptible to tiny perturbations of $T$. Here is a more robust alternative: 
+
+\begin{definition}[]
+\label{def:7.5.12}
+The \underline{effective dimension} of a bounded set $T \subset \mathbb{R}^n$ is 
+\[ d(T) := \frac{h(T - T)^2}{\mathrm{diam}(T)^2} \asymp \frac{w(T)^2}{\mathrm{diam}(T)^2}. \]
+\end{definition}
+
+The equivalence follows from \cref{lem:7.5.11}. The effective dimensions is bounded above by the linear-
+algebraic one: 
+\[ d(T) \leq \dim{(T)}, \]
+with equality when $T$ is a Euclidean ball in some subspace (Exercise 7.21). Unlike the usual dimension, the 
+effective dimension is stable - small perturbations to $T$ only slightly change its width and diameter.
 
 
 
