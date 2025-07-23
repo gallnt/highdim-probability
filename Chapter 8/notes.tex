@@ -231,6 +231,11 @@ as $n \to \infty$. However, the good news:
 
 % ----------8.3----------
 \subsection{VC Dimension}
+We'll learn about VC dimension, which is a huge part of statistical learning theory. We'll connect it to 
+covering numbers, and then, through Dudley's inequality, to random processes and the uniform law of large 
+numbers. Applications to statistical learning theory is in the next section.
+
+\subsubsection{Definition and Examples}
 VC dimensions measures how complex a class of Boolean functions is, where a Boolean function is a map 
 $f: \omega \to \{0, 1\}$ on some set $\omega$, and we are looking at some collection $\mathcal{F}$ of these.
 
@@ -272,6 +277,402 @@ g(r) = 1$. Then $g$ cannot be a restriction of any indicator interval onto $\Lam
 seperable).
 \end{example}
 
+\begin{example}[Half-planes]
+\label{ex:8.3.3}
+Let $\mathcal{f}$ consist of the indicators of all closed half-planes in $\mathbb{R}^2$. Then we claim that 
+\[ \mathrm{vc}(\mathcal{F}) = 3. \]
+To prove $\mathrm{vc}(\mathcal{F}) \geq 3$, we need to find a three-point set $\Lambda \subset \mathbb{R}^2$ 
+that is shattered by $\mathcal{F}$. Let $\Lambda$ consist of three points in general posiition like in Figure 
+8.6 below. Each of the $2^3 = 8$ binary labelings $g: \Lambda \to \{0, 1\}$ is a restriction of the indicator 
+function of some half-plane. Too see this, attange the half-plane to containe exactly these points where $g$ 
+takes value $1$. Thus, $\Lambda$ is shattered.
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 8/fig8-6.png}
+\end{center}
+
+To prove $\mathrm{vc}(\mathcal{F}) < 4$, we need to show that no four-point set can be shattered by 
+$\mathcal{F}$. There are two possible configurations of four-point sets $\Lambda$ in general position, shown 
+also in Figure 8.6. In each of the two cases, there exists a binary labeling such that no half-plane can contain 
+exactly the points labeled 1. This means that there always exists a binary labeling $g: \Lambda \to \{0, 1\}$ 
+that is not a restriction of any indicator of a half-plane, and thus $\Lambda$ is not shattered.
+\end{example}
+
+\begin{example}[]
+\label{ex:8.3.4}
+Let $\Omega = \{1, 2, 3\}$. We can conveniently represent Boolean functions on $\Omega$ as binary strings of 
+length three. Consider the class 
+\[ \mathcal{F} = \{001, 010, 100, 111\}. \]
+The set $\Lambda = \{1, 3\}$ is shattered by $\mathcal{F}$. Indeed, restricting the functions in $\mathcal{F}$ 
+onto $\Lambda$ amounts to dropping the second digit, thus producing the strings 00, 01, 10, 11. Thys, the 
+restriction produces all possible binary strings of length two, or equivalently, all possible binary labelings 
+$g: \Lambda \to \{0, 1\}$. Hence $\Lambda$ is shattered by $\mathcal{F}$, and thus 
+\[ \mathrm{vc}(\mathcal{F}) \geq |\Lambda| = 2. \]
+On the other hand, the (only) three-point set $\{1, 2, 3\}$ is not shattered by $\mathcal{F}$, as that would 
+require all eight binary digits of length three to appear in $\mathcal{F}$, which is not true.
+\end{example}
+
+\begin{example}[Half-spaces]
+\label{ex:8.3.5}
+A half-space in $\mathbb{R}^m$ is a set of the form 
+\[ \{x: \ \left\langle a, x \right\rangle \leq b\} \text{ where } a \in \mathbb{R}^n \text{ and } b 
+\in \mathbb{R}. \]
+Let $\mathcal{F}$ be the class of indicators of all half-spaces in $\mathbb{R}^n$. Then 
+\[ \mathrm{vc}(\mathcal{F}) = n + 1. \]
+\end{example}
+
+\begin{remark}[VC dimension v.s. parameter count]
+\label{rmk:8.3.6}
+The VC dimension of a function class often roughly matches the number of parameters - for instance, half-spaces 
+in $\mathbb{R}^n$ are defined with $n + 1$ parameters, which matches the VC dimensions (\cref{ex:8.3.5}). This 
+is not a hard rule but rather a useful heuristic.
+\end{remark}
+
+
+\subsubsection{Pajor's Lemma}
+Suppose the domain $\Omega$ is finite and consists of $n$ points. Then any class of Boolean functions 
+$\mathcal{F}$ on $\Omega$ is also finite, and 
+\[ 2^{\mathrm{vc}(\mathcal{F})} \leq |\mathcal{F}| \leq 2^n. \]
+The upper bound is usually loose - most function classes are closer in side to the lower bound. This is not so 
+obvious. To prepare for this result, let's first show that there are as many shattered subsets of $\Omega$ as 
+the functions in $\mathcal{F}$.
+
+\begin{lemma}[Pajor's lemma]
+\label{lem:8.3.7}
+Let $\mathcal{F}$ be a class of Boolearn functions on a finite set $\Omega$. Then 
+\[ |\mathcal{F}| \leq |\{ \Lambda \subseteq \Omega: \ \Lambda \text{ is shattered by } \mathcal{F} \}|. \]
+We include the empty set $\Lambda = \emptyset$ in the count on the right side.
+\end{lemma}
+
+Before the proof, let's illustrate this result using \cref{ex:8.3.4}. Here, $|\mathcal{F}| = 4$ and there are 
+six subsets $\Lambda$ that are shattered by $\mathcal{F}$, namely $\{1\}, \{2\}, \{3\}, \{1, 2\}, \{1, 3\}$, 
+and $\{2, 3\}$. Thus the inequalty in Pajor's lemma reads $4 \leq 6$.
+
+\begin{proof}[Proof of \cref{lem:8.3.7}]
+We proceed by induction on the cardinality of $\Omega$. The case $|\Omega| = 1$ is trivial, since we include the 
+empty set in the counting. 
+
+For the inductive step, assume the lemma holds for any $n$-point set $\Omega$. Now look at a set $\Omega$ with 
+$|\Omega| = n + 1$. Chopping out one (arbitrary) point from the set $\Omega$, we can express it as 
+\[ \Omega = \Omega_0 \cup \{x_0\}, \text{ where } |\Omega_0| = n. \]
+The class $\mathcal{F}$ then natually breaks into two subclasses 
+\[ \mathcal{F}_0 := \{ f \in \mathcal{F}: \ f(x_0) = 0 \} \text{ and } 
+\mathcal{F}_1 := \{ f \in \mathcal{F}: \ f(x_0) = 1 \}. \]
+By the induction hypothesis, the counting function 
+\[ S(\mathcal{F}) = |\{ \Lambda \subseteq \Omega: \ \Lambda \text{ is shattered by } \mathcal{F} \}| \]
+satisfies (by restricting to $\Omega_0$)
+\[ S(\mathcal{F}_0) \geq |\mathcal{F}_0| \text{ and } S(\mathcal{F}_1) \geq |\mathcal{F}_1|. \]
+
+To complete the proof, all we need to check is 
+\[ S(\mathcal{F}) \geq S(\mathcal{F}_0) + S(\mathcal{F}_1), \]
+for then the inductive hypothesis would give $S(\mathcal{F}) \geq |\mathcal{F}_0| + |\mathcal{F}_1|
+= |\mathcal{F}|$, as needed.
+
+The inequality above may seem trivial. Any set $\Lambda$ that is shattered by $\mathcal{F}_0$ or $\mathcal{F}_1$ 
+is automatically shattered by the larger class $\mathcal{F}$, and thus each set $\Lambda$ counted by 
+$S(\mathcal{F}_0)$ or $S(\mathcal{F}_1)$ is automatically counted by $S(\mathcal{F})$. However, there may be 
+the risk of double counting. Assume the same set $\Lambda$ is shattered by both $\mathcal{F}_0$ and 
+$\mathcal{F}_1$. The counting function $S(\mathcal{F})$ will not count $\Lambda$ twice. However, a different set 
+will be counted by $S(\mathcal{F})$, which was not counted by either $S_(\mathcal{F}_0)$ or $S(\mathcal{F}_1)$ - 
+namely, $\Lambda \cup \{x_0\}$. This set is indeed shattered by $\mathcal{F}$. This establishes the inequality 
+above, and the proof is complete.
+\end{proof}
+
+Let's illustrate the proof above via an example: 
+\begin{example}[]
+\label{ex:8.3.8}
+Let's reuse \cref{ex:8.3.4}. Following the proof of Pajor's lemma, we chop out $x_0 = 3$ from $\Omega = \{1, 
+2, 3\}$, making $\Omega_0 = \{1, 2\}$. The class $\mathcal{F} = \{001, 010, 100, 111\}$ then breaks into two 
+sub-classes
+\[ \mathcal{F}_0 = \{010, 100\} \text{ and } \mathcal{F}_1 = \{001, 111\}. \]
+There are exactly two subsets $\Lambda$ shattered by $\mathcal{F}_0$, namely $\{1\}$ and $\{2\}$, and the same 
+two subsets are shattered by $\mathcal{F}_1$, making $S(\mathcal{F}_0) = S(\mathcal{F}_1) = 2$. Of course, the 
+same two subsets are also shattered by $\mathcal{F}$, but we need two more shattered subsets to make 
+$S(\mathcal{F}) \geq 4$ for the key inequality. Here is how we construct them:
+
+Append $x_0 = 3$ to the already counted subsets $\Lambda$. The resulting sets $\{1, 3\}$ and $\{2, 3\}$ are 
+also shattered by $\mathcal{F}$, and we have not counted them yet. Now we have at least four subsets shattered 
+by $\mathcal{F}$, making the inequality in Pajor's lemma true.
+\end{example}
+
+
+\subsubsection{Sauer-Shelah Lemma}
+We now deduce a remarkable upper bound on the cardinality of a function class in terms of the VC dimension:
+
+\begin{lemma}[Sauer-Shelah lemma]
+\label{lem:8.3.9}
+Let $\mathcal{F}$ be a class of Boolean functions on an $n$-point set $\Omega$. Then 
+\[ |\mathcal{F}| \leq \sum_{k = 0}^{d} \binom{n}{k} \leq \left( \frac{en}{d} \right)^d \text{ where } 
+d = \mathrm{vc}(\mathcal{F}). \]
+\end{lemma}
+
+\begin{proof}
+Pajor's lemma states that $|\mathcal{F}|$ is bounded by the number of subsets $\Lambda \subseteq \Omega$ 
+shattered by $\mathcal{F}$. The cardinality of each such set $\Lambda$ is bounded by $d = 
+\mathrm{vc}(\mathcal{F})$, via the definition of VC dimension (\cref{def:8.3.1}). Thus 
+\[ |\mathcal{F}| \leq |\{ \Lambda \subseteq \Omega: \ |\Lambda| \leq d \}| 
+= \sum_{k = 0}^{d} \binom{n}{k} \]
+since the sum oin the right hand side gives the total number of subsets of an $n$-elements set with 
+cardinalities at most $k$. This proces the first inequality of the Sauer-Shelah lemma. The second inequality 
+follows from the bound on the binomial sum from Exercise 0.6. The proof is complete.
+\end{proof}
+
+Both Pajor's and Sauer-Shelah lemma are generally sharp (Exercise 8.19).
+
+
+\subsubsection{Growth Function}
+The Sauer-Shelah lemma assumes that the domain $\Omega$ is finite. What if the function classes $\mathcal{F}$ 
+are on infinite domains like $\mathbb{R}^n$? It is often convenient to measure the complexity of $\mathcal{F}$ 
+by the growth function:
+
+\begin{definition}[]
+\label{def:8.3.10}
+Let $\mathcal{F}$ be a class of Boolean functions on a domain $\Omega$. The \underline{growth function} of 
+$\mathcal{F}$ is defined as the maximum number of functions that can be obtained by restricting all functions in 
+$\mathcal{F}$ to a subset of $n$ elements: 
+\[ \Pi_{\mathcal{F}}(n) = \sup_{} \left\{ \left| \mathcal{F}|_{\Lambda} \right| : \ \Lambda \subset \Omega, 
+\ |\Lambda| = n \right\}. \]
+\end{definition}
+
+In this light, the VC dimension of $\mathcal{F}$ can be seen as the largest $d$ for which $\Pi_{\mathcal{F}}(d) 
+= 2^d$. Immediate bounds on the growth function are 
+\[ 2^d \leq \Pi_{\mathcal{F}}(n) \leq \left( \frac{en}{d} \right)^d \text{ for all } n \geq d \]
+if $d = \mathrm{vc}(\mathcal{F}) < \infty$. The lower bound is a restatement from the part before Pajor's lemma, 
+and the upper bound follows from the Sauer-Shelah lemma (\cref{lem:8.3.9}).
+
+To see how the growth function can be useful, let's duduce from above the stability of VC dimension with 
+respect to natural operations.
+
+\begin{proposition}[VC stability]
+\label{prop:8.3.11}
+Let $\mathcal{F}, \mathcal{G}$ be two classes of Boolean functions on the same domain. Let 
+\[ \mathcal{F} \wedge \mathcal{G} = \{ f \wedge g: \ f \in F, \ g \in G \} \]
+where $f \wedge g$ denotes the pointwise minimum of the functions $f$ and $g$. Then 
+\[ \mathrm{vc}(\mathcal{F} \wedge \mathcal{G}) \leq 10 \max_{}(\mathrm{vc}(\mathcal{F}), 
+\mathrm{vc}(\mathcal{G})). \]
+The same holds for the pointwise maximum.
+\end{proposition}
+
+\begin{proof}
+Assume towards a contradiction that $n := \mathrm{vc}(\mathcal{F} \wedge \mathcal{G}) > 10d$. Then 
+\[ 2^n \leq \Pi_{\mathcal{F} \wedge \mathcal{G}}(n) \leq \Pi_{\mathcal{F}}(n) \cdot \Pi_{\mathcal{G}}(n) 
+\leq \left( \frac{en}{d} \right)^{2d}. \]
+The first and last bounds directly follow from the bounds of the growth function above, and the middle one is 
+true by definition. However, we can calculate and show that $2^n > (en / d)^{2d}$ whenever $n > 10d$, which 
+is a contradiction to the above.
+\end{proof}
+
+\cref{prop:8.3.11} can be extended to any particular way of combining classes of functions (Exercise 8.21). It 
+can be helpful when we want to bound the VC dimension without computing it directly (which can be quite 
+complicated). For example:
+
+\begin{example}[Strips]
+\label{ex:8.3.12}
+A strip in $\mathbb{R}^n$ is a set of the form 
+\[ \{ x: \ |\left\langle a, x \right\rangle - b| \leq c \} \text{ where } a \in \mathbb{R}^n \text{ and } 
+b, c \in \mathbb{R}. \]
+For an illustration, see Figure 8.7 below: 
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 8/fig8-7.png}
+\end{center}
+
+Let $\mathcal{F}$ be the class of indicators of strips. \cref{ex:8.3.5} gives 
+\[ \mathrm{vc}(\mathcal{F}) \leq 20(n + 1) \leq 40n. \]
+Indeed, each strip can be represented as the intersection of two half planes $\{ x: \ \left\langle a, x
+\right\rangle - b \leq c \}$ and $\{ x: \ \left\langle a, x \right\rangle - b \geq -c \}$. Thus the indicator of 
+each strip is the pointwise mimimum of the indicators of two hald-spaces. Now apply the VC stability property 
+(\cref{prop:8.3.11}) and the result in \cref{ex:8.3.5} to get the bound above. 
+\end{example}
+
+
+\subsubsection{Covering Numbers via VC Dimension}
+Covering numbers usually grow exponentially with dimension. Now, let's refine this heuristic by replacing the 
+algebraic dimension with the VC dimension - which can save us a lot.
+
+Let $\mathcal{F}$ be a class of Boolean functions on some domain $\Omega$, and let $\mu$ be any probability 
+measure on $\Omega$. Define the distance between functions as 
+\[ d(f, g) = \lVert f - g \rVert_{L^2(\mu)} = \left( \mathbb{E}\left[ (f - g)(X)^2 \right] \right)^{1/2} \]
+where $X$ is a random variable with distribution $\mu$. Now let's bound the covering numbers 
+$\mathcal{N}(\mathcal{F}, L^2(\mu), \varepsilon)$ of the class $\mathcal{F}$ with respect to the metric above:
+
+\begin{theorem}[Covering numbers via VC dimension]
+\label{thm:8.3.13}
+Let $\mathcal{F}$ be a class of Boolean functions on a domain $\Omega$ with a probability measure $\mu$ on it. 
+Then, for every $\varepsilon \in (0, 1)$, 
+\[ \mathcal{N}(\mathcal{F}, L^2(\mu), \varepsilon0) \leq \left( \frac{2}{\varepsilon} \right)^{Cd} 
+\text{ where } d = \mathrm{vc}(\mathcal{F}). \]
+\end{theorem}
+
+For a first attempt of the proof, let's assume for a moment that $\Omega$ is finite, say $|\Omega| = n$. 
+Then the Sauer-Shelah lemma (\cref{lem:8.3.9}) gives 
+\[ \mathcal{N}(\mathcal{F}, L^2(\mu), \varepsilon) \leq |\mathcal{F}| \leq \left( \frac{en}{d} \right)^d. \]
+This not quite the result above, but it comes close. To tighten the bound, we need to get rid of $n$, and 
+we'll do this by shrinking $\Omega$. This lemma would help: 
+
+\begin{lemma}[Dimension reduction]
+\label{lem:8.3.14}
+Let $\mathcal{F}$ be a finite class of Boolean functions on a domain $\Omega$ with a probability measure $\mu$ 
+on it. Assume that all functions in $\mathcal{F}$ are $\varepsilon$-seperated, i.e.
+\[ \lVert f - g \rVert_{L^2(\mu)} > \varepsilon \text{ for all distinct } f, g \in \mathcal{F}. \]
+IF $n \geq C \varepsilon^{-4}\log_{}{|F|}$, then the empirical measure $\mu_n$ satisfies the following with 
+probability at least 0.99:
+\[ \lVert f - g \rVert_{L^2(\mu_n)} > \varepsilon / 2 \text{ for all distinct } f, g \in \mathcal{F}. \]
+\end{lemma}
+
+By definition of the empirical measure, $\lVert f - g \rVert_{L^2(\mu_n)}$ is the same as the metric we defined 
+in the beginning of this subsection, but with the population average replaced by the sample average:
+\[ \lVert f - g \rVert_{L^2(\mu_n)} = \left( \frac{1}{n}\sum_{i = 1}^{n}(f - g)(X_i)^2 \right)^{1/2}, \]
+where $X_i$ are i.i.d. copies of $X$.
+
+
+\begin{proof}[Proof of \cref{lem:8.3.14}]
+The proof is like that of the Johnson-Lindenstrauss lemma - concentration plus a union bound.
+
+Fix a pair of distinct functions $f, g \in \mathcal{F}$, and consider 
+\[ \lVert f - g \rVert_{L^2(\mu_n)}^2 - \lVert f - g \rVert_{L^2(\mu)}^2 
+= \frac{1}{n}\sum_{i = 1}^{n} h(X_i) - \mathbb{E}\left[ h(X) \right], \]
+where $h = (f - g)^2$. On the right, we have a sum of independent bounded (and thus subgaussian) random 
+variables, so Hoeffding inequality (\cref{thm:2.7.3}) gives 
+\[ P \left( \left| \lVert f - g \rVert_{L^2(\mu_n)}^2 - \lVert f - g \rVert_{L^2(\mu)}^2 \right) \right| 
+> \frac{\varepsilon^2}{4} \right) \leq 2 \exp{(-cn \varepsilon^4)}. \]
+Therefore, with probability at least $1 - 2 \exp{(-cn \varepsilon^4)}$, we have 
+\[ \lVert f - g \rVert_{L^2(\mu_n)}^2 \geq \lVert f - g \rVert_{L^2(\mu)}^2 - \frac{\varepsilon^2}{4} 
+> \varepsilon^2 - \frac{\varepsilon^2}{4} > \frac{\varepsilon^2}{4}, \]
+by the lemma's assumption. Now, take a union bound over all pairs of distinct functions $f, g \in \mathcal{F}$. 
+There are at most $|\mathcal{F}|^2$ of them, so with probability at least 
+\[ 1 - |\mathcal{F}|^2 \cdot 2 \exp{(-cn \varepsilon^4)}, \]
+the bound holds simultaneously for all distinct $f, g \in \mathcal{F}$. By out choise of $n$, choosing a large 
+enough $C$ yields the quantity above at least 0.99. The proof is complete.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:8.3.13}]
+By the packing-covering equivalence (\cref{lem:4.2.8}), we can find 
+\[ N = \mathcal{N}(\mathcal{F}, L^2(\mu), \varepsilon) \]
+functions in $\mathcal{F}$ that are $\varepsilon$-seperated in the $L^2(\mu)$ metric. Set $n = \left\lfloor C 
+\varepsilon^{-4} \log_{}{N} \right\rfloor$ and apply \cref{lem:8.3.14} to the set of those functions. With 
+positive probability, those functions stay $(\varepsilon / 2)$-seperated in the metric $L^2(\mu_n)$ defined 
+earlier, so their restrictions onto $\Omega_n = \{ X_1, \dots, X_n \}$ are all different.
+
+Fix a realization of random variables $X_1, \dots, X_n$ for which the event holds. So there exists a subset 
+$\Omega_n \subset \Omega$ with $\Omega_n \leq n \leq 2C \varepsilon^{-4} \log_{}{N}$, such that the class 
+$\mathcal{F}_n = \mathcal{F}|_{\Omega_n}$ obtained by restricting all functions onto $\Omega_n$ satisfies 
+$|\mathcal{F}_n| \geq N$. Now apply the Sauer-Shelah lemma (\cref{lem:8.3.9}) for $\mathcal{F}_n$ and 
+$\Omega_n$ to get 
+\[ N \leq \left( \frac{en}{d_n} \right)^{d_n} \leq \left( \frac{2C \varepsilon^{-4} \log_{}{N}}{d_n} 
+\right)^{d_n} \]
+where $d_n = \mathrm{vc}(\mathcal{F}_n)$. Simplifying, we get 
+\[ N \leq (2C \varepsilon^{-4})^{2d_n}. \]
+Finally, replace $d_n = \mathrm{vc}(\mathcal{F}_n)$ by the larger quantity $d = \mathrm{vc}(\mathcal{F})$ and 
+the proof is complete.
+\end{proof}
+
+
+\subsubsection{VC Law of Large Numbers}
+Any class of Boolean functions with finite VC dimension has a LLN property: 
+
+\begin{theorem}[VC law of large numbers]
+\label{thm:8.3.15}
+Let $\mathcal{F}$ be a class of Boolean functions with finite VC dimension on some domain $\Omega$, and let 
+$X, X_1, X_2, \dots, X_n$ be independent random points in $\Omega$ with common distribution. Then 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}} \left| \frac{1}{n}\sum_{i = 1}^{n} f(X_i) - \mathbb{E}\left[ f(X) 
+\right] \right| \right] \leq C \sqrt{\frac{\mathrm{vc}(\mathcal{F})}{n}}. \]
+\end{theorem}
+
+\begin{proof}
+We will combine Dudley's inequality with the bound on the covering numbers (\cref{thm:8.3.13}). But first, 
+let's symmetrize the process using the empirical version of symmetrization (Exercise 8.11):
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}} \left| \frac{1}{n}\sum_{i = 1}^{n} f(X_i) - \mathbb{E}\left[ f(X) 
+\right] \right| \right] \leq \frac{2}{\sqrt{n}} \mathbb{E}\left[ \sup_{f \in \mathcal{F}} 
+\underbrace{\left| \frac{1}{\sqrt{n}}\sum_{i = 1}^{n} \varepsilon_i f(X_i) \right|}_{Z_f} \right]. \]
+Condition on $(X_i)$, leaving all randomness in the random signs $(\varepsilon)_i$. To use Dudley's inequality 
+for the process $(Z_f)_{f \in \mathcal{F}}$, we need to check that the increments are subgaussian. Triangle 
+inequality gives 
+\[ |Z_f - Z_g| \leq \frac{1}{\sqrt{n}} \left| \sum_{i = 1}^{n} \varepsilon_i(f - g)(X_i) \right|, \]
+so using \cref{prop:2.7.1} and the fact that $\lVert \varepsilon_i \rVert_{\psi_2} \lesssim 1$, we get:
+\begin{align*}
+	\lVert Z_f - Z_g \rVert_{\psi_2} 
+	&\leq \frac{1}{\sqrt{n}} \left\lVert \sum_{i = 1}^{n} \varepsilon_i(f - g)(X_i) \right\rVert_{\psi_2} \\
+	&\lesssim \left( \frac{1}{n} \sum_{i = 1}^{n} (f - g)(X_i)^2 \right)^{1/2} \\
+	&= \lVert f - g \rVert_{L^2(\mu_n)}
+\end{align*}
+where $\mu_n$ is the empirical measure, as mentioned before.
+
+Now use Dudley's inequality (\cref{thm:8.1.3}) conditionallyh on $(X_i)$, then remove the conditioning by taking 
+expectation with respect to $(X_i)$. Check that $\mathrm{diam}(\mathcal{F}) \leq 1$. We get 
+\[ \frac{2}{\sqrt{n}} \mathbb{E}\left[ \sup_{f \in \mathcal{F}} Z_f \right] \lesssim 
+\frac{1}{\sqrt{n}} \mathbb{E}\left[ \int_{0}^{1} \sqrt{\log_{}{\mathcal{N}(\mathcal{F}, L^2(\mu_n), 
+\varepsilon)}} \ d \varepsilon \right]. \]
+Finally, we use \cref{thm:8.3.13} to bound the covering numbers:
+\[ \log_{}{\mathcal{N}(\mathcal{F}, L^2(\mu_n), \varepsilon)} \lesssim \mathrm{vc}(\mathcal{F}) 
+\log_{}{(2 / \varepsilon)}. \]
+Substituting this into the bound above, we get the integral of $\sqrt{\log_{}{(2 / \varepsilon)}}$, which is 
+bounded by an absolute constant, leading to 
+\[ \frac{2}{\sqrt{n}} \mathbb{E}\left[ \sup_{f \in \mathcal{F}}Z_f \right] \lesssim 
+\sqrt{\frac{\mathrm{vc}(\mathcal{F})}{n}}, \]
+hence the proof is complete.
+\end{proof}
+
+\begin{remark}[Rademacher complexity]
+\label{rmk:8.3.16}
+If $\mathcal{F}$ is a class of Boolean functions with finite VC dimension, then the expression 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}} \left| \frac{1}{n}\sum_{i = 1}^{n} \varepsilon_i f(x_i) \right|
+\right]\]
+is called the \textit{Rademacher complexity} of $\mathcal{F}$ on a given set of points $x_1, \dots, x_n \in 
+\Omega$. Rademacher complexity reflects how rich $\mathcal{F}$ is. In proving \cref{thm:8.3.15}, a key step 
+was relating it to another measure of richness - the VC dimension: we showed that the Rademacher complexity of 
+$\mathcal{F}$ is bounded by $C \sqrt{\mathrm{vc}(\mathcal{F}) / n}$ for any $n$-point set.
+\end{remark}
+
+Let's apply \cref{thm:8.3.15} to a classical statistics problem: estimate the distribution of a random variable 
+$X$ from a sample. To estimate the CDF of $X$, 
+\[ F(x) = P(X \leq x), \]
+from an i.i.d. sample $X_1, \dots, X_n$, a natural guess is to use the \textit{empirical CDF} - the fraction 
+of the sample points satisfying $X_i \leq x$:
+\[ F_n(x) := \frac{1}{n}|\{ i: \ X_i \leq x \}|. \]
+Amazingly, $F_n$ approximates $F$ \textit{uniformly} over all $x \in \mathbb{R}$: 
+
+\begin{theorem}[Glivenko-Cantelli Theorem]
+\label{thm:8.3.17}
+Let $X_1, \dots, X_n$ be independent random variables with common CDF $F$. Then 
+\[ \mathbb{E}\left[ \lVert F_n - F \rVert_{L^{\infty}} \right] 
+= \mathbb{E}\left[ \sup_{x \in \mathbb{R}}|F_n(x) - F(x)| \right] \leq \frac{C}{\sqrt{n}}. \]
+\end{theorem}
+
+\begin{proof}
+This is just a restatement of \cref{thm:8.3.15} for $\Omega = \mathbb{R}$ and the class of indicators of 
+half-infinite intervals 
+\[ \mathcal{F} := \{ \mathbf{1}_{(-\infty, x]}: \ x \in \mathbb{R} \}, \]
+whose VC dimension is bounded by 2 as we noted in \cref{ex:8.3.2}.
+\end{proof}
+
+\begin{example}[Discrepancy]
+\label{ex:8.3.18}
+Take an i.i.d. sample of $n$ points from the uniform distirbution on the unit square $[0, 1]^2$, as in Figure 
+8.8:
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 8/fig8-8.png}
+\end{center}
+
+Apply \cref{thm:8.3.15} for the class $\mathcal{F}$ of all indicator functions of circles in that square, which 
+has VC dimension at most 3 (Exercise 8.13). Then, with high probability, the sample satisfies:
+\[ \text{fraction of points in } \mathcal{C} = \mathrm{Area}(\mathcal{C}) + O(1 / \sqrt{n}) \]
+simultaneously for all circles $\mathcal{C}$ in the square. This is a classic result in \textit{geometric 
+discrepancy}, which also holds for half-planes, rectangles, polygons with few vertices, etc. - anything with 
+finite VC dimension.
+\end{example}
+
+\begin{remark}[Uniform Glivenko-Cantelli classes]
+\label{rmk:8.3.19}
+A class of real-values functions $\mathcal{F}$ on a set $\Omega$ is called a \textit{uniform Glivenko-Cantelli} 
+class if, for any $\varepsilon > 0$, 
+\[ \lim_{n \to \infty} \sup_{\mu} P \left( \sup_{f \in \mathcal{F}} \left| \frac{1}{n} \sum_{i = 1}^{n} 
+f(X_i) - \mathbb{E}\left[ f(X) \right] \right| > \varepsilon \right) = 0, \]
+where the supremum is taken over all probability measures $\mu$ on $\Omega$, and where $X, X_1, \dots, X_n$ 
+are i.i.d. points in $\Omega$ with distribution $\mu$. \cref{thm:8.3.15} followed by Markov's inequality implies 
+that any Boolean class with finite VC dimension is uniform Glivenko-Cantelli. The converse is alse true 
+(Exercise 8.27), so in fact the two are equivalent.
+\end{remark}
+
 
 
 % ----------8.4----------
@@ -281,11 +682,274 @@ seperable).
 
 % ----------8.5----------
 \subsection{Generic Chaining}
+Generic chaining improves the loose bound that Dudley's inequality can exhibit sometimes. It is essentially a 
+technique of the chaining method we developed throughout the proof to Dudley's inequality (\cref{thm:8.1.4}).
+
+
+\subsubsection{A Makeover of Dudley's Inequality}
+Recall the bound we obtained by chaining in \cref{thm:8.1.4}:
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \lesssim \sum_{k = \kappa + 1}^{\infty} \varepsilon_{k - 1} 
+\sqrt{\log_{}{|T_k|}}, \]
+where $\varepsilon = 2^{-k}$, $T_k$ are smallest $\varepsilon$-nets of $T$ so $|T_k| = \mathcal{N}(T, d, 
+\varepsilon_k)$, and $\kappa$ is chosen so that $|T_{\kappa}| = 1$.
+
+Now, let's flip the approach: instead of fixing $\varepsilon_k$ and minimizing $|T_k|$, fix $|T_k|$ and 
+minimize $\varepsilon_k$. Specifically, pick subsets $T_k \subset T$ such that 
+\[ |T_0| = 1, \ |T_k| \leq 2^{2^k}, \ k = 1, 2, \dots \]
+and define 
+\[ \varepsilon_k = \sup_{t \in T} d(t, T_k) \]
+where $d(t, T_k)$ denotes the distance from t to the set $T_k$ (the distance between a point $t$ and a set $A$ 
+in a metric space is $d(t, A) = \inf_{} \{ d(t, a): \ a \in A \}$).
+
+Each $T_k$ is then an $\varepsilon_k$-net, and the chaining bound becomes 
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \lesssim \sum_{k = 1}^{\infty} 2^{k/2} \sup_{t \in T} 
+d(t, T_{k - 1}), \]
+or after reindexing, 
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \lesssim \sum_{k = 0}^{\infty} 2^{k/2} \sup_{t \in T} d(t, T_k). \]
+
+
+\subsubsection{The \texorpdfstring{$\gamma_2$}{} Functional and Generic Chaining}
+So far, we have just restated Dudley's inequality in a new form - nothing major yet. The important step will 
+come now. The generic chaining will allow us to pull the supremum \textit{outside} the sum above. The resulting 
+quantity has a name:
+
+\begin{definition}[]
+\label{def:8.5.1}
+Let $(T, d)$ be a metric space. A sequence of subsets $(T_k)_{k = 0}^{\infty}$ of $T$ satisfying 
+\[ |T_0| = 1, \ |T_k| \leq 2^{2^k}, \ k = 1, 2, \dots \]
+is called an \underline{admissible sequence}.
+
+The \underline{$\gamma_2$ functional} of $T$ is defined as 
+\[ \gamma_2(T, d) = \inf_{(T_k)} \sup_{t \in T} \sum_{k = 0}^{\infty} 2^{k / 2} d(t, T_k) \]
+where the infimu is over all admissible sequences.
+\end{definition}
+
+The supremum in the $\gamma_2$ functional is outside the sum, hence it is smaller than the Dudley sum above. 
+That might seem like a small change, but it can make a big difference in some cases (Exercise 8.34). Good news: 
+we can improve Dudley's inequality (\cref{thm:8.1.4}) by replacing the Dudley sum (or integral) by the 
+$\gamma_2$ functional:
+
+\begin{theorem}[Generic chaining bound]
+\label{thm:8.5.2}
+Let $(X_t)_{t \in T}$ be a mean-zero random process on a metric space $(T, d)$ with subgaussian increments. Then 
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \leq CK \gamma_2(T, d). \]
+\end{theorem}
+
+\begin{proof}
+We'll use the chaining method from the proof of Dudley's inequality, but more carefully.
+
+\textbf{Step 1: Chaining setup.} As before, without loss of generality assume $K = 1$ and that $T$ is finite, 
+which makes $\gamma_2(T, d)$ finite. Let $(T_k)$ be an admissible sequence of subsets of $T$ which almost 
+attains the supremum in \cref{def:8.5.1}:
+\[ \sup_{t \in T}\sum_{k = 0}^{\infty}2^{k/2}d(t, T_k) \leq 2 \gamma_2(T, d) < \infty. \]
+Denote $T_0 = \{ t_0 \}$. There must be some $K$ for which $T_k = T$; otherwise some $t \in T$ would keep 
+getting left out infinitely many sets $T_k$, so $d(t, T_k) > \varepsilon$ for all those $k$ and some fixed 
+$\varepsilon > 0$, making the series above diverge.
+
+We walk from $t_0$ to a general point $t \in T$ along the (finite) chain 
+\[ t_0 = \pi_0(t) \to \pi_1(t) \to \pi_2(t) \to \cdot \to t \]
+of points $\pi_k(t) \in T_k$ that are chosen as best approximations to $t$ in $T_k$, i.e.
+\[ d(t, \pi_k(t)) = d(t, T_k). \]
+Again, the displacement $X_t - X_{t_0}$ can be expressed as a telescoping sum:
+\[ X_t - X_{t_0} = \sum_{k = 1}^{\infty}(X_{\pi_k(t)} - X_{\pi_{k - 1}(t)}). \]
+
+\textbf{Step 2: Controlling the increments.} This is where we need to be more caredul. We would like that, with 
+high probability, the following event holds:
+\[ |X_{\pi_k(t)} - X_{\pi_{k - 1}(t)}| \lesssim 2^{k/2}d(t, T_k) \ \forall k \in \mathbb{N}, \forall t \in T. \]
+Summing over all $k$ would lead to a desired bound in terms of $\gamma_2(T, d)$.
+
+To prove the above, let's fix $k$ and $t$ first. The subgaussian assumption gives 
+\[ \lVert X_{\pi_k(t)} - X_{\pi_{k - 1}(t)} \rVert_{\psi_2} \leq d(\pi_k(t), \pi_{k - 1}(t)). \]
+So for every $u \geq 0$, the event 
+\[ |X_{\pi_k(t)} - X_{\pi_{k - 1}(t)}| \leq Cu 2^{k/2} d(\pi_k(t), \pi_{k - 1}(t)) \quad (*) \]
+holds with probability at least 
+\[ 1 - 2 \exp{(-8u^2 2^k)}, \]
+where we get the constant 8 by choosing $C$ to be big enough.
+
+Now unfix $t \in T$ by taking a union bound over 
+\[ |T_k| \cdot |T_{k - 1}| \leq |T_k|^2 \leq 2^{2^{k + 1}} \]
+pairs $(\pi_k(t), \pi_{k - 1}(t))$. Also, unfix $k$ by taking a union bound over all $k \in \mathbb{N}$. Then 
+$(*)$ holds simultaneously for all $t \in T$ and $k \in \mathbb{N}$ with probability at least 
+\[ 1 - \sum_{k = 1}^{\infty} 2^{2^{k + 1}} \cdot 2 \exp{(-8u^2 2^k)} \geq 1 - 2 \exp{(-u^2)}. \]
+
+\textbf{Step 3: Summing up the increments.} In the event that the bound $(*)$ does hold for all $t \in T$ and 
+$k \in \mathbb{N}$, we can sum up the inequalities over $k \in \mathbb{N}$ and plug in the result into the 
+chaining sum. We get 
+\[ |X_t - X_{t_0}| \lesssim u \sum_{k = 1}^{\infty} 2^{k/2} d(\pi_k(t), \kappa_{k - 1}(t)) \quad (**), \]
+where the notation $\lesssim$ hides an absolute constant factor. By the triangle inequality, 
+\[ d(\pi_k(t), \pi_{k - 1}(t)) \leq d(\pi_k(t), t) + d(t, \pi_{k - 1}(t)). \]
+Using that bound, reindexing, and plugging in the chaining bound from step 1, we get that the tright-hand side 
+of $(**)$ is at most $Cu \gamma_2(T, d)$, that is 
+\[ |X_t - X_{t_0}| \lesssim u \gamma_2(T, d). \]
+Taking the supremum over $T$ yields 
+\[ \sup_{t \in T}|X_t - X_{t_0}| \lesssim u \gamma_2(T, d). \]
+Since this holds with probability at least $1 - 2 \exp{(-u^2)}$ for any $u > c$, we get 
+\[ \left\lVert \sup_{t \in T}|X_t - X_{t_0}| \right\rVert_{\psi_2} \lesssim \gamma_2(T, d). \]
+This quickly that the conclusion of \cref{thm:8.5.2}, and we're done.
+\end{proof}
+
+\begin{remark}[Generic chaining: supremum of increments]
+\label{rmk:8.5.3}
+Similarly to Dudley's inequality (\cref{rmk:8.1.5}), the generic chaining actually gives 
+\[ \mathbb{E}\left[ \sup_{t, s \in T}|X_t - X_s| \right] \leq CK \gamma_2(T, d), \]
+which is valid even without the mean zero assumption $\mathbb{E}\left[ X_t \right] = 0$.
+\end{remark}
+
+\begin{remark}[Generic chaining: a high-probability bound]
+\label{rmk:8.5.4}
+\cref{thm:8.5.2} gives only an expectation bound, but generic chaining actually gives a high-probability bound - 
+we have aseen this before in \cref{rmk:8.1.6}.
+
+Assuming $T$ is finite, for every $u \geq 0$, the event 
+\[ \sup_{t, s \in T}|X_t - X_s| \leq CK \left[ \gamma_2(T, d) + u \cdot \mathrm{diam}(T) \right] \]
+holds with probability at least $1 - 2 \exp{(-u^2)}$ (Exercise 8.35). For Gaussian processes, we can directly 
+deduce this from Gaussian concentration.
+\end{remark}
+
+
+\subsubsection{Majorizing Measure and Comparison Theorems}
+The $\gamma_2$ functional (\cref{def:8.5.1}) is usually harder to compute than covering numbers in Dudley's 
+inequality. But it is often worth the effort - generic chaining is sharp up to constants:
+
+\begin{theorem}[Talagrand majorizing measure theorem]
+\label{thm:8.5.5}
+Let $(X_t)_{t \in T}$ be a mean-zero Gaussian process on a set $T$, equipped with the canonical metric 
+$d(t, s) = \lVert X_t - X_s \rVert_{L^2}$, as mentioned before. Then 
+\[ c \gamma_2(T, d) \leq \mathbb{E}\left[ \sup_{t \in T}X_t \right] \leq C \gamma_2(T, d). \]
+\end{theorem}
+
+\begin{proof}
+The upper bound directly comes from generic chaining (\cref{thm:8.5.2}). The lower bound is tricker hence not 
+included in the text.
+\end{proof}
+
+The upper bound holds not just for Gaussian but also for all subgaussian processes. Therefore, by combining the 
+upper and lower bounds, we can bound any subgaussian processes by the Gaussian one:
+
+\begin{corollary}[Talagrand comparison inequality]
+\label{cor:8.5.6}
+Let $(X_t)_{t \in T}$ be a mean-zero random process on a set $T$ and let $(Y_t)_{t \in T}$ be a mean-zero 
+Gaussian process. Assume 
+\[ \lVert X_t - X_s \rVert_{\psi_2} \leq K \lVert Y_t - Y_s \rVert_{L^2} \text{ for all } t, s \in T. \]
+Then 
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \leq CK \mathbb{E}\left[ \sup_{t \in T}Y_t \right]. \]
+\end{corollary}
+
+\begin{proof}
+Consider the canonical metric $d(t, s) = \lVert Y_t - Y_s \rVert_{L^2}$ on $T$. Now just use the generic 
+chaining bound (\cref{thm:8.5.2}) followed by the lower bound in the majorizing measure theorem 
+(\cref{thm:8.5.5}) and we get 
+\[ \mathbb{E}\left[ \sup_{t \in T}X_t \right] \lesssim K \gamma_2(T, d) \lesssim 
+K \mathbb{E}\left[ \sup_{t \in T}Y_t \right]. \]
+\end{proof}
+
+\begin{remark}[Sudakov-Fernique]
+\label{rmk:8.5.7}
+\cref{cor:8.5.6} extends the Sudakov-Fernique inequality (\cref{thm:7.2.8}) to subgaussian processes - with 
+only an absolute constant factor as the price for this generalization!
+\end{remark}
+
+We can also apply \cref{cor:8.5.6} for the canonical Gaussian process $Y_x = \left\langle g, x \right\rangle$ on 
+a set $T \subset \mathbb{R}^n$, where $g \sim N(0, I_n)$. From section 7.5, 
+\[ w(T) = \mathbb{E}\left[ \sup_{x \in T}\left\langle g, x \right\rangle \right] \]
+is the \textit{Gaussian width} of the set $T$. We immediately get the following:
+
+\begin{corollary}[Talagrand comparison inequality: geometric form]
+\label{cor:8.5.8}
+Let $(X_x)_{x \in T}$ be a mean-zero random process on a subset $T \subset \mathbb{R}^n$. Assume that 
+\[ \lVert X_x - X_y \rVert_{\psi_2} \leq K \lVert x - y \rVert_{2} \text{ for all } x, y \in T. \]
+Then 
+\[ \mathbb{E}\left[ \sup_{x \in T}X_x \right] \leq CK w(T). \]
+\end{corollary}
+
+\begin{remark}[Subgaussian width & Gaussian width]
+\label{rmk:8.5.9}
+A nice consequence: if $X$ is a subgaussian random vector in $\mathbb{R}^n$, then 
+\[ \mathbb{E}\left[ \sup_{t \in T}\left\langle X, t \right\rangle \right] \leq CKw(T) 
+\text{ for any bounded set } T \subset \mathbb{R}^n, \]
+where $K = \lVert X \rVert_{\psi_2}$. Just apply \cref{cor:8.5.8} to the process $(\left\langle X, x 
+\right\rangle )_{x \in T}$, whose increments satisfy 
+\[ \lVert \left\langle X, x \right\rangle - \left\langle X, y \right\rangle \rVert_{\psi_2} 
+= \lVert \left\langle X, x - y \right\rangle \rVert_{\psi_2} \leq K \lVert x - y \rVert_{2} \]
+by definition of a subgaussian random vector.
+\end{remark}
 
 
 
 % ----------8.6----------
 \subsection{Chevet Inequality}
+Talagrand's comparison inequality (generic chaining) is powerful and works in a wide range of settings. Let's 
+use it on random quadratic forms: 
+\[ \sup_{x \in T, y \in S} \left\langle Ax, y \right\rangle \leq ? \]
+where $A$ is a random matrix and $T, S$ are bounded sets.
 
+A special case where $T, S$ are Euclidean balls leads to the operator norm of $A$, which we did some analysis 
+already (\cref{thm:4.4.3}). Here we go for a more general setting, and we'll just use two geometric quantities: 
+the \textit{Gaussian width} $w(T)$, and the \textit{radius}, defined as 
+\[ \mathrm{rad}(T) := \sup_{x \in T}\lVert x \rVert_{2}. \]
 
+\begin{theorem}[Subgaussian Chevet's inequality]
+\label{thm:8.6.1}
+Let $A$ be an $m \times n$ random matrix with independent, mean-zero, subgaussian rows $A_i$. Let $T \subset 
+\mathbb{R}^n$ and $S \subset \mathbb{R}^m$ be arbitrary bounded sets. Then 
+\[ \mathbb{E}\left[ \sup_{x \in T, y \in S} \left\langle Ax, y \right\rangle \right] \leq 
+CK [w(T) \mathrm{rad}(S) + w(S) \mathrm{rad}(T)] \]
+where $K = \max_{i} \lVert A_i \rVert_{\psi_2}$. The same holds if ``rows" is replaced by ``columns".
+\end{theorem}
+
+\begin{proof}
+We'll follow the proof for Theorem 7.3.1 (reference here) but with Talagrand's comparison inequality instead of 
+Sudakov-Fernique's.
+
+Without loss of generality, assume K = 1. We need to bound the random process 
+\[ X_{uv}\left\langle Au, v \right\rangle, \ u \in T, v \in S. \]
+To check that the increments are subgaussian, fix $(u, v), (w, z) \in T \times S$ and write 
+\[ X_{uv} - X_{wz} = X_{uv} - X_{wv} + X_{wv} - X_{wz} = \left\langle A(u - w), v \right\rangle 
++ \left\langle Aw, v - z \right\rangle. \]
+Using the triangle inequality and the subgaussian assumption (Exercise 3.34), we get 
+\begin{align*}
+	\lVert X_{uv} - X_{wz} \rVert_{\psi_2} 
+	&\leq \lVert \left\langle A(u - w), v \right\rangle \rVert_{\psi_2} 
+	+ \lVert \left\langle Aw, v - z \right\rangle \rVert_{\psi_2} \\
+	&\lesssim \lVert u - w \rVert_{2}\lVert v \rVert_{2} + \lVert v - z \rVert_{2}\lVert w \rVert_{2} \\
+	&\leq \lVert u - w \rVert_{2}\mathrm{rad}(S) + \lVert v - z \rVert_{2}\mathrm{rad}(T) \quad (*).
+\end{align*}
+Let's pick a simpler Gaussian process $(Y_{uv})$ for Talagrand's comparison inequality (\cref{cor:8.5.6}). The 
+increment bound points us to a good choice:
+\[ Y_{uv} := \left\langle g, u \right\rangle \mathrm{rad}(S) + \left\langle h, v \right\rangle 
+\mathrm{rad}(T), \]
+where $g \sim N(0, I_n)$ and $h \sim N(0, I_m)$ are independent. The increments of this process are 
+\[ \lVert Y_{uv} - Y_{wz} \rVert_{L^2}^2 = \lVert u - w \rVert_{2}^2 \mathrm{rad}(S)^2 
++ \lVert v - z \rVert_{2}^2 \mathrm{rad}(T)^2. \]
+Comparing this to the bound $(*)$, we find that 
+\[ \lVert X_{uv} - X_{wz} \rVert_{\psi_2} \lesssim \lVert Y_{uv} - Y_{wz} \rVert_{L^2}, \]
+where we used the inequality $a + b \leq \sqrt{2 (a^2 + b^2)}$. Applying Talagrand's comparison inequality 
+(\cref{cor:8.5.6}), we finish the proof:
+\begin{align*}
+	\mathbb{E}\left[ \sup_{u \in T, v \in S}X_{uv} \right] 
+	&\lesssim \mathbb{E}\left[ \sup_{u \in T, v \in S}Y_{uv} \right] \\
+	&= \mathbb{E}\left[ \sup_{u \in T}\left\langle g, u \right\rangle \right] \mathrm{rad}(S) 
+	+ \mathbb{E}\left[ \sup_{v \in S}\left\langle h, v \right\rangle \right] \mathrm{rad}(T) \\
+	&= w(T) \mathrm{rad}(S) + w(S) \mathrm{rad}(T).
+\end{align*}
+\end{proof}
+
+\begin{remark}[Operator norms of random matrices]
+\label{rmk:8.6.2}
+For the special case $T = S^{n - 1}, \ S = S^{m - 1}$, Chevet's inequality gives up the familiar sharp bound 
+on the operator norm:
+\[ \mathbb{E}\left[ \lVert A \rVert_{} \right] \leq CK (\sqrt{n} + \sqrt{m}), \]
+which we proved earlier using $\varepsilon$-nets. But this new approach gives more flexibility! For example, 
+picking $T, S$ as $\ell^p$ balls gives the $\lVert A \rVert_{p \to q}$ norm of a random matrix (Exercise 8.41).
+\end{remark}
+
+\begin{remark}[Gaussian Chevet inequality]
+\label{rmk:8.6.3}
+For Gaussian matrices $A$ with i.i.d. $N(0, 1)$ entries, we can even prove Chevet's inequality with sharp 
+constant 1: 
+\[ \mathbb{E}\left[ \sup_{x \in T, y \in S} \left\langle Ax, y \right\rangle \right] \leq 
+w(T) \mathrm{rad}(S) + w(S) \mathrm{rad}(T), \]
+and a reverse inequality up to a constant (Exercise 8.39). Later, we'll further improve Gaussian Chevet 
+inequality in Section 9.7.1.
+\end{remark}
 
