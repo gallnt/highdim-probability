@@ -11,6 +11,54 @@ the norm (\cref{thm:3.1.1}) tells us that for any fixed vector $x \in \mathbb{R}
 \[ \lVert Ax \rVert_{2} \approx \sqrt{m}\lVert x \rVert_{2} \]
 holds with high probability.
 
+Let's ask something more general: Is it true that with high probability, the equation above holds 
+\textit{simultaneously} for many vectors $x \in \mathbb{R}^n$? To quantify how many, pick some bounded set 
+$T \subset \mathbb{R}^n$ and ask if the approximation holds simultaneously for all $x \in T$. It turns out that 
+the maximal error is about $\gamma(T)$, the Gaussian complexity of $T$.
+
+\begin{theorem}[Matrix deviation inequality]
+\label{thm:9.1.1}
+Let $A$ be an $m \times n$ random matrix with independent, isotropic and subgaussian rows $A_i$. Then for any 
+subset $T \subset \mathbb{R}^n$, 
+\[ \mathbb{E}\left[ \sup_{x \in T}\left| \lVert Ax \rVert_{2} - \sqrt{m}\lVert x \rVert_{2} \right| \right] 
+\leq CK^2 \gamma(T), \]
+where $\gamma(T)$ is the Gaussian complexity from Section 7.5.3, defined as 
+\[ \gamma(T) = \mathbb{E}\left[ \sup_{x \in T}|\left\langle g, x \right\rangle| \right], \ g \sim N(0, I_n), \]
+and $K = \max_{i} \lVert A_i \rVert_{\psi_2}$.
+\end{theorem}
+
+The plan is to deduce this from Talagrand's comparison inequality (\cref{cor:8.5.8}). To do that, we just have 
+to check the random process 
+\[ Z_x := \lVert Ax \rVert_{2} - \sqrt{m}\lVert x \rVert_{2} \]
+indexed by vectors $x \in \mathbb{R}^n$ has subgaussian increments. Here is the claim:
+
+\begin{theorem}[Subgaussian increments]
+\label{thm:9.1.2}
+Let $A$ be an $m \times n$ random matrix with independent, isotropic and subgaussian rows $A_i$. Then the random 
+process $Z_x$ defined above has subgaussian increments: 
+\[ \lVert Z_x - Z_y \rVert_{\psi_2} \leq CK^2 \lVert x - y \rVert_{2} \text{ for all } x, y \in \mathbb{R}^n, \]
+here $K = \max_{i} \lVert A_i \rVert_{\psi_2}$.
+\end{theorem}
+
+Once we have proved this theorem, we plug it into Talagrand's comparison inequality (Exercise 8.37 (a)) and get 
+\[ \mathbb{E}\left[ \sup_{x \in T} |Z_x| \right] \leq CK^2 \gamma(T) \]
+which directly gives \cref{thm:9.1.1}. So, all we have to do is prove \cref{thm:9.1.2} - and it is in fact 
+easier since it's for fixed $x$ and $y$.
+
+\begin{proof}[Proof of \cref{thm:9.1.2}]
+This argument will be a bit longer than usual, so we'll (hopefully) make it easier by starting with simpler 
+cases and building up from there.
+
+\textbf{Step 1: Unit vector $x$ and zero vector $y$.} If $\lVert x \rVert_{2} = 1$ and $y = 0$, the inequality 
+in the theorem statement becomes 
+\[ \left\lVert \lVert Ax \rVert_{2} - \sqrt{m} \right\rVert_{\psi_2} \leq CK^2. \]
+The random vector $Ax \in \mathbb{R}^m$ has independent, subgaussian coordinates $\left\langle A_i, x
+\right\rangle$, which satisfy 
+\[ \mathbb{E}\left[ \left\langle A_i, x \right\rangle^2 \right] = 1 \] 
+by isotropy. So, the equation above follows from the concentration of the norm (\cref{thm:3.1.1}).
+
+\textbf{Step 2: Unit vectors $x, y$ and the squared process.}
+\end{proof}
 
 
 
