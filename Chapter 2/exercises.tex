@@ -1,7 +1,7 @@
 \section{Sums of Independent Random Variables}
 
-% Exercise 1
-\section*{Exercise 1}
+% Exercise 2.1
+\section*{Exercise 2.1}
 First note that by independence, 
 \[ \mathbb{E}[Y_n] = \mathbb{E}[X_1] \cdots \mathbb{E}[X_n] = 0.5^n. \]
 For the first inequality, denote $A = \{X_i \geq 0.5 \quad \forall i\}$. Then we can get that 
@@ -28,9 +28,9 @@ Finally, we get that
 = \biggl( \frac{2 \sqrt{2}}{3} \biggr)^n \leq 0.95^n. \]
 
 
-% Exercise 2
+% Exercise 2.2
 \newpage
-\section*{Exercise 2}
+\section*{Exercise 2.2}
 We'll approach this problem via a more calculus-based flavor.
 Define the function 
 \begin{align*}
@@ -51,9 +51,9 @@ We can also see that
 From these three facts, $f(t) \geq 0$ for all $t > 0$ hence the inequality follows.
 
 
-% Exercise 3
+% Exercise 2.3
 \newpage
-\section*{Exercise 3}
+\section*{Exercise 2.3}
 \subsection*{(a)}
 \[ f'(x) = (-x) \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} = -xf(x) \text{ for all } x. \]
 
@@ -79,9 +79,9 @@ Since $f(t) > 0$, dividing $\color{blue} (*)$ by $f(t)$ we will get the first in
 $\color{blue} (**)$ by $f(t)$ results in the second inequality.
 
 
-% Exercise 4
+% Exercise 2.4
 \newpage
-\section*{Exercise 4}
+\section*{Exercise 2.4}
 \subsection*{(a)}
 \begin{align*}
 	\mathbb{E}[g \mathbf{1}_{g > t}] 
@@ -102,9 +102,9 @@ $\color{blue} (**)$ by $f(t)$ results in the second inequality.
 \end{align*}
 
 
-% Exercise 5
+% Exercise 2.5
 \newpage
-\section*{Exercise 5}
+\section*{Exercise 2.5}
 We start by expanding both quantities into their respective Taylor series representations: 
 \begin{align*}
 	\cosh{x} 
@@ -131,9 +131,9 @@ For the inductive step, assume that for some $n \in \mathbb{N}_0$, the statement
 Therefore we are done.
 
 
-% Exercise 6
+% Exercise 2.6
 \newpage
-\section*{Exercise 6}
+\section*{Exercise 2.6}
 As per usual, let $\lambda > 0$. By the typical procedure for the exponential moment method, 
 \begin{align*}
 	P(g \geq t) 
@@ -150,9 +150,9 @@ Therefore by the second derive test, we have found a minimizer $\lambda^* = t$ f
 RHS bound. Plugging back gives the result.
 
 
-% Exercise 7
+% Exercise 2.7
 \newpage
-\section*{Exercise 7}
+\section*{Exercise 2.7}
 Again, we'll use the exponential moment method so let $\lambda > 0$. 
 \begin{align*}
 	P \biggl( \sum_{i = 1}^{N} X_i \leq \varepsilon N \biggr) 
@@ -181,14 +181,14 @@ Moreover,
 Therefore $\lambda^* = 1$ is the minimizer of our bound, and plugging back gives the result.
 
 
-% Exercise 8
+% Exercise 2.8
 \newpage
-\section*{Exercise 8}
+\section*{Exercise 2.8}
 The function $f(x) = e^{\lambda x}$ is convex because $f''(x) = \lambda^2 e^{\lambda x} \geq 0$. By 
 Jensen's inequality, for any $a, b \in \mathbb{R}$ and $p \in [0, 1]$, 
 \begin{align*}
 	f(pa + (1 - p)b) 
-	&= e^{\lambda(pa + (1 - p)b)} 
+	&= e^{\lambda(pa + (1 - p)b)} \\
 	&\leq p e^{\lambda a} + (1 - p) e^{\lambda b} \\
 	&= pf(a) + (1 - p)f(b).
 \end{align*}
@@ -199,9 +199,9 @@ Taking expectations on both sides,
 \[ \mathbb{E}[e^{\lambda X}] \leq e^{\lambda a} + (1 - p) e^{\lambda b} = \mathbb{E}[e^{\lambda Y}]. \]
 
 
-% Exercise 9
+% Exercise 2.9
 \newpage
-\section*{Exercise 9}
+\section*{Exercise 2.9}
 \subsection*{(a)}
 We can assume WLOG $X$ has mean zero because we can define another random variable $Y = X - \mathbb{E}[X]$, 
 then $Y$ will take values between $[a - \mathbb{E}[X], b - \mathbb{E}[X]]$, which does not affect the 
@@ -244,4 +244,263 @@ Then by Taylor's Theorem,
 \[ K(\lambda) 
 = K(0) + \lambda K'(0) + \frac{\lambda^2 K''(\xi)}{2!} 
 \leq 0 + 0 + \frac{\lambda^2}{4 \cdot 2!} = \frac{\lambda^2}{8} \text{ for all } \lambda \in \mathbb{R}. \]
+
+
+% Exercise 2.10
+\newpage
+\section*{Exercise 2.10}
+We're going to use the exponential moment method. Let $\lambda > 0$. Then 
+\begin{align*}
+	P \left( \sum_{i = 1}^{n} (X_i - \mathbb{E}\left[ X_i \right]) \geq t \right) 
+	&= P \left( \exp{\left( \lambda \sum_{i = }^{N}(X_i - \mathbb{E}\left[ X_i \right]) \right)} 
+	\geq \exp{(\lambda t)} \right) \\
+	&\leq e^{-\lambda t} \prod_{i = 1}^{N} \mathbb{E}\left[ \exp{(\lambda X_i - \mathbb{E}\left[ X_i
+	\right])} \right] \quad \text{(By Markov + independence)} \\
+	&= e^{-\lambda t} \prod_{i = 1}^{N} \exp{\left( \frac{\lambda^2 (b_i - a_i)^2}{8} \right)} 
+	\quad \text{(By Exercise 2.9)} \\
+	&= \exp{\left( -\lambda t + \frac{\lambda^2}{8}\sum_{i = 1}^{N} (b_i - a_i)^2 \right)}.
+\end{align*}
+Again, we set the right hand side to be a function of $\lambda$ and minimize it. 
+\[ f'(\lambda) = \left( -t + \frac{\lambda}{4}\sum_{i = 1}^{N}(b_i - 1_i)^2 \right)f(\lambda) = 0 
+\implies \lambda^* = \frac{4t}{\sum_{i = 1}^{N}(b_i - a_i)^2}. \]
+Moreover, 
+\begin{align*}
+	f''(\lambda) = \frac{1}{4}\sum_{i = 1}^{N}(b_i - a_i)^2 f(\lambda) 
+	+ \left( -t + \frac{\lambda}{4}\sum_{i = 1}^{N}(b_i - a_i)^2 \right) f(\lambda) \\
+	\implies f''(\lambda^*) = \frac{1}{4}\sum_{i = 1}^{N}(b_i - a_i)^2 \cdot 
+	\exp{\left( -\frac{2t^2}{\sum_{i = 1}^{N}(b_i - a_i)^2} \right)} \geq 0. 
+\end{align*}
+By the second derivative test, $\lambda*$ indeed minimizes the expression that we found earlier. Lastly, plug 
+$\lambda^*$ back to the original equation above gives the result.
+
+
+% Exercise 2.11
+\newpage
+\section*{Exercise 2.11}
+We'll use the exponential moment method. Let $\lambda > 0$. Then 
+\begin{align*}
+	P(S_N \leq t) 
+	&= P(-S_N \geq -t) \\
+	&= P(\exp{(-\lambda S_N)} \geq \exp{(-\lambda t)}) \\
+	&\leq e^{\lambda t} \mathbb{E}\left[ \exp{(-\lambda S_N)} \right] \quad \text{(By Markov's inequality)} \\
+	&= e^{\lambda t} \prod_{i = 1}^{N}\mathbb{E}\left[ \exp{(-\lambda X_i)} \right] \quad 
+	\text{(By independence)} \\
+	&\leq \exp{(\lambda t + (e^{-\lambda} - 1) \mu)}, \quad (*)
+\end{align*}
+where for the last inequality we used the definition of expectation:
+\[ \mathbb{E}\left[ \exp{(-\lambda X_i)} \right] 
+= e^{-\lambda}p_i + 1 \cdot (1 - p_i) = 1 + (e^{-\lambda} - 1)p_i \leq \exp{((e^{-\lambda} - 1)p_i)}. \]
+Then we get 
+\[ \prod_{i = 1}^{N}\mathbb{E}\left[ \exp{(-\lambda X_i)} \right] 
+\leq \exp{\left( (e^{-\lambda} - 1) \sum_{i = 1}^{N} p_i \right)} = \exp{((e^{-\lambda} - 1) \mu)}. \]
+We set the right hand side of $(*)$ as a function of $\lambda$ and minimize it.
+\[ f'(\lambda) = (t - \mu e^{-\lambda})f(\lambda) = 0 \implies e^{-\lambda} = \frac{t}{\mu} 
+\implies \lambda^* = \ln{\left( \frac{\mu}{t} \right)}. \]
+Moreover, 
+\[ f''(\lambda) = \mu e^{-\lambda} f(\lambda) + (t - \mu e^{-\lambda})^2 f(\lambda) 
+\implies f''(\lambda^*) = t \cdot \exp{\left( t \ln{\left( \frac{\mu}{t} \right)} + 
+\left( \frac{t}{\mu} - 1 \right) \mu \right)} > 0. \]
+By the second derivative test, $\lambda^*$ indeed minimizes $(*)$. Plugging $\lambda^*$ back to $(*)$ then 
+gives the result.
+
+
+% Exercise 2.12
+\newpage
+\section*{Exercise 2.12}
+From the pmf of a binomial random variable, 
+\begin{align*}
+	P(S_N = t) 
+	&= \binom{N}{t} \left( \frac{\mu}{N} \right)^t \left( 1 - \frac{\mu}{N} \right)^{N - t} \\
+	&\geq \left( \frac{N}{t} \right)^t \left( \frac{\mu}{N} \right)^t 
+	\left( 1 - \frac{\mu}{N} \right)^{N - t} \quad \text{(Exercise 0.6)} \\
+	&\geq \left( \frac{N}{t} \right)^t \left( \frac{\mu}{N} \right)^t  
+    \left( 1 - \frac{\mu}{N} \right)^{N - \mu} \quad (\mu \leq t) \\
+	&\geq \left( \frac{N}{t} \right)^t \left( \frac{\mu}{N} \right)^t e^{-\mu} \\
+	&= e^{-\mu} \left( \frac{\mu}{t} \right)^t.
+\end{align*}
+
+
+% Exercise 2.13
+\newpage
+\section*{Exercise 2.13}
+\subsection*{(a)}
+We'll use the exponential moment method. Let $\lambda > 0$. Then 
+\begin{align*}
+	P(X \geq t) 
+	&= P(e^{\lambda X} \geq e^{\lambda t}) \\
+	&\leq e^{-\lambda t}\mathbb{E}\left[ e^{\lambda X} \right] \quad \text{(By Markov's inequality)} \\
+	&= \exp{(-\lambda t + \mu(e^{\lambda} - 1))}. \quad (*)
+\end{align*}
+We set the right hand side of $(*)$ as a function of $\lambda$ and minimize it.
+\[ f'(\lambda) = (-t + \mu e^{\lambda}) f(\lambda) = 0 \implies \lambda^* = \ln{\left( \frac{t}{\mu} \right)}. \]
+Moreover, 
+\[ f''(\lambda) = \mu e^{\lambda} f(\lambda) + (-t + \mu e^\lambda)^2 f(\lambda) 
+\implies f''(\lambda^*) = t \exp{(-t \ln{(t/\mu)} + t - \mu)} \geq 0. \]
+By the second derivative test, $\lambda^*$ indeed minimizes $(*)$. Plugging $\lambda^*$ back to $(*)$ then 
+gives the result.
+
+\subsection*{(b)}
+We'll use the exponential moment method. Let $\lambda > 0$. Then 
+\begin{align*}
+	P(X \leq t) 
+	&= P(-X \geq -t) \\
+	&= P(e^{-\lambda X} \geq e^{-\lambda t}) \\
+	&\leq e^{\lambda t} \mathbb{E}\left[ e^{-\lambda X} \right] \quad \text{(By Markov's inequality)} \\
+	&= \exp{(\lambda t + \mu(e^{-\lambda} - 1))}.
+\end{align*}
+We set the right hand side of $(*)$ as a function of $\lambda$ and minimize it.
+\[ f'(\lambda) = (t - \mu e^{-\lambda}) f(\lambda) = 0 \implies \lambda^* = \ln{\left( \frac{\mu}{t} \right)}. \]
+Moreover, 
+\[ f''(\lambda) = \mu e^{-\lambda} f(\lambda) + (t - \mu e^{-\lambda})^2 f(\lambda) 
+\implies f''(\lambda^*) = t \cdot \exp{(t \ln{(\mu / t)} + \mu (t/\mu - 1))} \geq 0. \]
+By the second derivative test, $\lambda^*$ indeed minimizes $(*)$. Plugging $\lambda^*$ back to $(*)$ then 
+gives the result.
+
+\subsection*{(c)}
+By Theorem 2.3.1 with $t = (1 + \delta)\mu$, 
+\begin{align*}
+	P(X - \mu \geq \delta \mu) 
+	&= P(X \geq (1 + \delta)\mu) \\
+	&\leq e^{-\mu} \left( \frac{e \mu}{(1 + \delta)\mu} \right)^{(1 + \delta)\mu} 
+	\quad \text{(By Chernoff's inequality)} \\
+	&= e^{-\mu + (1 + \delta)\mu} \cdot e^{-(1 + \delta)\ln{(1 + \delta)} \mu} \\
+	&= \exp{(-\mu((1 + \delta)\ln{(1 + \delta)} - \delta))}.
+\end{align*}
+From the proof of Corollary 2.3.4, we already proved that 
+\[ (1 + \delta)\ln{(1 + \delta)} - \delta \geq \frac{\delta^2}{3}. \]
+Therefore, by plugging this into our original bound, we get 
+\[ P(X - \mu \geq \delta \mu) \leq \exp{\left( -\frac{\delta^2 \mu}{3} \right)}. \]
+
+For the other side, we apply Remark 2.3.2 and get 
+\begin{align*}
+	P(X - \mu \leq -\delta \mu) 
+	&= P(X \leq (1 - \delta)\mu) \\
+	&\leq e^{-\mu} \left( \frac{e \muu}{(1 - \delta)\mu} \right)^{(1 - \delta)\mu} 
+	\quad \text{(By Remark 2.3.2)} \\
+	&= \exp{(-\mu((1 - \delta)\ln{(1 - \delta)} + \delta))}.
+\end{align*}
+Again, from the proof of Corollary 2.3.4, we already have 
+\[ (1 - \delta)\ln{(1 - \delta)} + \delta \geq \frac{\delta^2}{2} \geq \frac{\delta^2}{3}, \]
+hence plugging this bound into our original bound gives
+\[ P(X - \mu \leq -\delta \mu) \leq \exp{\left( -\frac{\delta^2 \mu}{3} \right)}. \]
+Combining the two results above gives the statement.
+
+\subsection*{(d)}
+\[ P(X = t) = \frac{e^{-\mu} \mu^t}{t!} \geq \frac{e^{-\mu} \mu^t}{t^t} 
+= e^{-\mu} \left( \frac{\mu}{t} \right)^t. \]
+
+
+% Exercise 2.14
+\newpage
+\section*{Exercise 2.14}
+For this question, we'll use the following identity:
+\[ \ln{(1 + x)} \geq \frac{x}{1 + x/2} \text{ for all } x \geq 0. \]
+This is above is true since we can define the function
+\[ g(x) := \ln{(1 + x)} - \frac{x}{1 + x/2}. \]
+Then 
+\[ g(0) = 0, \ g'(x) = \frac{1}{1 + x} - \frac{1}{(1 + x/2)^2} \geq 0. \]
+Ok great! Let's go back to the problem. Just like Exercise 2.13, we have to show two sides of the bound, then 
+combine together.
+
+For the upper bound, again by applying Theorem 2.3.1 with $t = (1 + \delta)\mu$, 
+\begin{align*}
+	P(S_N - \mu \geq \delta \mu) 
+	&= P(S_N \geq (1 + \delta)\mu) \\
+	&\leq \exp{(-\mu((1 + \delta)\ln{(1 + \delta)} - \delta))} \\
+	&\leq \exp{\left( -\frac{\delta^2 \mu}{2 + \delta} \right)}
+\end{align*}
+where in the last inequality, we used that fact that (due to the identity at the beginning),
+\begin{align*}
+	(1 + \delta)\ln{(1 + \delta)} - \delta 
+	&\geq \frac{(1 + \delta)\delta}{1 + \delta/2} - \delta \\
+	= \frac{\delta^2 / 2}{1 + \delta/2} \\
+	&= \frac{\delta^2}{2 + \delta}.
+\end{align*}
+
+For the lower bound, the case where $\delta > 1$ is trivial. For the other case where $\delta \leq 1$, from 
+the proof of Corollary 2.3.4, just like the previous exercise, 
+\begin{align*}
+	P(X - \mu \leq -\delta \mu) 
+	&= P(X \leq (1 - \delta)\mu) \\
+	&\leq e^{-\mu} \left( \frac{e \muu}{(1 - \delta)\mu} \right)^{(1 - \delta)\mu} 
+	\quad \text{(By Remark 2.3.2)} \\
+	&= \exp{(-\mu((1 - \delta)\ln{(1 - \delta)} + \delta))}.
+\end{align*}
+Moreover, we have
+\[ (1 - \delta)\ln{(1 - \delta)} + \delta \geq \frac{\delta^2}{2} \geq \frac{\delta^2}{2 + \delta}, \]
+and therefore 
+\[ P(X - \mu \leq -\delta \mu) \leq \exp{\left( -\frac{\delta^2 \mu}{2 + \delta} \right)}. \]
+Combining the two bounds completes the proof.
+
+
+% Exercise 2.15
+\newpage
+\section*{Exercise 2.15}
+When using the exponential moment method in proving the Chernoff inequalities, the key chain of inequalities 
+that we relied on is as follows:
+\begin{align*}
+	P(S_N \geq t) 
+	&\leq P(\exp{(\lambda S_N)} \geq e^{\lambda t}) \\
+	&\leq e^{-\lambda t} \mathbb{E}\left[ \exp{(\lambda S_n)} \right] \\
+	&= e^{\lambda t} \prod_{i = 1}^{N} \mathbb{E}\left[ \exp{(\lambda X_i)} \right].
+\end{align*}
+From Exercise 2.8, if $X, Y$ are random variables such that $X$ takes values in $[a, b]$ and $Y$ takes values 
+in $\{ a, b \}$, then 
+\[ \mathbb{E}\left[ \exp{(\lambda X_i)} \right] \leq \mathbb{E}\left[ \exp{(\lambda Y_i)} \right] 
+\text{ for all } \lambda \in \mathbb{R}. \]
+Therefore if the bound holds true for independent Bernoulli random variables, they have to hold for any 
+independent random variables taking values on $[0, 1]$.
+
+
+% Exercise 2.21
+\newpage
+\section*{Exercise 2.21}
+Let $X_i = \{ \text{Algorithm at ith time is wrong} \}$. Then $X_i \sim \mathrm{Ber}(\frac{1}{2} - 
+\varepsilon)$. By Hoeffding's inequality (Theorem 2.2.6), the probability that the answer is wrong is 
+\begin{align*}
+	P \left( \sum_{i = 1}^{N} X_i \geq \frac{N}{2} \right) 
+	&= P \left( \sum_{i = 1}^{N} X_i - \left( \frac{N}{2} - N \varepsilon \right) \geq \frac{N}{2} - 
+	\left( \frac{N}{2} - N \varepsilon \right) \right) \\
+	&= P \left( \sum_{i = 1}^{N}\left( X_i - \left( \frac{1}{2} - \varepsilon \right) \right) \geq 
+	N \varepsilon \right) \\
+	&\leq \exp{\left( -\frac{2N^2 \varepsilon^2}{N} \right)} \\
+	&= \exp{(-2N \varepsilon^2)} \\
+	&\leq \delta.
+\end{align*}
+Solving the inequality above for $N$ gives 
+\[ -2N \varepsilon^2 \leq \ln{\delta} \implies N \geq \frac{1}{2 \varepsilon^2}\ln{\left( \frac{1}{\delta} 
+\right)}. \]
+
+
+% Exercise 2.22
+\newpage
+\section*{Exercise 2.22}
+\subsection*{(a)}
+The pdf of the standard normal distribution is 
+\[ f_g(s) = \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2}, \ x \in \mathbb{R}. \]
+Then 
+\begin{align*}
+	\mathbb{E}\left[ |g|^p \right] 
+	&= \int_{-\infty}^{\infty} |x|^p \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx \\
+	&= \int_{-\infty}^{0} (-x)^p \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx 
+	+ \int_{0}^{\infty} x^p \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx \\
+	&= 2 \int_{0}^{\infty} x^p \cdot \frac{1}{\sqrt{2 \pi}} e^{-x^2 / 2} \ dx \\
+	&= 2 \int_{0}^{\infty} (2t)^{(p - 1)/2} \cdot \frac{1}{\sqrt{2 \pi}} e^{-t} \ dt \quad (t = x^2/2) \\
+	&= \frac{2^{p/2}}{\sqrt{\pi}} \int_{0}^{\infty} t^{(p - 1)/2} e^{-t} \ dt \\
+	&= \frac{2^{p/2}}{\sqrt{\pi}} \Gamma \left( \frac{p + 1}{2} \right).
+\end{align*}
+
+\subsection*{(b)}
+From part (a), 
+\begin{align*}
+	\lVert g \rVert_{L^p} 
+	&= \left[ \frac{2^{p/2}}{\sqrt{\pi}} \Gamma \left( \frac{p + 1}{2} \right) \right]^{1/p} \\
+	&\approx \left[ \frac{2^{p/2}}{\sqrt{\pi}} \cdot \sqrt{2 \pi(p + 1) / 2} \cdot 
+	\left( \frac{p - 1}{2e} \right)^{(p - 1)/2} \right]^{1/p} \\
+	&= \left[ \sqrt{2(p - 1)} \cdot \left( \frac{p - 1}{e} \right)^{(p-1)/2} \right]^{1/p} \\
+	&= \left[ \sqrt{2e} \left( \frac{p}{e} \right)^{p/2} \right]^{1/p} \\
+	&= \sqrt{\frac{p}{e}} \cdot (2e)^{1/p} \\
+	&= \sqrt{\frac{p}{e}} (1 + o(1)) \text{ as } p \to \infty.
+\end{align*}
+
 
