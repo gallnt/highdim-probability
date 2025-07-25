@@ -519,6 +519,7 @@ we define the \underline{hamming distance} as the number of bits where the strin
 \end{definition}
 
 \begin{proposition}[Covering and packing numbers of the Hamming cube]
+\label{prop:4.2.15}
 The covering and packing numbers of the Hamming cube $K = \{0, 1\}^n$ satisfy the following for any integer 
 $m \in \{0, \dots, n\}$: 
 \[ \frac{2^n}{\sum_{k = 0}^{m} \binom{n}{k}} \leq \mathcal{N}(K, d_H, m) 
@@ -533,6 +534,130 @@ Use the volumetric argument from above using cardinality instead of the volume (
 
 % ----------4.3----------
 \subsection{Application: Error Correcting Codes}
+Covering and packing arguments frequently appear in applications in \textit{coding theory}. We'll give two 
+examples below.
+
+
+\subsubsection{Metric Entropy and Complexity}
+Intuitively, the covering and packing numbers measure the \textit{complexity} of a set $K$. Now we'll look at 
+another concept related to that: The logarithm of the covering numbers $\log_{2}{\mathcal{N}(K, \varepsilon)}$ 
+is often called the \textit{metric entropy} of the set $K$. 
+
+\begin{proposition}[Metric entropy and coding]
+\label{prop:4.3.1}
+Let $(T, d)$ be a metric space, and consider a subset $K \subset T$. Let $\mathcal{C}(K, d, \varepsilon)$ denote 
+the smallest number of bits sufficient to specify every point $x \in K$ with accuracy $\varepsilon$ in the 
+metric $d$. Then 
+\[ \log_{2}{\mathcal{N}(K, d, \varepsilon)} \leq \mathcal{C}(K, d, \varepsilon) 
+\leq \left\lfloor \log_{2}{\mathcal{N}(K, d, \varepsilon/2)} \right\rfloor. \]
+\end{proposition}
+
+\begin{proof}
+\textbf{(Lower bound)} Assume $\mathcal{C}(K, d, \varepsilon) \leq N$. This means that there exists a mapping 
+(``encoding") of points $x \in K$ into bit strings of length $N$, which specifies every point with accuracy 
+$\varepsilon$. This gives a partition of the domain $K$ into at most $2^N$ subsets, each consisting of the 
+points represented by the same string (Figure 4.3). Each subset has diameter at most $\varepsilon$, so it can be 
+comvered by a a ball centered in $K$ and with radius $\varepsilon$. Therefore, $K$ can be covered by at most 
+$2^N$ balls with radius $\varepsilon$, meaning $\mathcal{N}(K, d, \varepsilon) \leq 2^N$. Taking logarithms 
+gives the lower bound.
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 4/fig4-3.png}
+\end{center}
+
+\textbf{(Upper bound)} Assume $\log_{2}{\mathcal{N}(K, d, \varepsilon/2)} \leq N$ for some integer $N$. This 
+means that there exists an $(\varepsilon/2)$-net $\mathcal{N}$ of $K$ with at most $w^N$ points. For each point 
+$x \in K$, assign a closest point $x_0 \in \mathcal{N}$. Since there are at most $2^N$ such points, $N$ bits are 
+sufficient to specify $x_0$. Let's show that the encoding $x \mapsto x_0$ represents points in $K$ with 
+arbitrary accuracy $\varepsilon$. If both $x$ and $y$ are encoded by the same $x_0$ then by the triangle 
+inequality, 
+\[ d(x, y) \leq d(x, x_0) + d(x_0, y) \leq \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon. \]
+This shows that $\mathcal{C}(K, d, \varepsilon) \leq N$, which completes the proof.
+\end{proof}
+
+
+\subsubsection{Error Correcting Codes}
+Suppose Alice wants to send to Bob a message with $k$ letters, e.g.
+\[ x := \text{``fill the glass"}. \]
+Suppose further that an adversary can corrupt Alice's message by changing up to $r$ letters. For example, Bob 
+may receive 
+\[ y := \text{``bill the class"} \]
+if $r = 2$. Is there a way to protect the communication channel, a method that can correct adversarial errors?
+
+A common approach uses \textit{redundancy}. This means Alice encodes her $k$-letter message into a longer 
+$n$-letter message $(n > k)$, hoping that the extra information helps Bob recover the message, even if there are 
+$r$ errors in it.
+
+\begin{example}[Repetition code]
+Alica can just repeat her message several times, e.g. sending the message 
+\[ E(x) := \text{``fill the glass fill the glass fill the glass fill the glass fill the glass"}. \]
+Bob can use \textit{majority decoding}: he checks the received copies of each letter in $E(x)$ and picks one 
+that appears most often. If the original message $x$ is repeated $2r + 1$ times, majority decoding will recover 
+$x$ exactly, even if $r$ letters in $E(x)$ are corrupted.
+\end{example}
+
+The problem with majority decoding is that it is inefficient: it uses 
+\[ n = (2r + 1)k \]
+letters to encode a $k$-letter message. As we will see shortly, there exist error correcting codes with much 
+smaller $n$. But let's define what that is first.
+
+\begin{definition}[]
+\label{def:4.3.3}
+An \underline{error correcting code} that encodes $k$-bit strings into $n$-bit strings and and correct $r$
+consists of encoding map $E: \{0, 1\}^k \to \{ 0, 1 \}^n$ and decoding map $D: \{ 0, 1 \}^n \to \{ 0, 1 \}^k$ 
+that satisfy 
+\[ D(y) = x \]
+for any word $x \in \{ 0, 1 \}^k$ and any string $y \in \{ 0, 1 \}^n$ that differs from $E(x)$ in at most 
+$r$ bits.
+\end{definition}
+
+Now we relate error correction to packing numbers of the Hamming cube $\{ 0, 1 \}^n$ with the Hamming metric 
+introduced in \cref{def:4.2.14}. 
+
+\begin{lemma}[Error correction and packing]
+\label{lem:4.3.4}
+Assume that positive integers $k, n$, and $r$ are such that 
+\[ \log_{2}{\mathcal{P}(\{ 0, 1 \}^n, d_H, 2r)} \geq k. \]
+Then there exists an error correcting code that encodes $k$-bit strings into $n$-bit strings and can correct $r$ 
+errors.
+\end{lemma}
+
+\begin{proof}
+By assumption, there exists a subset $\mathcal{N} \subset \{ 0, 1 \}^n$ with $|\mathcal{N}| = 2^k$, where the 
+closed balls of radius $r$ centered at the points in $\mathcal{N}$ are disjoint (\cref{rmk:4.2.5}). Let the 
+encoder $E: \{ 0, 1 \}^k \to \mathcal{N}$ be any one-to-one mapping, and let $D: \{ 0, 1 \}^n \to \{ 0, 1 \}^k$ 
+be a nearest neighbor decider (breaking ties arbitrarily).
+
+If $y \in \{ 0, 1 \}^n$ differs from $E(x)$ in at most $r$ bits, it lies in the closed ball of radius $r$ 
+centered at $E(x)$. Since such balls are disjoint by construction, $y$ is strictly closer to $E(x)$ than to any 
+other codeword $E(x')$. So, nearest-neighbor decoding correctly decodes $y$, meaning $D(y) = x$.
+\end{proof}
+
+Let's substitute into \cref{lem:4.3.4} the bounds on the packing numbers of the Hamming cube from 
+\cref{prop:4.2.15}.
+
+\begin{theorem}[Guarantees for an error correcting code]
+\label{thm:4.3.5}
+Assume that positive integers $k, n$, and $r$ are such that 
+\[ n - k \geq 2r \log_{2}{\left( \frac{en}{2r} \right)}. \]
+Then there exists an error correcting code that encodes $k$-bit strings into $n$-bit strings and can correct $r$ 
+errors.
+\end{theorem}
+
+\begin{proof}
+Passing from packing to covering numbers using \cref{lem:4.2.8} and then using the bounds on the covering 
+numbers from \cref{prop:4.2.15} (and simplifying using Exercise 0.6), we get 
+\[ \mathcal{P}(\{ 0, 1 \}^n, d_H, 2r) \geq \mathcal{N}(\{ 0, 1 \}^n, d_H, 2r) 
+\geq \frac{2^n}{\sum_{i = 0}^{2r} \binom{n}{i}} \geq 2^n \left( \frac{2r}{en} \right)^{2r}. \]
+By assumption, this quantity is further bounded below by $2^k$. Then, applying \cref{lem:4.3.4} completes the 
+proof.
+\end{proof}
+
+\begin{remark}[Extra bits grow nearly linearly with errors]
+\label{rmk:4.3.6}
+\cref{thm:4.3.5} shows that we can correct $r$ errors with $n - k$ that is nearly linear in $r$ (ignoring a 
+logarithmic term). This is way more efficient than the repetition code, which is optimal (Exercise 4.33).
+\end{remark}
 
 
 
@@ -674,6 +799,7 @@ independent, even with dependent entries (Exercise 4.43).
 \cref{thm:4.4.3} also extends to symmetric matrices:
 
 \begin{corollary}[]
+\label{cor:4.4.7}
 Let $A \in \mathbb{R}^{n \times n}$ be a symmetric random matric with independent, mean zero, subgaussian 
 entries $A_{ij}$ on and above the diagonal. Then for any $t > 0$, 
 \[ \lVert A \rVert_{} \leq CK (\sqrt{n} + t) \]
@@ -694,6 +820,154 @@ proof is complete.
 
 % ----------4.5----------
 \subsection{Application: Community Detection in Networks}
+Random matrix theory has many applications, one of them being network analysis
+
+Real-world networks often have \textit{communites}, or clusters of tightly connected nodes. Identifying them 
+accurately and efficiently is a main challenge known as the \textit{community detection problem}.
+
+
+\subsubsection{Stochastic Block Model}
+We'll explore the stochastic block model, a straightforward extension of the Erdős–Rényi model we discussed in 
+Section 2.5.
+
+\begin{definition}[]
+\label{def:4.5.1}
+Split $n$ vertices into two groups (``communities") of size $n/2$ each. Build a random graph $G$ by connecting 
+each pair of vertices independently with probability $p$ if they are in the same community and $a$ if they are 
+in different communities. This random graph model is called the \underline{stochastic block model}, denoted 
+$G(n, p, q)$.
+\end{definition}
+
+When $p = q$ we just get the Erdős–Rényi model $G(n, p)$. But when $p > q$, edges are more likely to form within 
+communities than between them, creating a community structure (Figure 4.4).
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 4/fig4-4.png}
+\end{center}
+
+
+\subsubsection{The Expected Adjacency Matrix Holds the Key}
+A graph $G$ can be conveniently represented by its adjacency matrix $A$ (\cref{def:3.6.2}). For a random graph 
+$G \sim G(n, p, q)$, the adjacency matrix $A$ is a random matrix, which we can use the tools we developed in 
+this chapter to analyze.
+
+Let's split $A$ into deterministic and random parts: 
+\[ A = D + R \text{ where } D = \mathbb{E}\left[ A \right] \]
+and think of $D$ as the \textit{signal} and R as \textit{noise}.
+
+To see why $D$ is informative, let's compute its eigenstructure. The entries $A_{ij}$ have a Bernoulli 
+distribution, either $\mathrm{Ber}(p)$ or $\mathrm{Ber}(q)$ depending on the community membership of vertices 
+$i$ and $j$. So, the entries of $D$ are either $p$ or $q$, depending on the membership. For example, if we 
+arrange vertices by community, then for $n = 4$, the matrix $D$ looks like this:
+\[ D = \mathbb{E}\left[ A \right] = \begin{bmatrix}
+p & p & q & q \\
+p & p & q & q \\
+q & q & p & p \\
+q & q & p & p \\
+\end{bmatrix}. \]
+Take a look at the simpler matrix 
+\[ \begin{bmatrix}
+p & q \\
+q & p \\
+\end{bmatrix}. \]
+Its eigenvalues are $\frac{p + q}{2}$ and $\frac{p - q}{2}$, with eigenvectors $(1, 1)^T$ and $(1, -1)^T$. 
+The matrix $D$ is similar but with $p$ and $q$ replaced by $n/2 \times n/2$ blocks of the same values. So, $D$ 
+also has rank 2, and its nonzero eigenvalues and eigenvectors are:
+\[ \lambda_1(D) = \left( \frac{p + q}{2} \right)n, \ u_1(D) = \begin{bmatrix}
+1 \\
+\vdots \\
+1 \\
+-- \\
+1 \\
+\vdots \\
+1 \\
+\end{bmatrix}; \
+\lambda_2(D) = \left( \frac{p - q}{2} \right)n, \ u_1(D) = \begin{bmatrix}
+1 \\
+\vdots \\
+1 \\
+-- \\
+-1 \\
+\vdots \\
+-1 \\
+\end{bmatrix}. \]
+The key object here is the \textit{second} eigenvector of $u_2(D)$, which holds all the information about the 
+community structure. If we know $u_2(D)$, we could identify the communities by the signs of its coefficients.
+
+
+\subsubsection{The Actual Adjacency Matrix is a Good Approximation}
+Unfortunately, we don't know the expected adjacency matrix $D = \mathbb{E}\left[ A \right]$. Instead, we know 
+the actual adjacency matrix $A = D + R$, which is a noisy version of $D$. The level of the signal $D$ is 
+\[ \lVert D \rVert_{} = \lambda_1 \asymp n \]
+while the level of the noise $R$ can be estimated using \cref{cor:4.4.7}:
+\[ \lVert R \rVert_{} \leq C \sqrt{n} \text{ with probability at least } 1 - 4e^{-n}. \]
+So for large $n$, the noise $R$ is much smaller then the signal $D$. It means that $A$ is close to $D$, so we 
+can just use the matrix $A$ instead of $D$ to extract the community inforemation. Let's justify this using the 
+matrix perturbation theory developed earlier.
+
+
+\subsubsection{Perturbation Theory}
+We'll apply the David-Kahan inequality (\cref{thm:4.1.15}) to $D$ and $A$, focusing on the second largest 
+eigenvalue. We need to check that $\lambda_2(D)$ is well-seperated from the rest of the spectrum of $D$, that 
+is, from 0 and $\lambda_1(D)$. The distance is 
+\[ \delta = \min_{}(\lambda_2(D), \lambda_1(D) - \lambda_2(D)) = \min_{}\left( \frac{p - q}{2}, q \right)n 
+=: \mu n. \]
+Recalling the bound on $R = A - D$, the Davis-Kahan inequality gives a bound on the angle between the 
+\textit{unit} eigenvectors of $D$ and $A$ (indicated here by bars on top of the vectors):
+\[ \sin{\angle (\bar{u_2}(D), \bar{u_2}(A))} \leq \frac{2 \lVert R \rVert_{}}{\delta} 
+\lesssim \frac{\sqrt{n}}{\mu n} \lesssim \frac{1}{\mu \sqrt{n}}. \]
+If the sine of the angle between two unit vectors is small, the vectors are close up to a sign (Exercise 4.16), 
+so there exists $\theta \in \{ -1, 1 \}$ such that 
+\[ \lVert \bar{u_2}(D) - \theta \bar{u_2}(A) \rVert_{2} \lesssim \frac{1}{\mu \sqrt{n}}. \]
+We already computed the eigenvector $u_2(D)$ of $D$, but it was not a unit vector - it had norm $\sqrt{n}$. 
+Multipkying both sides by $\sqrt{n}$, we get 
+\[ \lVert u_2(D) - \theta u_2(A) \rVert_{2} \lesssim \frac{1}{\mu}. \]
+This implies that the \textit{signs} of most coefficients of $u_2(D)$ and $\theta u_2(A)$ must agree. Indeed, 
+rewriting the bound as 
+\[ \sum_{j = 1}^{n}|u_2(D)_j - \theta u_2(A)_j|^2 \lesssim \frac{1}{\mu^2} \]
+and noting that all coefficients of $u(D)$ are $\pm 1$, we see that each disagreement contributes between the 
+signs of $u_2(D)_j$ and $\theta u_2(A)_j$ contributes at least 1 to the sum. Therefore, the number of 
+disagreeing signs is $\lesssim \frac{1}{\mu^2}$.
+
+
+\subsubsection{Spectral Clustering}
+In summary, we use $u_2(A)$ to estimate $u_2(D)$, whose coefficients are $\pm 1$ and identify the two 
+communities. This method for community detection is known as \textit{spectral clustering}:
+
+\begin{algorithm}
+	\caption{Spectral Clustering}
+	\label{alg:sc}
+	\begin{algorithmic}
+		\item \textbf{Input:} graph $G$
+		\item \textbf{Output:} a partition of the vertices $G$ into two communities
+		\item \begin{enumerate}[label=\arabic*]
+			\item Compute the adjacency matrix $A$ of the graph.
+			\item Compute the eigenvector $v_2(A)$ for the second largest eigenvalue of $A$.
+			\item Split vertices into two communities based on the signs of $v_2(A)$'s coefficients.
+		\end{enumerate}
+	\end{algorithmic}
+\end{algorithm}
+
+In fact, we have proved above that:
+\begin{theorem}[Spectral clustering for the Stochastic Block Model]
+\label{thm:4.5.2}
+Let $G \sim G(n, p, q)$ and $\min_{}(q, p - q) = \mu > 0$. Then, with probability at least $1 - 4e^{-n}$, the 
+spectral clustering algorithm identifies the communities of $G$ with at most $C / \mu^2$ misclassified 
+vertices.
+\end{theorem}
+
+Summarizing, the spectral clustering algorithm correctly classifies all but $O(1)$ number of vertices, as long 
+as the random graph is dense enough $(q \geq \text{const})$ and the probabilities of within- and across-
+community edges are well seperated $(p - q \geq \text{const})$ . The condition $q \geq \text{const}$ is in fact 
+not essential (Exercise 4.45).
+
+\begin{remark}[Sparsity]
+\label{rmk:4.5.3}
+The sparsest graphs for which \cref{thm:4.5.2} is nontrivial, meaning $C / \mu^2 \leq n$, have expected average 
+degree 
+\[ \frac{n(p + q)}{2} \asymp \sqrt{n}. \]
+With more tools, we will handle much more sparser graphs in Section 5.5.
+\end{remark}
 
 
 
@@ -778,3 +1052,141 @@ There is another version of the proof for \cref{thm:4.6.1} in Exercise 4.46.
 
 % ----------4.7----------
 \subsection{Application: Covariance Estimation and Clustering}
+When analyzing high-dimensional data, i.e. given points $X_1, \dots, X_m \in \mathbb{R}^n$ sampled from an 
+unknown distribution, PCA is a basic way to analyze the data from Section 3.2.2.
+
+PCA finds the ``principle components" as top eigenvectors of the data's covariance matrix. Although we do not 
+know the covariance matrix of the underlying distribution, we can approximately estimate using the sample. The 
+David-Kahan theorem (\cref{thm:4.1.15}) then helps us estimate the principle components of the underlying 
+distribution.
+
+How do we estimate the covariance matrix from the data? Let $X$ denote the random vector from the unknown 
+distribution. For simplicity, assume $X$ has zero mean, and let's denote its covariance matrix by 
+\[ \Sigma = \mathbb{E}\left[ XX^T \right]. \]
+To estimate $\Sigma$, we can use the sample covariance matrix:
+\[ \Sigma_m = \frac{1}{m}\sum_{i = 1}^{m}X_iX_i^T. \]
+Since $X$ and $X_i$ are identically distributed, this estimate is unbiased:
+\[ \mathbb{E}\left[ \Sigma_m \right] = \Sigma. \]
+By the Law of Large Numbers (\cref{thm:1.7.1}) applied to each entry of $\Sigma$, we get 
+\[ \Sigma_m \to \Sigma \text{ almost surely as } m \to \infty. \]
+This leads to the quantitative problem: How big does the sample size $m$ need to be so that 
+\[ \Sigma_m \approx \Sigma \text{ with high probability? } \]
+For dimension reasons, we need at least $m \gtrsim n$ sample points. Let's show that $m \asymp n$ is enough.
+
+\begin{theorem}[Covariance estimation]
+\label{thm:4.7.1}
+Let $X$ be a subgaussian random vector in $\mathbb{R}^n$. More speficically, assume that there exists 
+$K \geq 1$ such that 
+\[ \lVert \left\langle X, x \right\rangle \rVert_{\psi_2} \leq 
+K \lVert \left\langle X, x \right\rangle \rVert_{L^2} = K x^T \Sigma x \text{ for any } x \in \mathbb{R}^n. \]
+Then for every positive integer $m$, we have 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] 
+\leq CK^2 \left( \sqrt{\frac{n}{m}} + \frac{n}{m} \right) \lVert \Sigma \rVert_{}. \]
+\end{theorem}
+
+\begin{proof}
+Let's first bring the random vectors $X, X_1, \dots, X_m$ to the isotropic position. For simplicity, assume 
+that $\Sigma$ is invertible (This can be dropped like in Exercise 3.10). Setting 
+\[ Z = Z_i = \Sigma^{-1/2}X, \]
+then $Z, Z_1, \dots, Z_m$ are independent and isotropic random vectors satisfying 
+\[ X = \Sigma^{1/2}Z \text{ and } X_i = \Sigma^{1/2} Z_i. \]
+The assumption in the theorem then implies that (by \cref{def:3.4.1})
+\begin{align*}
+	\lVert Z \rVert_{\psi_2}^2 
+	&= \sup_{s \in S^{n - 1}} \lVert \left\langle Z, x \right\rangle \rVert_{\psi_2}^2 \\
+	&= \sup_{x \in S^{n - 1}} \lVert \left\langle \Sigma^{-1}X, x \right\rangle \rVert_{\psi_2}^2 \\
+	&\leq \Sigma^{-1} \sup_{x \in S^{n - 1}} \lVert \left\langle X, x \right\rangle \rVert_{\psi_2}^2 \\
+	&\leq K^2 \Sigma^{-1} \sup_{x \in S^{n - 1}} x^T \Sigma x \\
+	&= K^2.
+\end{align*}
+Therefore $\lVert Z \rVert_{\psi_2} \leq K$ and $\lVert Z_i \rVert_{\psi_2} \leq K$. Then 
+\[ \lVert \Sigma_m - \Sigma \rVert_{} = \lVert \Sigma^{1/2}R_m \Sigma^{1/2} \rVert_{} 
+\leq \lVert R_m \rVert_{} \lVert \Sigma \rVert_{} \text{ where } 
+R_m := \frac{1}{m}\sum_{i = 1}^{m}Z_iZ_i^T - I_n. \]
+Consider the $m \times n$ random matrix $A$ whose rows are $Z_i^T$. Then 
+\[ \frac{1}{m}A^T A - I_n = \frac{1}{m}\sum_{i = 1}^{m}Z_iZ_i^T - I_n = \mathbb{R}_m. \]
+Applying \cref{thm:4.6.1}, we get 
+\[ \mathbb{E}\left[ R_m \right] \leq CK^2 \left( \sqrt{\frac{n}{m}} + \frac{n}{m} \right) \]
+(see \cref{rmk:4.6.2}). Substituting this into the bound for $\lVert \Sigma_m - \Sigma \rVert_{}$, we complete 
+the proof.
+\end{proof}
+
+\begin{remark}[Sample complexity]
+\label{rmk:4.7.2}
+\cref{thm:4.7.1} shows that for any $\varepsilon \in (0, 1)$, we can estimate the covariance matric with a 
+small relative error:
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq \mathbb{E}\left[ \lVert \Sigma
+\rVert_{} \right], \]
+as long as the sample size is 
+\[ m \asymp \varepsilon^{-2}n. \]
+So, the sample covariance matrix gives a good estimate for the population covariance matrix \textit{if the 
+sample size $m$ is proportional to the dimension $n$}.
+\end{remark}
+
+\begin{remark}[High-probability bound]
+\label{rmk:4.7.3}
+Out argument also gives a high-probability bound: for any $u \geq 0$, we have 
+\[ \lVert \Sigma_m - \Sigma \rVert_{} \leq 
+CK^2 \left( \sqrt{\frac{n + u}{m}} + \frac{n + u}{m} \right) \lVert \Sigma \rVert_{} \]
+with probability at least $1 - 2e^{-u}$. See Exercise 4.49.
+\end{remark}
+
+
+\subsubsection{Application: Clustering of Point Sets}
+Let's illustrate \cref{thm:4.7.1} with an application to clustering. In particular, we'll do this for Gaussian 
+mixture models (GMMs):
+
+\begin{definition}[]
+\label{def:4.7.4}
+Generate $m$ random points in $\mathbb{R}^n$ like this. Flip a fair coin; if it comes up heads, draw a point 
+from $N(\mu, I_n)$, and if it comes up tails, from $N(-\mu, I_n)$. This distribution is called the 
+\underline{Gaussian mixture model} with means $\pm \mu$.
+\end{definition}
+
+Equivalently, consider a random vector 
+\[ X = \theta \mu + g \]
+where $\theta$ is a Rademacher random variable, $g \sim N(0, I_n)$, and $\theta$ and $g$ are independent. 
+Draw a sample $X_1, \dots, X_m$ of independent random vectors identically distributed with $X$. Then the sample 
+is distributed according to the Gaussian mixture model; See Figure 4.5.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 4/fig4-5.png}
+\end{center}
+
+Given $m$ sample points from a Gaussian mixture model, we would like to know which points belong to which 
+cluster. To do this, we can use a variant of the \textit{spectral clustering} algorithm.
+
+To see why a spectral method might work here, notice that the distribution of $X$ is not isotropic, but rather 
+stretched along $\mu$ (the horizontal direction in Figure 4.5). Thus, we can approximately find $\mu$ by 
+computing the first principal component of the data via PCA. Next, we can project the data points onto the 
+principle component and classify them based on which side of the origin they lie on. Here is the algorithm:
+
+\begin{algorithm*}
+	\caption{Spectral Clustering for GMMs}
+	\label{alg:scgmm}
+	\begin{algorithmic}
+		\item \textbf{Input:} points $X_1, \dots, X_m \in \mathbb{R}^n$
+		\item \textbf{Output:} a partition of the points into two clusters 
+		\item \begin{enumerate}[label=\arabic*]
+			\item Compute the sample covariance matrix $\Sigma_m = \frac{1}{m}\sum_{i = 1}^{m}X_iX_i^T$.
+			\item Compute the top eigenvector $v = v_1(\Sigma_m)$.
+			\item Split the points $X_i$ into two communities based on the sign of $\left\langle X_i, v
+			\right\rangle$.
+		\end{enumerate}
+	\end{algorithmic}
+\end{algorithm*}
+
+\begin{theorem}[Spectral clustering for GMMs]
+\label{thm:4.7.5}
+Take points $X_1, \dots, X_m \in \mathbb{R}^n$ from the Gaussian mixture model with means $\pm \mu$. If 
+$m \geq Cn$ and $\lVert \mu \rVert_{2} \geq C$, then with probability at least 0.99, the spectral clustering 
+algorithm identifies the communities, with at most 1\% of misclassified points.
+\end{theorem}
+
+\begin{proof}
+Exercise 4.51.
+\end{proof}
+
+It is remarkable that accurate classification is possible even when the cluster seperation $\lVert \mu 
+\rVert_{2}$ is much smaller than their diameter, which is $\asymp \sqrt{n}$.
+
