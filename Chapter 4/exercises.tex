@@ -1,1 +1,157 @@
 \section{Random Matrices}
+
+
+% Exercise 4.1
+\section*{Exercise 4.1}
+\subsection*{(a)}
+This is just note true in general. We can only do this if $A$ is symmetric, as in general the left and right 
+singular vectors cannot cancel out.
+
+\subsection*{(b)}
+By using the matrix form of the SVD, 
+\begin{align*}
+	A^{-1} 
+	&= (U \Sigma V^T)^{-1} \\
+	&= V^{-T} (U \Sigma)^{-1} \\
+	&= V \Sigma^{-1} U^T \\
+	&= \sum_{i = 1}^{n} \sigma_i^{-1} v_i u_i^T.
+\end{align*}
+
+
+% Exercise 4.2
+\newpage
+\section*{Exercise 4.2}
+\subsection*{(a)}
+From Definition 4.1.8, we check the criterion for a norm, namely:
+
+For positive definiteness, we have 
+\[ \lVert A \rVert_{} = \max_{x \neq 0} \frac{\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} \geq 0, \text{ and } 
+= 0 \iff \lVert Ax \rVert_{2} = 0 \iff A = 0_{m \times n}. \]
+For absolute homegeneity, we have (for $c \in \mathbb{R}$)
+\[ \lVert cA \rVert_{} = \max_{x \neq 0} \frac{\lVert cAx \rVert_{2}}{\lVert x \rVert_{2}} 
+= \frac{|c|\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} = |c|\lVert A \rVert_{}. \]
+For the triangle inequality, we have 
+\[ \lVert A + B \rVert_{} = \max_{x \neq 0} \frac{\lVert (A + B)x \rVert_{2}}{\lVert x \rVert_{2}} 
+\leq \max_{x \neq 0} \frac{\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} 
++ \frac{\lVert Bx \rVert_{2}}{\lVert x \rVert_{2}} \leq \lVert A \rVert_{} + \lVert B \rVert_{}. \]
+
+\subsection*{(b)}
+We can write the SVDs respectively: $A = U \Sigma V^T$ and $A^T = V \Sigma^T U$. Since $\Sigma$ and $\Sigma^T$ 
+have the same entries, we directly get that 
+\[ \lVert A \rVert_{} = \lVert A^T \rVert_{}. \]
+
+\subsection*{(c)}
+We'll first show this: $\lVert Ax \rVert_{2} \leq \lVert A \rVert_{}\lVert x \rVert_{2}$ for all $x$. If $x = 0$ 
+then the inequality is trivial. If $x \neq 0$, 
+\[ \lVert A \rVert_{} = \max_{x \neq 0} \frac{\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} \geq 
+\frac{\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}}. \]
+With this fact, we have 
+\[ \lVert AB \rVert_{} = \max_{x \neq 0} \frac{\lVert ABx \rVert_{2}}{\lVert x \rVert_{2}} 
+\leq \max_{x \neq 0} \frac{\lVert B \rVert_{}\lVert Ax \rVert_{2}}{\lVert x \rVert_{2}} 
+= \lVert A \rVert_{} \lVert B \rVert_{}. \]
+
+\subsection*{(d)}
+Let $A$ be the matrix and $B$ be its submatrix, and let $u$ be a unit vector. We have 
+\[ \lVert B \rVert_{} = \max_{\lVert u \rVert_{2} = 1} \lVert Bu \rVert_{2} = 
+\max_{\lVert u \rVert_{2} = 1} \lVert \begin{bmatrix}
+B \\
+0 \\
+\end{bmatrix} \begin{bmatrix}
+u \\
+0 \\
+\end{bmatrix} \rVert_{2} 
+\leq \max_{\lVert u \rVert_{2} = 1} \lVert A \begin{bmatrix}
+u \\
+0 \\
+\end{bmatrix} \rVert_{2} \leq \max_{\lVert u \rVert_{2} = 1} \lVert Au \rVert_{2} = \lVert Au \rVert_{}. \]
+
+
+% Exercise 4.3
+\newpage
+\section*{Exercise 4.3}
+\subsection*{(a)}
+We can write the reduced svd of $uv^T$ as 
+\[ uv^T = u' \cdot \lVert u \rVert_{2}\lVert v \rVert_{2} \cdot v'^T \]
+where $u', v'$ are unit vectors, hence we get the equality 
+\[ \lVert uv^T \rVert_{} = \lVert u \rVert_{2}\lVert v \rVert_{2}. \]
+
+We also have that 
+\begin{align*}
+	\lVert u \rVert_{2}\lVert v \rVert_{2} 
+	&= \sqrt{\sum_{i = 1}^{m} u_i^2} \cdot \sqrt{\sum_{j = 1}^{n} v_j^2} \\
+	&= \sqrt{\sum_{i = 1}^{m}\sum_{j = 1}^{n} (u_iv_j)^2} \\
+	&= \lVert uv^T \rVert_{F}.
+\end{align*}
+
+\subsection*{(b)}
+We can write the matrix $A$ as 
+\[ A = \sum_{i = 1}^{n} a_i e_i e_i^T \]
+where $e_i$ is the $i$th standard basis vector in $\mathbb{R}^n$ (which in this case are both the left and right 
+singular vectors). To express $A$ in its SVD, we'll have to look at $a_i$: if it is negative, we'll have to 
+reverse the sign, and put another negative sign on one of the singular vectors. Therefore we get
+\[ \lVert A \rVert_{} = \max_{i} |a_i|. \]
+
+
+% Exercise 4.4
+\newpage
+\section*{Exercise 4.4}
+\subsection*{(a)}
+The first inequality directly follows from Lemma 4.1.11:
+\[ \lVert A \rVert_{} = \sigma_1 \leq \sqrt{\sigma_1^2 + \cdots + \sigma_r^2} = \lVert A \rVert_{F}. \]
+For the second inequality, 
+\[ \lVert A \rVert_{F} = \sqrt{\sigma_1^2 + \cdots + \sigma_r^2} \leq \sqrt{\sigma_1^2 + \cdots + \sigma_1^2} 
+= \sqrt{r}\lVert A \rVert_{}. \]
+
+\subsection*{(b)}
+By Proposition 3.2.1 (b), 
+\begin{align*}
+	\mathbb{E}\left[ \lVert AZ \rVert_{2}^2 \right]
+	&= \mathrm{tr}(\mathbb{E}\left[ AZZ^T A^T \right]) \\
+	&= \mathrm{tr}(A \mathbb{E}\left[ ZZ^T \right] A^T) \\
+	&= \mathrm{tr}(AA^T) \quad \text{(By isotropy)} \\
+	&= \lVert A \rVert_{F}^2.
+\end{align*}
+
+\subsection*{(c)}
+Let $g \sim N(0, I_n)$. We know that $g$ is isotropic. Then by part (b), 
+\[ \lVert BA \rVert_{F}^2 = \mathbb{E}\left[ \lVert BAg \rVert_{2}^2 \right] 
+\leq \lVert B \rVert_{}^2 \mathbb{E}\left[ \lVert Ag \rVert_{2}^2 \right] = \lVert B \rVert_{}^2 
+\lVert A \rVert_{F}^2. \]
+Taking square roots on both sides gives the result.
+
+\subsection*{(d)}
+In the simpler case where $A$ is diagonal, we can actually write the matrix $BA$ out explicitly: 
+\[ BA = \begin{bmatrix}
+a_{11}b_{11} & a_{22}b_{12} & \cdots & a_{mm}b_{1m} \\
+a_{11}b_{21} & a_{22}b_{22} & \cdots & a_{mm}b_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{11}b_{k1} & a_{22}b_{k2} & \cdots & a_{mm}b_{km} \\
+\end{bmatrix}. \]
+Then we can directly get that 
+\begin{align*}
+	\lVert BA \rVert_{F}^2 
+	&= \sum_{i = 1}^{m} a_{ii}^2 \lVert B_{:i} \rVert_{2}^2 \\
+	&\leq \sum_{i = 1}^{m}a_{ii}^2 \cdot \max_{i = 1, \dots, m} \lVert B_{:i} \rVert_{2}^2 \\
+	&= \lVert B \rVert_{1 \to 2}^2 \lVert A \rVert_{F}^2.
+\end{align*}
+Taking square roots on both sides gives the result.
+
+
+% Exercise 4.5
+\newpage
+\section*{Exercise 4.5}
+From Lemma 4.1.11, 
+\[ \lVert A \rVert_{F}^2 = \sigma_1^2 + \cdots + \sigma_r^2. \]
+There are two cases: 
+
+\textbf{Case 1: $k \leq r$.} We have 
+\[ k \sigma_k^2 \leq \sum_{i = 1}^{k} \sigma_1^2 \leq \lVert A \rVert_{F}^2. \]
+Taking square roots on both sides gives the result.
+
+\textbf{Case 2: $K > r$.} For $k > r$, $\sigma_k = 0$ hence the inequality holds trivially.
+
+
+% Exercise 4.6
+\newpage
+\section*{Exercise 4.6}
+
