@@ -1,6 +1,6 @@
 \section{A Quick Refresher on Analysis and Probability}
 
-% Exercise 1
+% Exercise 1.1
 \section*{Exercise 1.1}
 Let $x_1, x_2 \in \text{conv}(T)$, and $\lambda \in [0, 1]$. Then there exists $j, k \in \mathbb{N}$ such that 
 \[ x_1 = a_1 y_1 + \cdots + a_j y_j, a_i \geq 0, \sum_{i = 1}^{j} a_i = 1, \]
@@ -19,7 +19,7 @@ because each coefficient
 in the convex combination will still be greater than 0, and also their sum will be 1.
 
 
-% Exercise 2
+% Exercise 1.2
 \newpage
 \section*{Exercise 1.2}
 Let $f_1, \dots, f_m$ be convex functions, and $g: K \to \mathbb{R}$ be defined as 
@@ -36,9 +36,9 @@ Let $x, y \in K$, and let $\lambda \in [0, 1]$. Then
 Therefore $g$ is a convex function.
 
 
-% Exercise 3
+% Exercise 1.3
 \newpage
-\section*{Exercise 3}
+\section*{Exercise 1.3}
 \subsection*{(a)}
 ($\implies$) Suppose that $f$ is convex. For the base case, when $m = 2$, by the definition of convexity, 
 the statement is true. For the inductive hypothesis, assume that for some $m \in \mathbb{N}$, 
@@ -68,9 +68,9 @@ Then from part (a),
 \leq \sum_{i = 1}^{n} p_i f(x_i) = \mathbb{E}[f(X)]. \]
 
 
-% Exercise 4
+% Exercise 1.4
 \newpage
-\section*{Exercise 4}
+\section*{Exercise 1.4}
 Let $x \in \text{conv}(T)$. Then for some $m \in \mathbb{N}$, 
 \[ x = \lambda_1 z_1 + \cdots + \lambda_m z_m, \ \lambda_i \geq 0, \sum_{i = 1}^{m} \lambda_i = 1. \]
 Then by Jensen's Inequality from Exercise 3, 
@@ -80,9 +80,9 @@ Therefore we get
 The other side ("$\geq$") is obvious because $T \subseteq \text{conv}(T)$. Therefore we get the equality.
 
 
-% Exercise 5
+% Exercise 1.5
 \newpage
-\section*{Exercise 5}
+\section*{Exercise 1.5}
 We'll proceed via proof by induction. For the base case when $n = 1$, let $x \in [-1. 1]$. Then $x$ can be written 
 as a combination via 
 \[ x = \frac{1 + x}{2} \cdot 1 + \frac{1 - x}{2} \cdot (-1). \]
@@ -106,9 +106,9 @@ either $1$ or $-1$, hence $\text{conv}(\{-1, 1\}^n) \subseteq [-1, 1]^n$.
 Finally we conclude that $\text{conv}(\{-1, 1\}^n) = [-1, 1]^n$.
 
 
-% Exercise 6
+% Exercise 1.6
 \newpage
-\section*{Exercise 6}
+\section*{Exercise 1.6}
 Let $x \in B_1^n$ so $\sum_{i = 1}^{n} |x_i| \leq 1$. Define the following sets: 
 \[ I_+ = \{ i \in \{1, \cdots, n\}: x_i > 0 \}, I_- = \{ i \in \{1, \cdots, n\}: x_i < 0. \]
 Without loss of generality, assume either $|I_+| > 0$ or $I_- > 0$. If both are zero, $x$ has to be 
@@ -142,9 +142,9 @@ Therefore $x \in B_1^n$ so $\text{conv}(\{\pm e_1, \cdots, \pm e_n\}) \in B_1^n$
 $B_1^n = \text{conv}(\{\pm e_1, \cdots, \pm e_n\})$. 
 
 
-% Exercise 7
+% Exercise 1.7
 \newpage
-\section*{Exercise 7}
+\section*{Exercise 1.7}
 Denote $E_i = $event that freshman $i$ has no friends, $X = $number of freshman. Then we are bounding
 \begin{align*}
 	\sum_{n = 0}^{\infty} P \biggl( \bigcup_{i = 1}^X E_i \bigg| X = n \biggr) P(x = n)
@@ -160,14 +160,14 @@ From the question, since $p \geq 2 \ln{\lambda} / \lambda$,
 \[ \lambda e^{-p \lambda} \leq \lambda e^{-2 \ln{\lambda}} = \frac{1}{\lambda}. \]
 
 
-% Exercise 8
+% Exercise 1.8
 \newpage
-\section*{Exercise 8}
+\section*{Exercise 1.8}
 	
 
-% Exercise 9
+% Exercise 1.9
 \newpage
-\section*{Exercise 9}
+\section*{Exercise 1.9}
 Let $E_i = $ the event that student $i$ has no friends, and 
 $B = \{ \text{there exists a friendless student} \}$. We are bounding the probability 
 \[ P(B) 
@@ -181,21 +181,233 @@ Now when we take the limit,
 \to 0 \text{  as  } n \to \infty. \]
 
 
-% Exercise 10
+% Exercise 1.10
 \newpage
-\section*{Exercise 10}
+\section*{Exercise 1.10}
 \subsection*{(a)}
-Proving this statement is equivalent of proving 
-\[ \mathbb{E}[|X|^p]^{q / p} \leq \mathbb{E}[|X|^q]. \]
-The function $f(x) = x^{q / p}$ is convex because $q / p \geq 1$. Then by Jensen's Inequality, 
-\[ \mathbb{E}[|X|^p]^{q / p} \leq \mathbb{E}[(|X|^p)^{q / p}] = \mathbb{E}[|X|^q]. \]
+From definition, 
+\[ \mathbb{E}\left[ X_i \right] = (1 - p_n)^{n - 1} \implies 
+\mathbb{E}\left[ S_n \right] = n(1 - p_n)^{n - 1}. \]
+We have that 
+\begin{align*}
+	\mathbb{E}\left[ S_n \right] 
+	&= n(1 - p_n)^{n - 1} \\
+	&< n \left( 1 - \frac{(1 - \varepsilon)\ln{n}}{n} \right)^{n - 1} \\
+	&\to n \cdot e^{-(1 - \varepsilon)\ln{n}} \\
+	&= \lim_{n \to \infty} n^{\varepsilon} \\
+	&= +\infty.
+\end{align*}
 
 \subsection*{(b)}
-Let $q < \infty$, and $a = \frac{p + q}{2}$. Let $X$ be the random variable with pdf 
-\[ f_X(x) = \frac{a}{x^{a + 1}}, \ x \geq 1. \]
-Then we have that 
-\[ \|X\|_{L^p} = \int_{1}^{\infty} x^p \cdot \frac{a}{x^{a + 1}} \ dx 
-= \int_{1}^{\infty} ax^{(p - q) / 2 - 1} \ dx < \infty \quad (\frac{p - q}{2} - 1 < -1), \]
-\[ \|X\|_{L^q} = \int_{1}^{\infty} x^q \cdot \frac{a}{x^{a + 1}} \ dx 
-= \int_{1}^{\infty} ax^{(q - p) / 2 - 1} \ dx = \infty \quad (\frac{q - p}{2} - 1 \geq -1), \]
+First, let's look at the random variable $X_i X_j$. This is the indicator variable that both student $i$ and $j$ 
+are friendless. For student $i$ and $j$, to be friendless, they cannot be friends with each of the the other 
+$n - 1$ students, but we double counted the relationship between student $i$ and $j$! Therefore, 
+\[ \mathbb{E}\left[ X_i X_j \right] = (1 - p_n)^{2n - 3} \quad (i \neq j). \]
+The random variable $X_i^2$ is the same as $X_i$ as both represent the indicator that student $i$ is friendless. 
+Therefore, we have 
+\begin{align*}
+	\mathbb{E}\left[ S_n^2 \right] 
+	&= \sum_{i = 1}^{n} \mathbb{E}\left[ X_i^2 \right] + \sum_{i \neq j}^{} \mathbb{E}\left[ X_iX_j \right] \\
+	&= n(1 - p_n)^{n - 1} + n(n - 1)(1 - p_n)^{2n - 3}.
+\end{align*}
+Then, we can calculate the variance of $S_n$:
+\begin{align*}
+	\mathrm{Var}(S_n) 
+	&= \mathbb{E}\left[ S_n^2 \right] - (\mathbb{E}\left[ S_n \right])^2 \\
+	&= n(1 - p_n)^{n - 1} + n(n - 1)(1 - p_n)^{2n - 3} - n^2 (1 - p_n)^{2n - 2} \\
+	&= n(1 - p_n)^{n - 1} - n(np_n - p_n + 1)(1 - p_n)^{2n - 2}.
+\end{align*}
+Therefore, 
+\begin{align*}
+	\frac{\mathrm{Var}(S_n)}{\mu_n^2} 
+	&= \frac{n(1 - p_n)^{n - 1} - n(np_n - p_n + 1)(1 - p_n)^{2n - 2}}{n^2 (1 - p_n)^{2n - 2}} \\
+	&= \frac{1}{\mathbb{E}\left[ S_n \right]} - \frac{np_n - p_n + 1}{n} \\
+	&\to 0 - 0 \\
+	&= 0.
+\end{align*}
+
+\subsection*{(c)}
+\begin{align*}
+	P(S_n = 0) 
+	&= P(S_n - \mu_n = \mu_n) \\
+	&\leq P(|S_n - \mu_n| \geq \mu_n) \\
+	&\leq \frac{\mathrm{Var}(S_n)}{\mu_n} \quad \text{(By Chebyshev's inequality)} \\
+	&\to 0.
+\end{align*}
+Therefore, there exists at least at least one friendless student with probability that converges to 1 as 
+$n \to \infty$. In fact, this problem (and the previous problem) demonstrate that $\ln{n}/n$ is an 
+\textit{evolution threshold} for isolated vertices for the Erdős–Rényi model.
+
+
+% Exercise 1.11
+\newpage
+\section*{Exercise 1.11}
+\subsection*{(a)}
+First of all, note that the function $f(x) = x^{q/p}$ is convex. By Jensen's inequality, 
+\[ \mathbb{E}\left[ |X|^p \right]^{q/p} \leq \mathbb{E}\left[ (|X|^p)^{q/p} \right] 
+= \mathbb{E}\left[ |X|^q \right]. \]
+Taking $(1/q)$th powers on both sides of the inequality gives the result.
+
+\subsection*{(b)}
+First let $q < \infty$, and definte $a := \frac{p + q}{2}$. Let $X$ be the random variable with pdf 
+\[ f_X(x) = \frac{a}{x^{a + 1}}, x \geq 1.  \]
+Then 
+\begin{align*}
+	\lVert X \rVert_{L^p}^p
+	&= \int_{1}^{\infty} x^p \cdot \frac{a}{x^{a + 1}} \ dx \\
+	&= \int_{1}^{\infty} ax^{(p-q)/2 - 1} \ dx \\
+	&< \infty \quad (\frac{p - q}{2} - 1 < -1).
+\end{align*}
+Also, 
+\begin{align*}
+	\lVert X \rVert_{L^q}^q
+	&= \int_{1}^{\infty} x^q \cdot \frac{a}{x^{a + 1}} \ dx \\
+	&= \int_{1}^{\infty} ax^{(q-p)/2 - 1} \ dx \\
+	&= +\infty \quad (\frac{q - p}{2} - 1 \geq -1).
+\end{align*}
+
+By taking the limit for $q \to \infty$, we can also see that the bound is true for when $q = \infty$.
+
+
+% Exercise 1.12
+\newpage
+\section*{Exercise 1.12}
+We have 
+\begin{align*}
+	\lVert X \rVert_{L^p}^p 
+	&= \mathbb{E}\left[ |X| \cdot |X|^{p - 1} \right] \\
+	&= \lVert X \cdot X^{p - 1} \rVert_{L^1} \\
+	&\leq \lVert X \rVert_{L^1} \lVert X^{p - 1} \rVert_{L^{\infty}} \quad \text{(Hölder's inequality)} \\
+	&= \lVert X \rVert_{L^1} \lVert X \rVert_{L^{\infty}}^{p - 1}.
+\end{align*}
+Taking both sides to the $1/p$th power gives the result.
+
+
+% Exercise 1.13
+\newpage
+\section*{Exercise 1.13}
+
+
+% Exercise 1.14
+\newpage
+\section*{Exercise 1.14}
+Consider the random vector $X = (X_1, \dots, X_n)$. For the first inequality, 
+\begin{align*}
+	\left( \sum_{i = 1}^{n} (\mathbb{E}\left[ X_i \right])^p \right)^{1/p} 
+	&= \lVert \mathbb{E}\left[ X \right] \rVert_{p} \\
+	&\leq \mathbb{E}\left[ \lVert X \rVert_{p} \right] \quad \text{(By Jensen's inequality)} \\
+	&= \mathbb{E}\left[ \left( \sum_{i = 1}^{n} X_i^p \right)^{1/p} \right].
+\end{align*}
+For the second inequality, 
+\begin{align*}
+	\mathbb{E}\left[ \left( \sum_{i = 1}^{n} X_i^p \right)^{1/p} \right]^p 
+	&\leq \mathbb{E}\left[ \left( \sum_{i = 1}^{n} X_i^p \right)^{1/p \cdot p} \right] \\
+	&= \mathbb{E}\left[ \sum_{i = 1}^{n} X_i^p \right].
+\end{align*}
+Taking the $p$th root on both sides of the equation gives the inequality.
+
+
+% Exercise 1.15
+\newpage
+\section*{Exercise 1.15}
+\subsection*{(a)}
+First note that, for every $x \in \mathbb{R}$, we can express $x$ as follows: 
+\[ x = \int_{0}^{x} 1 \ dt = \int_{0}^{\infty} \mathbf{1}_{\{ t < x \}} \ dt 
+- \int_{-\infty}^{0} \mathbf{1}_{\{ t > x \}} \ dt. \]
+Therefore, by plugging the random variable $X$ in and taking expectations on both sides of the equation, we get 
+\[ \mathbb{E}\left[ X \right] = \int_{0}^{\infty} P(X > t) \ dt - \int_{-\infty}^{0} P(X < t) \ dt. \]
+
+\subsection*{(b)}
+By definition, $f(x)$ has to be nonnegative. Then we can express it as 
+\[ f(x) = \int_{0}^{x} f'(t) \ dt = \int_{0}^{\infty} \mathbf{1}_{\{ t < x \}} f'(t) \ dt. \]
+Then by plugging in the random variable $X$ and taking expectations on both sides of the equation, we get 
+\[ \mathbb{E}\left[ f(X) \right] = \int_{0}^{\infty} P(X > t)f'(t) \ dt. \]
+
+\subsection*{(c)}
+Note that $|X|$ is nonnegative, and the function $f: \mathbb{R}_+ \to \mathbb{R}_+$ defined by $f(x) = x^p$ is 
+increasing and differentiable for every $p \in (0, \infty)$, and $f(0) = 0$. By applying part (b), 
+\[ \mathbb{E}\left[ |X|^p \right] = \int_{0}^{\infty} P(|X| > t)f'(t) \ dt 
+= \int_{0}^{\infty} P(|X| > t)pt^{p - 1} \ dt. \]
+
+
+% Exercise 1.16
+\newpage
+\section*{Exercise 1.16}
+We can rewrite the expectation as follows:
+\begin{align*}
+	\mathbb{E}\left[ X \right] 
+	&= \mathbb{E}\left[ X \mathbf{1}_{\{ X \leq \varepsilon \mathbb{E}\left[ X \right] \}} \right] 
+	+ \mathbb{E}\left[ X \mathbf{1}_{\{ X > \varepsilon \mathbb{E}\left[ X \right] \}} \right] \\
+	&\leq \varepsilon \mathbb{E}\left[ X \right] + \mathbb{E}\left[ X \right]^{1/2} 
+	P(X > \varepsilon \mathbb{E}\left[ X \right])^{1/2} \quad \text{(By Cauchy-Schwartz)}.
+\end{align*}
+Then, move all terms with $\mathbb{E}\left[ X \right]$ to one side and squaring the inequality gives
+\[ (1 - \varepsilon)^2 \mathbb{E}\left[ X \right]^2 \leq \mathbb{E}\left[ X^2 \right] 
+P(X > \varepsilon \mathbb{E}\left[ X \right]). \]
+Then, dividing $\mathbb{E}\left[ X^2 \right]$ on both sides of the inequality above gives 
+\[ P(X > \varepsilon \mathbb{E}\left[ X \right]) \geq (1 - \varepsilon)^2 
+\frac{\mathbb{E}\left[ X \right]^2}{\mathbb{E}\left[ X^2 \right]}, \]
+hence the result is proven.
+
+
+% Exercise 1.17
+\newpage
+\section*{Exercise 1.17}
+\subsection*{(a)}
+For the first equality, without loss of generality we can assume that $\lVert x \rVert_{p} = 1$. Then we have 
+that 
+\[ |x_i| \leq 1 \text{ for all } i \implies |x_i|^q \leq |x_i|^p \text{ for all } q \geq p. \]
+This gives 
+\begin{align*}
+	\lVert x \rVert_{q} 
+	&= \left( \sum_{i = 1}^{n} |x_i|^q \right)^{1/q} \\
+	&\leq \left( \sum_{i = 1}^{n} |x_i|^p \right)^{1/q} \\
+	&= \lVert x \rVert_{p}^{p/q}.
+\end{align*}
+Taking $q$th powers on both sides of the equation gives the first inequality.
+
+For the second inequality, let us denote 
+\[ y := (|x_1|^p, \dots, |x_n|^p)m, \ z := \mathbf{1}_{n}. \]
+Consider the conjugate exponents $\frac{q}{p}$ and $\frac{q}{q - p}$ (it's pretty easy to check that this 
+pair is indeed a pair of conjugate exponents). We have
+\begin{align*}
+	\lVert x \rVert_{p}^p 
+	&= \sum_{i = 1}^{n} |x_i|^p \\
+	&= \left\langle y, z \right\rangle \\
+	&\leq \left( \sum_{i = 1}^{n} y_i^{q/p} \right)^{p/q} \cdot 
+	\left( \sum_{i = 1}^{n} z_i^{q / (q - p)} \right)^{(q - p)/q} \quad \text{(By Hölder's inequality)} \\
+	&= \lVert x \rVert_{q}^p \cdot n^{1 - \frac{p}{q}}.
+\end{align*}
+Taking the $p$th root on both sides of the equation gives 
+\[ \lVert x \rVert_{p} \leq n^{\frac{1}{p} - \frac{1}{q}} \lVert x \rVert_{q}, \]
+which is exactly what we're looking for.
+
+\subsection*{(b)}
+Consider $x = e_i$, the $i$th standard basis vector in $\mathbb{R}^n$. Then 
+\[ \lVert x \rVert_{p} = (0^p + \cdots + 0^p + 1^p)^{1/p} = 1 = \lVert x \rVert_{q}. \]
+Now consider $y = \mathbf{1}_n$, the vector of all ones in $\mathbb{R}^n$. Then 
+\[ \lVert y \rVert_{p} = n^{1/p} = n^{1/p-1/q+1/q} = n^{1/p-1/q}\lVert y \rVert_{q}. \]
+Therefore the two bounds in part (a) can both be tight.
+
+
+% Exercise 1.18
+\newpage
+\section*{Exercise 1.18}
+\subsection*{(a)}
+Take $q = \infty$ from Exercise 1.17 to get 
+\[ \lVert x \rVert_{\infty} \leq \lVert x \rVert_{p} \leq n^{1/p} \lVert x \rVert_{\infty}. \]
+As $p \to \infty$, $n^{1/p} \to 1$ hence $\lVert x \rVert_{p} \to \lVert x \rVert_{\infty}$.
+
+\subsection*{(b)}
+Again, take $q = \infty$ to get 
+\[ \lVert x \rVert_{\infty} \leq \lVert x \rVert_{p} \leq n^{1/p} \lVert x \rVert_{\infty}. \]
+On the right hand side of the inequality, 
+\[ n^{1/p} \lVert x \rVert_{\infty} = e^{\ln{n}/p} \lVert x \rVert_{\infty} \leq 
+e \lVert x \rVert_{\infty} \text { only if } p > \ln{n}. \]
+
+
+% Exercise 1.19
+\newpage
+\section*{Exercise 1.19}
+\subsection*{(a)}
 
