@@ -286,6 +286,27 @@ Taking both sides to the $1/p$th power gives the result.
 % Exercise 1.13
 \newpage
 \section*{Exercise 1.13}
+\subsection*{(a)}
+For the first inequality, consider the random vector $X= (X_1, \dots, X_n)$. Since the norm $\lVert \cdot 
+\rVert_{\infty}$ is convex, 
+\[ \max_{i = 1, \dots, n}\mathbb{E}\left[ X_i \right] = \lVert \mathbb{E}\left[ X \right] \rVert_{\infty} 
+\leq \mathbb{E}\left[ \lVert X \rVert_{\infty} \right] 
+= \mathbb{E}\left[ \max_{i= 1, \dots, n} X_i \right]. \]
+For the second inequality, 
+\[ \mathbb{E}\left[ \max_{i = 1, \dots, n}X_i \right] \leq \mathbb{E}\left[ \sum_{i = 1}^{n}X_i \right] 
+= \sum_{i = 1}^{n} \mathbb{E}\left[ X_i \right] \leq n \cdot \max_{i = 1, \dots, n} \mathbb{E}\left[ X_i \right].
+\]
+
+\subsection*{(b)}
+Consider $X_1, \dots, X_n$ with 
+\[ X_1 \sim \mathrm{Unif}[2i, 2i + 1]. \]
+Then $\max_{i} X_i \sim X_n$ almost surely. Then 
+\[ \max_{i = 1, \dots, n}\mathbb{E}\left[ X_i \right] = \frac{4i + 1}{2} 
+= \mathbb{E}\left[ \max_{i = 1, \dots, n}X_i \right]. \]
+
+\subsection*{(c)}
+
+
 
 
 % Exercise 1.14
@@ -410,4 +431,41 @@ e \lVert x \rVert_{\infty} \text { only if } p > \ln{n}. \]
 \newpage
 \section*{Exercise 1.19}
 \subsection*{(a)}
+Let's show this via the analysis of three cases:
 
+\textbf{Case 1: $p = 1, p' = \infty$.} Set $y_i = \mathrm{sign}(x_i)$. Then 
+\begin{align*}
+	\left\langle x, y \right\rangle 
+	&= \sum_{i = 1}^{n} x_i \mathrm{sign}(x_i) \\
+	&= \sum_{i = 1}^{n} |x_i| \\
+	&= \sum_{i = 1}^{n} |x_i| \cdot 1 \\
+	&= \lVert x \rVert_{1} \lVert y \rVert_{\infty}.
+\end{align*}
+
+\textbf{Case 2: $p = \infty, p' = 1$.} Set 
+\[ y_i = \mathrm{sign}(x_i)e_i, \text{ where } i = \mathrm{argmax}_{i}|x_i|. \]
+Then 
+\begin{align*}
+	\left\langle x, y \right\rangle 
+	&= 0 + \cdots + 0 + \mathrm{sign}(x_i)x_i + 0 + \cdots + 0 \\
+	&= \max_{i = 1, \dots, n} |x_i| \\
+	&= \max_{i = 1, \dots, n} |x_i| \cdot 1 \\
+	&= \lVert x \rVert_{\infty}\lVert y \rVert_{1}.
+\end{align*}
+
+\textcf{Case 3: $p, p' \in (1, \infty)$.} Let 
+\[ y_i = \mathrm{sign}(x_i) |x_i|^{p/p'} \text{ for all } i. \]
+Then 
+\begin{align*}
+	\left\langle x, y \right\rangle 
+	&= \sum_{i = 1}^{n} \mathrm{sign}(x_i)|x_i|^{p/p'} x_i \\
+	&= \sum_{i = 1}^{n} (|x_i|^p)^{\frac{1}{p} + \frac{1}{p'}} \\
+	&= \sum_{i = 1}^{n} (|x_i|^p)^{1/p} \cdot \sum_{i = 1}^{n} (|x_i|^p)^{1/p'} \\
+	&= \lVert x \rVert_{p} \lVert y \rVert_{p'}.
+\end{align*}
+Therefore Hölder's inequality is tight.
+
+\subsection*{(b)}
+From part (a), we can directly get that 
+\[ \max_{}\{ \left\langle x, y \right\rangle : \ y \in B_{p'}^n \} = 
+\lVert x \rVert_{p} \lVert y \rVert_{p'} = \lVert x \rVert_{p}. \]
