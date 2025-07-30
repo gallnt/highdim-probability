@@ -109,8 +109,156 @@ for every $t \geq 0$,
 \end{proposition}
 
 \begin{proof}
-WLOG, we can assume that $K = 1$.
+WLOG, we can assume that $K = 1$. Squaring and exponentiating both sides and using Markov's inequality, we get 
+\[ P(c \lVert X \rVert_{2} \geq \sqrt{n} + t) \leq e^{-(n + t^2)} \mathbb{E}\left[ \exp{(c^2 
+\lVert X \rVert_{2}^2 )} \right]. \]
+Now we will use a \textbf{Gaussian replacement} trick: for some absolute constant $c > 0$, we claim that 
+\[ \mathbb{E}\left[ \exp{(c^2 \lVert X \rVert_{2}^2)} \right] \leq 
+\mathbb{E}\left[ \exp{(\lVert g \rVert_{2}^2 / 6)} \right] \text{ where } g \sim N(0, I_n). \]
+To see this, condition on $X$ (treating it as a fixed vector); then $\left\langle g, X \right\rangle \sim 
+N(0, \lVert X \rVert_{2}^2)$ by \cref{cor:3.3.2}, so (using the MGF of a normal distribution)
+\[ \mathbb{E}\left[ \exp{(c^2 \lVert X \rVert_{2}^2)} \right] = 
+\mathbb{E}_g\left[ \exp{(\sqrt{2}c \left\langle g, X \right\rangle )} \right], \]
+where $\mathbb{E}_g$ denotes the conditional expectation over $g$. Now takes expectation over $X$ over both 
+sides and apply Fubini:
+\[ \mathbb{E}_X\left[ \exp{(c^2 \lVert X \rVert_{2}^2)} \right] 
+= \mathbb{E}_X\left[ \mathbb{E}_g\left[ \exp{(\sqrt{2}c \left\langle g, X \right\rangle )} \right] \right] 
+= \mathbb{E}_g\left[ \mathbb{E}_X\left[ \exp{(\sqrt{2}c \left\langle X, g \right\rangle )} \right] \right]. \]
+When we condition on $g$ (treating $g$ as a fixed vector), the subgaussian norm of $\left\langle X, g 
+\right\rangle$ is at most 1 by assumption ($K = 1$), so \cref{prop:2.6.6} (iv) gives 
+\[ \mathbb{E}_X\left[ \exp{(\sqrt{2}c \left\langle X, g \right\rangle )} \right] 
+\leq \exp{(\lVert g \rVert_{2}^2 / 4)} \]
+for some absolute constant $c > 0$. Substitute this into the bound above, then our claim for the Gaussian 
+replacement is proved. After that, substitute into the first equation, and the proof is complete.
 \end{proof}
+
+The Gaussian replacement trick will also be useful when we are proving concentration regarding a chaos - namely, 
+the Hanson-Wright inequality:
+\begin{theorem}[Hanson-Wright inequality]
+\label{thm:6.2.2}
+Let $A$ be an $n \times n$ matrix. Let $X = (X_1, \dots, X_n) \in \mathbb{R}^n$ be a random vector with 
+independent, mean-zero, subgaussian coordinates. Then, for every $t \geq 0$, we have
+\[ P(|X^TAX - \mathbb{E}\left[ X^TAX \right]| \geq t) \leq 
+2 \exp{\left[ -c \min_{}\left( \frac{t^2}{K^4 \lVert A \rVert_{F}^2}, \frac{t}{K^2 \lVert A \rVert_{}} 
+\right) \right]}, \]
+where $K = \max_{i} \lVert X_i \rVert_{\psi_2}$.
+\end{theorem}
+
+The proof will be based on bounding the MGF of $X^TAX$. Here is the plan:
+\begin{enumerate}
+	\item replace $X^TAX$ by $X^TAX'$ by decoupling;
+	\item replace $X^TAX'$ by $g^T Ag'$ using Gaussian replacement, for $g \sim N(0, I_n)$;
+	\item compute $g^TAg'$ by diagonalizing $A$ using the rotational invariance of $N(0, I_n)$.
+\end{enumerate}
+
+We start with part (b):
+\begin{lemma}[Gaussian replacement]
+\label{lem:6.2.3}
+Let $A$ be an $n \times n$ matrix. Let $X$ be a mean zero, subgaussian random vector in $\mathbb{R}^n$ with 
+$\lVert X \rVert_{\psi_2} \leq K$, and $X'$ be its independent copy. Let $g, g' \sim N(0, I_n)$ be independent. 
+Then for any $\lambda \in \mathbb{R}$, 
+\[ \mathbb{E}\left[ \exp{(\lambda X^TAX')} \right] \leq \mathbb{E}\left[ \exp{(CK^2 \lambda g^TAg')} \right]. \]
+\end{lemma}
+
+\begin{proof}
+Condition on $X'$ and take expectation over $X$, which we denote $\mathbb{E}_X$. Then the random variable 
+$\left\langle X, AX' \right\rangle$ is (conditionally) subgaussian, with subgaussian norm $\leq K 
+\lVert AX' \rVert_{2}$. Then \cref{prop:2.6.6} (iv) gives 
+\[ \mathbb{E}_X\left[ \exp{(\lambda X^TAX')} \right] \leq \exp{(C \lambda^2 K^2 \lVert AX' \rVert_{2}^2)}, 
+\ \lambda \in \mathbb{R}. \]
+Compare the above to the normal MGF formula. Applied to the normal random variable $g^TAX' = \left\langle 
+g, AX' \right\rangle$ (still conditionally on $X'$), it gives 
+\[ \mathbb{E}_g\left[ \exp{(\mu g^T AX')} \right] = \exp{(\mu^2 \lVert AX' \rVert_{2}^2 / 2)}, \ \mu 
+\in \mathbb{R}. \]
+Setting $\mu = \sqrt{2C}K \lambda$, we match the right hand sides of the two equations above and obtain 
+\[ \mathbb{E}_X\left[ \exp{(\lambda X^TAX')} \right] = \mathbb{E}_g\left[ \exp{(\sqrt{2C}K \lambda g^TAX')} 
+\right]. \]
+Then, taking expectation over $X'$ on both sides, we see that we have replace $X$ by $g$ in the chaos, at a cost 
+of the factor $\sqrt{2C}K$. Repeating the same thing for $X'$, we can replace $X'$ with $g'$ and get another 
+factor of $\sqrt{2C}K$.
+\end{proof}
+
+We now move to step (c):
+\begin{lemma}[MGF of a Gaussian quadratic form]
+\label{lem:6.2.4} Let $A = (a_{ij})$ be an $n \times n$ matrix, and let $g, g' \sim N(0, I_n)$ be independent. 
+Then 
+\[ \mathbb{E}\left[ \exp{(\lambda g^TAg')} \right] \leq \exp{(\lambda^2 \lVert A \rVert_{F}^2)} 
+\text{ whenever } |\lambda| \leq \frac{1}{2 \lVert A \rVert_{}}. \]
+\end{lemma}
+
+\begin{proof}
+Let's use rotational invariance of the normal distribution do diagonalize $A$. With its singular value 
+decomposition, $A = U \Sigma V^T$, we can write 
+\[ g^T Ag' = (U^T g)^T \Sigma (V^T g'). \]
+By the rotational invariance of the normal distribution (\cref{prop:3.3.1}), $U^T g$ and $V^T g'$ are 
+independent standard normal random vectors in $\mathbb{R}^n$. So, 
+\[ g^T Ag \sim g^T \Sigma g' = \sum_{i = 1}^{n} \sigma_i g_ig_i^T. \]
+This is a sum of independent random variables, so 
+\[ \mathbb{E}\left[ \exp{(\lambda g^TAg')} \right] 
+= \mathbb{E}\left[ \prod_{i}^{} \mathbb{E}\left[ \exp{(\lambda \sigma_i g_ig_i^T)} \right] \right] 
+= \prod_{i}^{} \mathbb{E}\left[ \exp{(\lambda \sigma_i g_ig_i^T)} \right]. \]
+Now, for each $i$ and $t \in \mathbb{R}$, we have 
+\[ \mathbb{E}\left[ \exp{(tg_ig_i')} \right] = \mathbb{E}\left[ \exp{\left( \frac{t^2 g_i^2}{2} \right)}
+\right] = \frac{1}{\sqrt{1 - t^2}} \leq \exp{(t^2)} \text{ if } t^2 \leq \frac{1}{2}. \]
+The first identity is done by conditioning on $g_i$ and using the MGF formula for the normal random variable 
+$g'$; the other steps are just direct calculations. Substituting this bound with $t = \lambda \sigma_i$ into 
+the product, we get 
+\[ \mathbb{E}\left[ \exp{(\lambda g^T Ag')} \right] \leq \exp{\left( \lambda^2 \sum_{i}^{} \sigma_i^2 \right)} 
+\text{ if } \lambda^2 \leq \frac{1}{2 \max_{} \sigma_i^2}. \]
+Since $\sigma_i$ are the singular values of $A$, $\sum_{i}^{} \sigma_i^2 = \lVert A \rVert_{F}^2$ and 
+$\max_{i} \sigma_i = \lVert A \rVert_{}$, hence the lemma is proved.
+\end{proof}
+
+Now we move to the main proof!
+\begin{proof}[Proof of Hanson-Wright inequality]
+Without loss of generality, assume $K = 1$. As usual, it is enough to bound the one-sided tail 
+\[ p := P(X^TX - \mathbb{E}\left[ X^TAX \right] \geq t). \]
+This is because we can find the lower tail by just replacing $A$ with $-A$. By combining the two tails, the 
+proof would be complete.
+
+In terms of the entries of $A = (a_{ij})$, we have 
+\[ X^TAX = \sum_{i, j}^{}a_{ij}X_iX_j \text{ and } \mathbb{E}\left[ X^TAX \right] = \sum_{i}^{} a_{ii} 
+\mathbb{E}\left[ X_i^2 \right], \]
+where we used the mean zero assumption and independence. So 
+\[ X^TAX - \mathbb{E}\left[ X^TAX \right] = \sum_{i}^{} a_{ii}(X_i^2 - \mathbb{E}\left[ X_i^2 \right]) 
++ \sum_{i \neq j}^{} a_{ij} X_iX_j. \]
+The problem then reduces to estimating the diagonal and off-diagonal sums:
+\[ p \leq P \left( \sum_{i}^{} a_{ii}(X_i^2 - \mathbb{E}\left[ X_i^2 \right]) \geq t/2 \right) 
++ P \left( \sum_{i \neq j}^{} a_{ij} X_iX_j \geq t/2 \right) := p_1 + p_2. \]
+
+Let's bound these probabilities!
+
+\textbf{Step 1: Diagonal sum.} Since $X_i$ are independent and subgaussian, $X_i^2 - \mathbb{E}\left[ X_i^2 
+\right]$ are independent, mean-zero, and subexponential. Also, 
+\[ \lVert X_i^2 - \mathbb{E}\left[ X_i^2 \right] \rVert_{\psi_2} \lesssim \lVert X_i^2 \rVert_{\psi_1} 
+\lesssim \lVert X_i \rVert_{\psi_2}^2 \lesssim 1. \]
+(The above follows from centering andcref{lem:2.8.5}). Then, Bernstein's inequality (\cref{cor:2.9.2}) gives 
+\[ p_1 \leq \exp{\left[ -c \min_{}\left( \frac{t^2}{\sum_{i}^{}a_{ii}^2}, \frac{t}{\max_{i}|a_{ii}|} \right) 
+\right]} \leq \exp{\left[ -c \min_{}\left( \frac{t^2}{\lVert A \rVert_{F}^2}, \frac{t}{\lVert A \rVert_{}} 
+\right) \right]}. \]
+
+\textbf{Step 2: Off-diagonal sum.} Now we bound the off-diagonal sum
+\[ S := \sum_{i \neq j}^{}a_{ij}X_iX_j. \]
+Let $\lambda > 0$ be a parameter to be determined later. By Merkov's inequality, we have 
+\[ p_2 = P(S \geq t/2) = p(\lambda S \geq \lambda t/2) \leq \exp{(-\lambda t/2)}\mathbb{E}\left[ 
+\exp{(\lambda S)} \right]. \]
+We get 
+\begin{align*}
+	\mathbb{E}\left[ \exp{(\lambda S)} \right] 
+	&\leq \mathbb{E}\left[ \exp{(4 \lambda X^TAX')} \right] \quad (\text{By decoupling}) \\
+	&\leq \mathbb{E}\left[ \exp{(C_1 \lambda g^TAg')} \right] \quad (\text{By \cref{lem:6.2.3}}) \\
+	&\leq \exp{(C \lambda^2 \lVert A \rVert_{F}^2)} \quad (\text{By \cref{lem:6.2.4}})
+\end{align*}
+whenever $|\lambda| \leq \frac{1}{2 \lVert A \rVert_{}}$. Putting this bound into the exponential bound above, 
+we obtain 
+\[ p_2 \leq \exp{(-\lambda t/2 + C \lambda^2 \lVert A \rVert_{F}^2)}. \]
+Optimizing over $0 \leq \lambda \leq \frac{1}{2 \lVert A \rVert_{}}$, we conclude that 
+\[ p_2 \leq \exp{\left[ -c \min_{}\left( \frac{t^2}{\lVert A \rVert_{F}^2}, \frac{t}{\lVert A \rVert_{}}
+\right) \right]}. \]
+To summarize, we obtained the desired bounds for the probabilities of the diagonal deviation $p_1$ and the 
+off-diagonal deviation $p_2$. Putting them together, we complete the proof of \cref{thm:6.2.2}.
+\end{proof}
+
 
 
 % ----------6.3----------
