@@ -377,6 +377,108 @@ almost surely. Then for any Lipschitz function $f: [-1, 1]^n \to \mathbb{R}$,
 
 % ----------5.3----------
 \subsection{Application: Johnson-Lindenstrauss Lemma}
+Suppose we have $N$ data points in $\mathbb{R}^n$ where the dimension $n$ is very large. Can we reduce the 
+dimension without losing the geometry of the data? The simplest way is to project onto a low-dimensional 
+subspace 
+\[ E \subset \mathbb{R}^n, \ \dim{(E)} := m \ll n, \]
+see Figure 5.2 below. How shall we choose the subspace $E$, and how small should its dimension $m$ be?
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 5/fig5-2.png}
+\end{center}
+
+The Johnson-Lindenstrauss Lemma states that the geometry of data is well preserved if we choose $E$ to be a 
+\textit{random subspace} of dimension 
+\[ m \asymp \log_{}{N}. \]
+Here we say that $E$ is a random $m$-dimensional subspace in $\mathbb{R}^n$ uniformly distributed in $G_{n, m}$, 
+i.e. 
+\[ E \sim \mathrm{Unif}(G_{n,m}), \]
+if $E$ is a random $m$-dimensional subspace of $\mathbb{R}^n$ whose distribution is rotation invariant, i.e. 
+\[ P(E \in \mathcal{E}) = P(U(E) \in \mathcal{E}) \]
+for any fixed subset $\mathcal{E} \in G_{n,m}$ and $n \times n$ orthogonal matrix $U$.
+
+\begin{theorem}[Johnson-Lindenstrauss Lemma]
+\label{thm:5.3.1}
+Let $\mathcal{X}$ be a set of $N$ points in $\mathbb{R}^n$ and $\varepsilon > 0$. Assume that 
+\[ m \geq C \varepsilon^{-2}\log_{}{N}. \]
+Let $P$ be the orthogonal projection in $\mathbb{R}^n$ onto a random $m$-dimensional subspace $E \sim 
+\mathrm{Unif}(G_{n, m})$. Then, with probability at least $1 - 2 \exp{(-c \varepsilon^2 m)}$, the scaled 
+projection $Q = \sqrt{n/m}P$ is an approximate isometry on $\mathcal{X}$:
+\[ (1 - \varepsilon)\lVert x - y \rVert_{2} \leq \lVert Qx - Qy \rVert_{2} 
+\leq (1 + \varepsilon)\lVert x - y \rVert_{2} \texxt{ for all } x, y \in \mathcal{X}. \]
+\end{theorem}
+The proof will be based on concentration of Lipschitz functions on the sphere in Section 5.1 We 
+use it to examine how the random projection $P$ acts on the fixed vector $x - y$, then take the union bound over 
+all $N^2$ differences $x - y$.
+
+\begin{lemma}[Random Projection]
+\label{lem:5.3.2}
+Let $P$ be a projection in $\mathbb{R}^n$ onto a random $m$-dimensional subspace $E \sim 
+\mathrm{Unif}(G_{n,m})$. Fix any $z \in \mathbb{R}^n$ and $\varepsilon > 0$. Then,
+\begin{enumerate}
+	\item $(\mathbb{E}\left[ \lVert Pz \rVert_{2}^2 \right])^{1/2} = \sqrt{\frac{m}{n}} \lVert z \rVert_{2}$.
+	\item With probability at least $1 - 2 \exp{(-c \varepsilon^2 m)}$, we have 
+	\[ (1 - \varepsilon)\sqrt{\frac{m}{n}}\lVert z \rVert_{2} \leq \lVert Pz \rVert_{2} 
+	\leq (1 + \varepsilon)\sqrt{\frac{m}{n}}\lVert z \rVert_{2}. \]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Without loss of generality, we may assume that $\lVert z \rVert_{2} = 1$. Now switch the view. A random 
+$m$-dimensional subspace $E$ can be obtained by randomly rotating some fixed subspace, such as the coordinate 
+subspace $\mathbb{R}^m$. But instead of fixing $z$ and randomly rotate $\mathbb{R}^m$, we cna fix the the 
+subspace $E = \mathbb{R}^m$ and randomly rotate $z$, which makes $z$ uniformly distributed on the sphere:
+\[ z \sim \mathrm{Unif}(S^{n - 1}). \]
+By rotation invariance, $Pz$ has the same distribution!
+
+(a) Since $P$ is the projection onto the first $m$ coordinates in $\mathbb{R}^n$, 
+\[ \mathbb{E}\left[ \lVert Pz \rVert_{2}^2 \right] = \mathbb{E}\left[ \sum_{i = 1}^{m} z_i^2 \right] 
+= \sum_{i = 1}^{m}\mathbb{E}\left[ z_i^2 \right] = m \mathbb{E}\left[ z_1^2 \right], \]
+because the coordinates $z_i$ of the random vector $z \sim \mathrm{Unif}(S^{n - 1})$ are identically 
+distributed. To compute $\mathbb{E}\left[ z_1^2 \right]$, note that $\sum_{i = 1}^{n}z_i^2 = 1$. Taking 
+expectations on both sides, we obtain 
+\[ \sum_{i = 1}^{n}\mathbb{E}\left[ z_i^2 \right] = 1 \implies \mathbb{E}\left[ z_1^2 \right] = \frac{1}{n}. \]
+Then, putting this into the equation above, we have 
+\[ \mathbb{E}\left[ \lVert Pz \rVert_{2}^2 \right] = \frac{m}{n}. \]
+
+(b) $x \mapsto \lVert Px \rVert_{2}$ is a Lipschitz function on $S^{n - 1}$ with Lipschitz norm bounded by 1. 
+Then from Exercise 5.5, the concentration inequality gives 
+\[ P \left( \left| \lVert Px \rVert_{2} - \sqrt{\frac{m}{n}} \right| \geq t \right) 
+\leq 2 \exp{(-cnt^2)}. \]
+(We replaced $\mathbb{E}\left[ \lVert x \rVert_{2} \right]$ by $(\mathbb{E}\left[ \lVert x \rVert_{2}^2 \right]^
+{1/2})$ in the concentration inequality using \cref{rmk:5.2.1}). Choosing $t := \varepsilon \sqrt{m/n}$, we 
+complete the proof.
+\end{proof}
+
+\begin{proof}[Proof of Johnson-Lindenstrauss Lemma]
+Consider the difference set 
+\[ \mathcal{X} - \mathcal{X} := \{ x - y: \ x, y \in \mathcal{X} \}. \]
+We would like to show that, with required probability, the inequality
+\[ (1 - \varepsilon)\lVert z \rVert_{2} \leq \lVert Qz \rVert_{2} \leq (1 + \varepsilon)\lVert z \rVert_{2} \]
+holds for all $z \in \mathcal{X} - \mathcal{X}$. Since $Q = \sqrt{n/m}P$, this inequality is equivalent to 
+\[ (1 - \varepsilon)\sqrt{\frac{m}{n}}\lVert z \rVert_{2} \leq \lVert Pz \rVert_{2} 
+\leq (1 + \varepsilon)\sqrt{\frac{m}{n}}\lVert z \rVert_{2}. \]
+For any fixed $z$, \cref{lem:5.3.2} states that the above holds with probability at least $1 - 2 \exp{(-c 
+\varepsilon^2 m)}$. It remains to take a union bound over $z \in \mathcal{X} - \mathcal{X}$. It follows that 
+the bound above holds simultaneously for all $z \in \mathcal{X} - \mathcal{X}$, with probability at least 
+\[ 1 - |\mathcal{X} - \mathcal{X}| \cdot 2 \exp{(-c \varepsilon^2 m)} \geq 1 - N^2 \cdot 
+2 \exp{(-c \varepsilon^2 m)}. \]
+If $m \geq C \varepsilon^{-2} \log_{}{N}$ then this probability is at least $1 - 2 
+\exp{(-c \varepsilon^2 m/2)}$, as claimed. Hence the proof is done.
+\end{proof}
+
+\begin{remark}[Non-adaptive, dimension-free]
+\label{rmk:5.3.3}
+A remarkable feature of the JL lemma is that the dimension reduction map $A$ is \textit{non-adaptive}, 
+meaning it does not depend on the data. Note also that the ambient dimension $n$ of the data plays no role. With 
+more toold, we will develop more advanced versions of the JH lemma (Exercise 9,37-9.39).
+\end{remark}
+
+\begin{remark}[Optimality]
+The JL lemma makes such a striking dimension reduction from $N$ to $n = O(\log_{}{N})$. Can we go even smaller, 
+say $n = o(\log_{}{N})$? Exercise 5.15 shows that we can't - the log dimension is the best we can do, even with 
+nonlinear maps.
+\end{remark}
 
 
 
@@ -682,9 +784,194 @@ Then, with probability at least 0.99, the spectral clustering algorithm identifi
 with 99\% accuracy, i.e. misclassifying at most $0.01n$ vertices.
 \end{theorem}
 
+\begin{proof}
+We'll follow that same proof as that from Section 4.5, but with a sharper error bound.
+
+\textbf{Step 1: Decomposition.} Again, let's split $A$ into the deterministic and random parts:
+\[ A = D + R \text{ where } D = \mathbb{E}\left[ A \right]. \]
+Before, the analysis is mostly on the deterministic matrix $D$, where the second largest eigenvector has $\pm 1$ 
+coefficients representing community membership. Now we have to analyze the random part 
+\[ R = A - \mathbb{E}\left[ A \right]. \]
+Let's decompose it entry by entry, keeping symmetry in mind. We can write $R$ as a sum of independent, mean-zero 
+random matrices $Z_{ij}$ that isolate entries $(i, j)$ and $(j, i)$:
+\[ R = \sum_{i \leq j}^{}Z_{ij}, \text{ where } Z_{ij} = \begin{cases}
+	R_{ij}(e_ie_j^T + e_je_i^T) $\text{ if } i < j, \\
+	R_{ii}e_ie_i^T &\text{ if } i = j
+\end{cases}. \]
+
+\textbf{Step 2: Bounding the error}. Since $A_{ij} \in \{ 0, 1 \}$, 
+\[ |R_{ij}| \leq 1 \implies \lVert Z_{ij} \rVert_{} = \lVert R_{ij} \rVert_{} \leq 1 \implies 
+\lVert R_{ij}Z_{ij} \rVert_{} \leq 1. \]
+Then by applying the matrix Bernstein inequality (\cref{rmk:5.4.11}) combined with Markov's inequality, we 
+obtain with probability at least 0.99:
+\[ \lVert R \rVert_{} \lesssim \sigma \sqrt{\log_{}{n}} + \log_{}{n} \text{ where } 
+\sigma^2 = \lVert \mathbb{E}\left[ \sum_{i \leq j}^{} Z_{ij}^2 \right] \rVert_{}. \]
+Let's compute $\sigma^2$. A quick check shows thaaht $Z_{ij}^2$ is a diagonal matrix:
+\[ Z_{ij}^2 = \begin{cases}
+	R_{ij}^2 (e_ie_i^T + e_je_j^T) &\text{ if } i < j, \\
+	R_{ii}^2 e_ie_i^T &\text{ if } i = j
+\end{cases}. \]
+Then, by symmetry, 
+\[ \sum_{i \leq j}^{}Z_{ij}^2 = \sum_{i \leq j}^{}R_{ij}^2 (e_ie_i^T + e_je_j^T) + 
+\sum_{i}^{} R_{ii}^2 e_ie_i^T = \sum_{i = 1}^{n} \left( \sum_{j = 1}^{n} R_{ij}^2 \right) e_ie_i^T. \]
+This is a diagonal matrix, and so is its expectation. Thus 
+\[ \sigma^2 = \lVert \mathbb{E}\left[ \sum_{i \leq j}^{}Z_{ij}^2 \right] \rVert_{} = 
+\max_{i = 1, \dots, n} \sum_{j = 1}^{n} \mathbb{E}\left[ R_{ij}^2 \right] \]
+since the operator norm of a diagonal matrix is the maximal absolue value of its entries (Exercise 4.3 (b)). 
+Recall that $R_{ij} = A_{ij} - \mathbb{E}\left[ A_{ij} \right]$. In the stochastic block model, $A_{ij}$ is 
+either $\mathrm{Ber}(p)$ or $\mathrm{Ber}(q)$. So $\mathbb{E}\left[ R_{ij}^2 \right] = \mathrm{Var}(A_{ij}) 
+\leq p$ since $p > q$. Thus 
+\[ \sigma^2 \leq np = a, \]
+and substituting this into the initial bound for $\lVert R \rVert_{}$, we get 
+\[ \lVert R \rVert_{} \lesssim \sqrt{a \log_{}{n}} + \log_{}{n} \lesssim \sqrt{a \log_{}{n}} \]
+because the assumption implies that $a \gtrsim \log_{}{n}$. 
+
+\textbf{Step 3: Applying Davis-Kahan.} Let's apply \cref{thm:4.1.15} (see Exercise 4.16) to $D$ and $A$, 
+focusing on the second largest eigenvalue. As we noted in Section 4.5.4, the seperation between $\lambda_2(D)$ 
+of $D$ and the rest of the spectrum is
+\[ \delta = \min_{}(\lambda_2(D), \lambda_1(D) - \lambda_2(D)) = \min_{}\left( \frac{p - q}{2}, q \right)n 
+= \frac{a - b}{2} \]
+since $a \leq 3b$ by assumption. Using the bound on $R$ from the end of Step 2, the Davis-Kahan inequality 
+guarantees that for some $\theta \in \{ -1, 1 \}$, the distance between the \textit{unit} eigenvectors of $D$ 
+and $A$ (denoted with bars) satisfies 
+\[ \lVert \bar{u}_2(D) - \theta \bar{u}_2(A) \rVert_{2} \leq \frac{2 \lVert R \rVert_{}}{\delta} 
+\leq \frac{C_1 \sqrt{a \log_{}{n}}}{a - b} < \frac{1}{10} \]
+if we choose the constant $C$ in the assumption of the theorem to be large enough. Multiply both sides by 
+$\sqrt{n}$ to get 
+\[ \lVert u_2(D) - \theta u_2(A) \rVert_{2} \lesssim \frac{\sqrt{n}}{10}. \]
+Since all coefficients of $u_2(D)$ are $\pm 1$ and correctly identify community membership, it follows that at 
+least $99\%$ of the coefficients in $\theta u_2(A)_j$ have the same sign as $u_2(D)_j$, and thus correctly 
+identify the community membership.
+\end{proof}
+
+\begin{remark}[Sparsity]
+\label{rmk:5.5.2}
+The sparsest graphs for which \cref{thm:5.5.1} is nontrivial have expected average degree
+\[ \frac{n(p + q)}{2} = \frac{a + b}{2} \asymp \log_{}{n}, \]
+That's way sparser than the bound of $O(\sqrt{n})$ that we have acheived previously (\cref{rmk:4.5.3})! 
+\end{remark}
+
+
 
 % ----------5.6----------
 \subsection{Application: Covariance Estimation for General Distributions}
+In Section 4.7, we learned how to estimate the covariance metrix of a subgaussian distribution in $\mathbb{R}^n$ 
+from a sample of size $O(n)$. Now, we drop the subgaussian assumption, making this work for much broader 
+distributions, even discrete ones. The trade-odd is just a logarithmic oversampling factor!
+
+For noration, we denote the sample covariance matrix as 
+\[ \Sigma_m = \frac{1}{m}\sum_{i = 1}^{m}X_i X_i^T. \]
+If $X$ has zero mean, then $\Sigma$ is the covariance matrix of $X$, and $\Sigma_m$ is the sample covariance 
+matrix.
+
+\begin{theorem}[General covariance estimation]
+\label{thm:5.6.1} 
+Let $X$ be a random vector in $\mathbb{R}^n \ (n \geq 2)$. Assume that for some $K \geq 1$, 
+\[ \lVert X \rVert_{2} \leq K (\mathbb{E}\left[ \lVert X \rVert_{2}^2 \right])^{1/2} \text{ almost surely.} \]
+Then for every positive integer $m$, we have 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq C \left( 
+\sqrt{\frac{K^2 n \log_{}{n}}{m}} + \frac{K^2 n \log_{}{n}}{m} \right) \lVert \Sigma \rVert_{}. \]
+\end{theorem}
+
+\begin{proof}
+By \cref{prop:3.2.1} (b), we have $\mathbb{E}\left[ \lVert X \rVert_{2}^2 \right] = \mathrm{tr}(\Sigma)$, hence 
+the condition in the theorem becomes 
+\[ \lVert X \rVert_{2}^2 \leq K^2 \mathrm{tr}(\Sigma) \text{ almost surely. } \]
+Apply the expected version of the matrix Bernstein inequality (\cref{rmk:5.4.11}) for the sum of i.i.d. mean 
+zero random matrices $X_iX_i^T - \Sigma$ and get 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] = 
+\frac{1}{m} \mathbb{E}\left[ \lVert \sum_{i = 1}^{m} (X_iX_i^T - \Sigma) \rVert_{} \right] 
+\lesssim \frac{1}{m} (\sigma \sqrt{\log_{}{n}} + M \log_{}{n}) \]
+where 
+\[ \sigma^2 = \lVert \sum_{i = 1}^{m} \mathbb{E}\left[ (X_iX_i^t - \Sigma)^2 \right] \rVert_{} 
+= m \lVert \mathbb{E}\left[ (XX^T - \Sigma)^2 \right] \rVert_{} \]
+and $M$ is any number chosen so that 
+\[ \lVert XX^T - \Sigma \rVert_{} \leq M \text{ almost surely. } \]
+To complete the proof, it remains to bound $\sigma^2$ and $M$.
+
+Let's start with $\sigma^2$. By expanding the square, 
+\[ \mathbb{E}\left[ (XX^T - \sigma)^2 \right] = \mathbb{E}\left[ (XX^T)^2 \right] - \Sigma^2 
+\lesssim \mathbb{E}\left[ (XX^T)^2 \right]. \quad (*) \]
+Furthermore, the assumption at the beginning of the proof gives 
+\[ (XX^T)^2 = \lVert X \rVert_{}^2 XX^T \lesssim K^2 \mathrm{tr}(\Sigma) XX^T. \]
+Taking expectations on both sides, we get 
+\[ \mathbb{E}\left[ (XX^T)^2 \right] \lesssim K^2 \mathrm{tr}(\Sigma) \Sigma. \]
+Substituting this bound into $(*)$, we get a bound for $\sigma^2$:
+\[ \sigma^2 \leq K^2 m \mathrm{tr}(\Sigma) \lVert \Sigma \rVert_{}. \]
+
+
+On the other hand, bounding $M$ is easier:
+\begin{align*}
+	\lVert XX^T - \Sigma \rVert_{} 
+	&\leq \lVert X \rVert_{2}^2 + \lVert \Sigma \rVert_{} \quad \text{(By triangle inequality)} \\
+	&\leq K^2 \mathrm{tr}(\Sigma) + \lVert \Sigma \rVert_{} \quad \text{(By assumption)} \\
+	&\leq 2K^2 \mathrm{tr}(\Sigma) =: M. \quad (\lVert \Sigma \rVert_{} \leq \mathrm{tr}(\Sigma) \text{ and } 
+	K \geq 1).
+\end{align*}
+Substitute the bounds for $\sigma$ and $M$ into the overall bound, we get 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq 
+\frac{1}{m} \left( \sqrt{K^2m \mathrm{tr}(\Sigma) \lVert \Sigma \rVert_{}} \cdot \log_{}{n} 
++ 2K^2 \mathrm{tr}(\Sigma) \cdot \log_{}{n} \right). \]
+Finally, plugging in the bound $\mathrm{tr}(\Sigma) \leq n \lVert \Sigma \rVert_{}$ completes the proof.
+\end{proof}
+
+\begin{remark}[Sample complexity]
+\label{rmk:5.6.2}
+\cref{thm:5.6.1} shows that for any $\varepsilon \in (0, 1)$, we can estimate the covariance matrix with a 
+small relative error: 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq \varepsilon \lVert \Sigma \rVert_{}, \]
+as long as the sample size is 
+\[ m \asymp \varepsilon^{-2} n \log_{}{n}. \]
+Compared to the sample complexity $m \asymp \varepsilon^{-2}n$ for subgaussan distributions (\cref{rmk:4.7.2}), 
+dropping the subgaussian assumption costs just a small logarithmic oversampling factor! In general, this factor 
+cannot be dropped (Exercise 5.28).
+\end{remark}
+
+\begin{remark}[Low-dimensional distributions]
+\label{rmk:5.6.3}
+At the end of proof of \cref{thm:5.6.1}, we used a rough bound $\mathrm{tr}(\Sigma) \leq n \lVert \Sigma 
+\rVert_{}$. But instead, we can express the conclusion via the \textit{effective rank} of $\Sigma$:
+\[ r = r(\Sigma) = \frac{\mathrm{tr}(\Sigma)}{\lVert \Sigma \rVert_{}} \]
+and get a sharper bound 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq C \left( 
+\sqrt{\frac{K^2 r \log_{}{n}}{m}} + \frac{K^2 r \log_{}{n}}{m} \right) \lVert \Sigma \rVert_{}. \]
+It shows that a sample of size 
+\[ m \asymp \varepsilon^{-2} r \log_{}{n} \]
+is enough to estimate the covaraince matrix. Since $r \leq n$, this sample size is at least as small as the 
+value that we had estimated above. It is even much smaller for \textit{approximately low-dimensional} 
+distributions that concentrate near lower-dimensional subspaces.
+\end{remark}
+
+\begin{remark}[Effective and stable rank of a matrix]
+\label{rmk:5.6.4}
+What does the effective rank from \cref{rmk:5.6.3} really tell us about a PSD matrix $\Sigma$? TO get an idea, 
+write it as the sum of eigenvalues divided by the largest one:
+\[ r(\Sigma) = \frac{\sum_{i = 1}^{n} \lambda_i(\Sigma)}{\max_{i} \lambda_i(\Sigma)}. \]
+This is always bounded by the actual rank (number of nonzero eigenvalues) and can be much smaller for 
+``approximately" low-rank matrices - ones having only a few large eigenvalues. A related idea is the 
+\textit{stable rank}, defined for any matrix $A$
+\[ s(A) = \frac{\lVert A \rVert_{F}^2}{\lVert A \rVert_{}^2} 
+= \frac{\sum_{i = 1}^{n} \sigma_i^2(A)}{\max_{i} \lambda_i(\sigma)} = r(A^T A) = r(AA^T) \]
+where $\sigma_i$ denotes the singular values. Both are ``soft" versions of rank that are stable under small 
+changes. For some more intuition, see Exercise 5.26.
+\end{remark}
+
+\begin{remark}[High-probability guarantees]
+\label{rmk:5.6.5}
+We covered expectation bounds, but our argument actually gives a more informative high-probability guarantee:
+\[ \lVert \Sigma_m - \Sigma \rVert_{} \leq C \left( 
+\sqrt{\frac{K^2 r (\log_{}{n} + u)}{m}} + \frac{K^2 r (\log_{}{n} + u)}{m}\right) \lVert \Sigma \rVert_{} \]
+with probability at least $1 - 2e^{-u}$. Here $r = \mathrm{tr}(\Sigma) / \lVert \Sigma \rVert_{} \leq n$ is 
+the effective rank (Exercise 5.26).
+\end{remark}
+
+\begin{remark}[Boundedness assumption]
+\label{rmk:5.6.6}
+The boundedness assumption in \cref{thm:5.6.1} might seem strong, but it cannot be dropped in general: if $X$ 
+is isotropic but zero with high probability, the sample is likely to consist entirely of zeros, making 
+covariance estimation impossible (Exercise 5.27). However, this assumption can still be relaxed (Exercise 6.34). 
+In practice, it is usually enforced by truncation - dropping a small percentage of samples with the largest norm.
+\end{remark}
 
 
 
