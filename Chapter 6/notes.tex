@@ -407,7 +407,92 @@ There is more practice on symmetrization as well (Exercises 6.22-6.29).
 
 % ----------6.5----------
 \subsection{Application: Matrix Completion}
+Matrix completion is the process of recovering missing entries from a partially observed matrix. Of course, 
+this is not possible without knowing something extra about the matrix. Let's show that for low-rank matrices, 
+we can recover the missing entries algorithmically.
 
+To describe the problem mathematically, consider an $n \times n$ matrix $X$ with 
+\[ \mathrm{rank}(X) = r \]
+where $r \ll n$. Suppose we are shown a few \textit{randomly chosen entries} of $X$. Each entry $X_{ij}$ is 
+revealed to us independently with some probability $p \in (0, 1)$ and is hidden from us with probability 
+$1 - p$. In other words, assume that we observe the $n \times n$ matrix $Y$ with entries 
+\[ Y_{ij} = \delta_{ij}X_{ij} \text{ where } \delta_{ij} \sim_{i.i.d.} \mathrm{Ber}(p). \]
+These $\delta_{ij}$ are \textit{selectors}. If 
+\[ p = \frac{m}{n^2} \]
+then we observe $m$ entries on average.
+
+The question is, how can we recover $X$ from $Y$? Although $X$ has small rank $r$, $Y$ may not have small rank. 
+To fix this, we can pick the best rank $r$ approximation to $Y$. Properly scaled, this gives a good estimate of 
+the original matrix $X$:
+
+\begin{theorem}[Matrix completion]
+\label{thm:6.5.1} 
+Let $\Hat{X}$ be a best rank $r$ approximation to $p^{-1}Y$. Then 
+\[ \mathbb{E}\left[ \frac{1}{n}\lVert \Hat{X} - X \rVert_{F} \right] \leq 
+C \sqrt{\frac{rn \log_{}{n}}{m}} \lVert X \rVert_{\infty}, \]
+as long as $m \geq n \log_{}{n}$. Here $\lVert X \rVert_{\infty} = \max_{i, j} |X_{ij}|$ is the largest entry, 
+NOT the usual matrix infinity norm!
+\end{theorem}
+
+Before we prove this, note that the recovery error 
+\[ \frac{1}{n}\lVert \Hat{X} - X \rVert_{F} = \left( \frac{1}{n}\sum_{i, j = 1}^{n^2} 
+\sum_{i, j = 1}^{n} |\Hat{X}_{ij} - X_{ij}|62 \right)^{1/2} \]
+represents the average error per entry (in the $L^2$ sense). If we choose the average number of observed entries 
+$m$ so that 
+\[ M \geq C' rn \log_{}{n} \]
+with large constant $C'$, then \cref{thm:6.5.1} guarantees that the average error is much smaller than 
+$\lVert X \rVert_{\infty}$. So, matrix completion is possible if the number of observed entries exceeds $rn$ by 
+a logarithmic margin.
+
+\begin{proof}
+We first bound the recovery error in the operator norm, and then pass to the Frobenius norm using the low-rank 
+assmumption.
+
+\textbf{Step 1: Bounding the error in the operator norm.} Using the triangle inequality, we can split the error 
+as follows:
+\[ \lVert \Hat{X} - X \rVert_{} \leq \lVert \Hat{X} - p^{-1}Y \rVert_{} + \lVert p^{-1}Y - X \rVert_{}. \]
+Since we have chosen $\Hat{X}$ as a best rank $r$ approximation to $p^{-1}Y$, the second summand dominates, i.e. 
+$\lVert \Hat{X} - p^{-1}Y \rVert_{} \leq \lVert p^{-1}Y - X \rVert_{}$, so we have 
+\[ \lVert \Hat{X} - X \rVert_{} \leq 2 \lVert p^{-1}Y - X \rVert_{} = \frac{2}{p}\lVert Y - pX \rVert_{}. \]
+Note that the matrix $\Hat{X}$, which is tricky to handle, is gone in the bound. Instead, we get $Y - pX$, which 
+is easier to understand since its entries, 
+\[ (Y - pX)_{ij} = (\delta_{ij} - p)X_{ij}, \]
+are independent, mean-zero random variables. Using \cref{thm:6.4.1} (more precisely, Exercise 6.28), we get 
+\[ \mathbb{E}\left[ \lVert Y - pX \rVert_{} \right] \leq C \sqrt{\log_{}{n}} \left( 
+\mathbb{E}\left[ \max_{i = 1, \dots, n}\lVert (Y - pX)_{i:} \rVert_{2} \right] 
++ \mathbb{E}\left[ \max_{j = 1, \dots, n}\lVert (Y - pX)_{:j} \rVert_{2} \right] \right). \quad (*) \]
+To bound the norms of the rows of $Y - pX$, we write them as 
+\[ \lVert (Y - pX)_{i:} \rVert_{2}^2 = \sum_{j = 1}^{n}(\delta_{ij} - p)^2 X_{ij}^2 
+\leq \sum_{j = 1}^{n} (\delta_{ij} - p)^2 \cdot \lVert X \rVert_{\infty}^2, \]
+and similarly for columns. These sums of independent random variables can be easily bounded using Bernstein's 
+(or Chernoff's) inequality, which yields (Exercise 6.30)
+\[ \mathbb{E}\left[ \max_{i = 1, \dots, n}\sum_{j = 1}^{n}(\delta_{ij} - p)^2 \right] \lesssim pn. \]
+Combining with a similar bound for the columns and substituting into $(*)$, we obtain 
+\[ \mathbb{E}\left[ \lVert Y - pX \rVert_{} \right] \lesssim \sqrt{pn \log_{}{n}}\lVert X \rVert_{\infty}. \]
+Then, by the bound for $\lVert \Hat{X} - X \rVert_{}$ from earlier, we get 
+\[ \mathbb{E}\left[ \lVert \Hat{X} - X \rVert_{} \right] \lesssim \sqrt{\frac{n \log_{}{n}}{p}} \lVert 
+X \rVert_{\infty}. \]
+
+\textbf{Passing to the Frobenius norm.} We have not used the low rank assumption yet, so we'll do this now. 
+Since $\mathrm{rank}(X) \leq r$ by assumption and $\mathrm{rank}(\Hat{X}) \leq r$ by construction, we have 
+(Exercise 4.4)
+\[ \mathrm{rank}(\Hat{X} - X) \leq 2r \implies \lVert \Hat{X} - X \rVert_{F} 
+\leq \sqrt{2r} \lVert \Hat{X} - X \rVert_{}. \]
+Taking expectations and using the bound on the error in the operator norm from step 1, we get 
+\[ \mathbb{E}\left[ \lVert \Hat{X} - X \rVert_{F} \right] \lesssim \sqrt{\frac{rn \log_{}{n}}{p}} 
+\lVert X \rVert_{\infty}. \]
+Dividing both sides by $n$, we can rewrite this bound as 
+\[ \mathbb{E}\left[ \frac{1}{n}\lVert \Hat{X} - X \rVert_{F} \right] \lesssim 
+\sqrt{\frac{rn \log_{}{n}}{pn^2}} \lVert X \rVert_{\infty}. \]
+From the definition above, $pn^2 = m$ so plugging in finishes the proof.
+\end{proof}
+
+\begin{remark}[Extensions]
+\label{rmk:6.5.2}
+\cref{thm:6.5.1} can be extended and improved in many ways, such as to rectangular matrices (Exercise 6.31) and 
+matrices with noisy observations (Exercise 6.32). It is less trivial but possible to remove the logarithmic 
+factor from the error bound, and acheive zero eror for noiseless observations!
+\end{remark}
 
 
 
