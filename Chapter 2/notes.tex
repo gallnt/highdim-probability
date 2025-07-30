@@ -242,7 +242,7 @@ Done in Exercise 2.11.
 
 \begin{remark}[Poisson tails]
 \label{rmk:2.3.3}
-When $p_i$ is small for the Bernoulli random variables, by the Poisson Limit Theorem (add link), 
+When $p_i$ is small for the Bernoulli random variables, by the Poisson Limit Theorem (\cref{thm:1.7.6}), 
 $S_N \sim \text{Pois}(\mu)$. Using Stirling approximation for $t!$, 
 \[ P(S_N = t) \approx \frac{e^{-\mu}}{\sqrt{2 \pi t}} \biggl( \frac{e \mu}{t} \biggr)^t, 
 \quad t \in \mathbb{N}. \]
@@ -454,9 +454,9 @@ implies property $j$ with parameter $K_j \leq CK_i$ for any two properties $i, j
 \begin{proof}
 The proof is all about transforming one type of information about random variables into another.
 
-$\color{blue} (a) \Rightarrow (b)$ Assume $(a)$ holds. WLOG assume $K_1 = 1$. If not, 
-we can scale $X$ to $X / K_1$ and our 
-analysis will not be affected. The integrated tail formula (Lemma 1.6.1 + link) for $|X|^p$ gives 
+$\color{blue} (a) \Rightarrow (b)$ Assume $(a)$ holds. Without loss of generality, assume $K_1 = 1$ since it 
+only affects the other constants we obtain by a constant factor, so we can just scale everything.
+The integrated tail formula (\cref{lem:1.6.1}) for $|X|^p$ gives 
 \begin{align*}
 	\mathbb{E}[|X|^p] 
 	&= \int_{0}^{\infty} P(|X|^p \geq u) \ du \\
@@ -482,7 +482,7 @@ By the Taylor series expansion of the exponential function,
 \[ \mathbb{E}[\exp{(\lambda^2 X^2)}] 
 = \mathbb{E}\biggl[ 1 + \sum_{p = 1}^{\infty} \frac{(\lambda^2 X^2)^p}{p!} \biggr] 
 = 1 + \sum_{p = 1}^{\infty} \frac{\lambda^{2p} \mathbb{E}[X^{2p}]}{p!}. \]
-$(b)$ guarantees that $\mathbb{E}[X^{2p}] \leq (2p)^p$, and $p! \geq (p / e)^p$ by lemma 1.7.8 + link, 
+$(b)$ guarantees that $\mathbb{E}[X^{2p}] \leq (2p)^p$, and $p! \geq (p / e)^p$ by \cref{lem:1.7.8}, 
 hence substituting these bound in, we get 
 \[ \mathbb{E}[\exp{(\lambda^2 X^2)}] 
 \leq 1 + \sum_{p = 1}^{\infty} \frac{(2 \lambda^2 p)^p}{(p / e)^p} 
