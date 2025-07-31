@@ -444,76 +444,8 @@ Let $A$ be an $m \times n$ matrix with independent $N(0, 1)$ entries. Then
 \end{theorem}
 
 \begin{proof}
-Let's write the norm of $A$ as a supremum of Gaussian processes: By \cref{def:4.1.8}, 
-\[ \lVert A \rVert_{} = \max_{u \in S^{n-1}, v \in S^{m-1}} \left\langle Au, v \right\rangle 
-= \max_{(u, v) \in T} X_{uv} \]
-where
-\[ T = S^{n-1} \times S^{m-1} \text{ and } X_{uv} := \left\langle Au, v \right\rangle \sim N(0, 1). \]
-To apply the Sudakov-Fernique comparison inequality (\cref{thm:7.2.8}), let us compute the increments of the 
-process $(X_{uv})$. For any $(u, v), (w, z) \in T$, we have
-\begin{align*}
-	\mathbb{E}\left[ (X_{uv} - X_{wz})^2 \right] 
-	&= \mathbb{E}\left[ (\left\langle Au, v \right\rangle - \left\langle Au, z \right\rangle )^2 \right] \\
-	&= \mathbb{E}\left[ \left(\sum_{i, j}^{}A_{ij} (u_jv_i - w_jz_i)\right)^2 \right] \\
-	&= \sum_{i, j}^{}(u_jv_i - w_jz_i)^2 \quad \text{(By independence, mean zero, variance 1)} \\
-	&= \lVert uv^T - wz^T \rVert_{F}^2 \\
-	&\leq \lVert u - w \rVert_{2}^2 - \lVert v - z \rVert_{2}^2 \quad \text{(By Exercise 7.10)}.
-\end{align*}
-Now, let's define a simpler Gaussian process $(Y_{uv})$ with similar increments:
-\[ Y_{uv} := \left\langle g, u \right\rangle + \left\langle h, v \right\rangle, \ (u, v) \in T, \]
-where $g \sim N(0, I_n)$ and $h \sim N(0, I_m)$ are independent Gaussian vectors. The increments of this 
-process are
-\begin{align*}
-	\mathbb{E}\left[ (Y_{uv} - Y_{wz})^2 \right] 
-	&= \mathbb{E}\left[ (\left\langle g, u-w \right\rangle + \left\langle h, v-z \right\rangle)^2 \right] \\
-	&= \mathbb{E}\left[ \left\langle g, u-w \right\rangle^2 \right] 
-	+ \mathbb{E}\left[ \left\langle h, v-z \right\rangle^2 \right] \quad \text{(By independence, mean 0)} \\
-	&= \lVert u - w \rVert_{2}^2 + \lVert v - z \rVert_{2}^2 \quad \text{(By normality of $g$ and $h$)}.
-\end{align*}
-Comparing the increments of the two processes, we see that 
-\[ \mathbb{E}\left[ (X_{uv} - X_{wz})^2 \right] \leq \mathbb{E}\left[ (Y_{uv} - Y_{wz})^2 \right] 
-\text{ for all } (u, v), (w, z) \in T, \]
-as required in the Sudakov-Fernique inequality. Applying \cref{thm:7.2.8}, we obtain 
-\begin{align*}
-	\mathbb{E}\left[ \lVert A \rVert_{} \right] 
-	&= \mathbb{E}\left[ \sup_{(u, v) \in T}X_{uv} \right] \\
-	&\leq \mathbb{E}\left[ \sup_{(u, v) \in T}Y_{uv} \right] \\
-	&= \mathbb{E}\left[ \sup_{u \in S^{n-1}}\left\langle g, u \right\rangle \right] 
-	+ \mathbb{E}\left[ \sup_{v \in S^{m-1}}\left\langle h, v \right\rangle \right] \\
-	&= \mathbb{E}\left[ \lVert g \rVert_{2} \right] + \mathbb{E}\left[ \lVert h \rVert_{2} \right] \\
-	&\leq (\mathbb{E}\left[ \lVert g \rVert_{2}^2 \right])^{1/2} 
-	+ (\mathbb{E}\left[ \lVert h \rVert_{2}^2 \right])^{1/2} \quad \text{(By Exercise 1.11)} \\
-	&= \sqrt{n} + \sqrt{m} \quad \text(By \cref{prop:3.2.1} (b)).
-\end{align*}
+
 \end{proof}
-
-\cref{thm:7.3.1} is an expectation bound, but we can boost it to a high-probability bound using the 
-concentration tools from Section 5.2:
-
-\begin{corollary}[Norms of Gaussian random matrices: tails]
-\label{cor:7.3.2}
-Let $A$ be an $m \infty n$ matrix with independent $N(0, 1)$ entries. Then for every $t \geq 0$, we have 
-\[ P(\lVert A \rVert_{} \geq \sqrt{m} + \sqrt{n} + t) \leq 2 \exp{(-ct^2)}. \]
-\end{corollary}
-
-\begin{proof}
-Let's combine the bound (\cref{thm:7.3.1}) with Gaussian concentration (\cref{thm:5.2.3}). Think 
-of $A$ as a long random vector in $\mathbb{R}^{n \infty n}$ by concatonating the rows. This makes $A$ a standard 
-normal random vector: $A \sim N(0, I_{nm})$. Consider the function 
-\[ f(A) := \lVert A \rVert_{} \]
-that maps the vectorized matrix to the matrix's operator norm. Since the operator norm is bounded by the 
-Frobenius norm, and the Frobenius norm is just the Euclidean norm on $\mathbb{R}^{m \times n}$, $f$ is a 
-Lipschitz function on $\mathbb{R}^{m \times n}$ with Lipschitz norm bounded by 1. Then \cref{thm:5.2.3} yields 
-\[ P(\lVert A \rVert_{} \geq \mathbb{E}\left[ \lVert A \rVert_{} \right] + t) \leq 2 \exp{(ct^2)}. \]
-The bound on $\mathbb{E}\left[ \lVert A \rVert_{} \right]$ from \cref{thm:7.3.1} completes the proof.
-\end{proof}
-
-Aside from the result above, we have that:
-
-A symmetric Gaussian matric satisfies (Exercise 7.11)
-\[ \mathbb{E}\left[ \lVert A \rVert_{} \right] \leq 2 \sqrt{n}, \]
-and the smallest singular value of an $m \times n$ Gaussian matrix $A$ satisfies (Exercise 7.13)
-\[ \mathbb{E}\left[ \sigma_n(A) \right] \geq \sqrt{m} - \sqrt{n}. \]
 
 
 
@@ -841,96 +773,9 @@ effective dimension is stable - small perturbations to $T$ only slightly change 
 
 % ----------7.6----------
 \subsection{Application: Random Projection of Sets}
-What happens if we project a set $T \subset \mathbb{R}^n$ onto a random $m$-dimensional subspace in 
-$\mathbb{R}^n$ (picked uniformly from the Grassmannian $G_{m, n}$)? We might view this like dimensionality 
-redution, like in the Johnson-Lindenstrauss lemma. What can we say about the size (diameter) of the projected 
-set $PT$ where $P$ is the random projection?
 
-For a finite set $T$, the Johnsen-Lindenstrauss lamm (\cref{thm:5.3.1}) says that if $m \gtrsim \log_{}{|T|}$, 
-the random projection $P$ acts essentially as a scaling of $T$: 
-\[ \mathrm{diam}(PT) \approx \sqrt{\frac{m}{n}}\mathrm{diam}(T). \]
-But if the cardinality of $T$ is too large or infinite, the above may fail. For instance, if $T = B_2^n$ is the 
-unit Euclidean ball, no projection can shrink its size:
-\[ \mathrm{diam}(PT) = \mathrm{diam}(T). \]
-What about for general sets $T$? The next result states that a random projection cannor shrink $T$ beyond its 
-spherical width $w_s(T)$:
 
-\begin{theorem}[Sizes of random projections of sets]
+\begin{theorem}[]
 \label{thm:7.6.1}
-Let $T \subset \mathbb{R}^n$ be a bounded set, and $P$ be the orthogonal projection in $\mathbb{R}^n$ onto a 
-random $m$-dimensional subspace $E \sim \mathrm{Unif}(G_{n, m})$. Then 
-\[ \mathbb{E}\left[ \mathrm{diam}(PT) \right] \asymp w_s(T) + \sqrt{\frac{m}{n}}\mathrm{diam}(T), \]
-where the notation $\asymp$ hides positive absolute constant factors.
+Hello
 \end{theorem}
-
-\begin{proof}
-We'll prove the upper bound here. The lower bound is in Exercise 7.26.
-
-\textbf{Step 1: Change the model.} Let's switch the view just like in the proof of \cref{lem:5.3.2}. A random 
-subspace $E \subset \mathbb{R}^n$ can be obtained by randomly rotating some fixed subspace, such as 
-$\mathbb{R}^m$. But instead of fixing $T$ and randomly rotating $\mathbb{R}^m$, we can fix $E = \mathbb{R}^m$ 
-and randomly rotate $T$. A random rotation of a vector $x \in T$ is $Ux$ where $U \sim \mathrm{Unif}(O(n))$ is 
-a random orthogonal matrix. Projecting $Ux$ onto $E = \mathbb{R}^m$ means keeping the first $m$ coordinates, 
-i.e. $Qx$ where $Q$ is the $m \times n$ matrix consisting of the first $m$ columns of $U$. So, we can work with 
-$Q$ instead of $P$.
-
-\textbf{Step 2: Approximation.} Without loss of generality, assume $\mathrm{diam}(T) \leq 1$. We need to bound 
-\[ \mathrm{diam}(QT) = \sup_{x \in T - T}\lVert Qx \rVert_{2} = \sup_{x \in T-T}\max_{z \in S^{m-1}} 
-\left\langle Qx, z \right\rangle. \]
-We will proceed with an $\varepsilon$-net argument as in the proof of \cref{thm:4.4.3}. Choose an $(1/2)$-net 
-$\mathcal{N}$ of the sphere $S^{m-1}$ so that 
-\[ |\mathcal{N}| \leq 5^m \]
-using \cref{cor:4.2.11}. We can replace the supremum over the sphere $S^{m-1}$ by the supremum over the net 
-$\mathcal{N}$ paying a factor of 2 (Execise 4.35):
-\[ \mathrm{diam}(QT) \leq 2 \sup_{x \in T-T} \max_{z \in \mathcal{N}}\left\langle Qx, z \right\rangle 
-= 2 \max_{z \in \mathcal{N}} \sup_{x \in T-T} \left\langle Q^Tz, x \right\rangle. \]
-Now, here is the plan: we will first bound 
-\[ \sup_{x \in T-T}\left\langle Q^Tz, x \right\rangle \quad (*) \]
-for a fixed $z \in \mathcal{N}$, and then take the union bound over all $z$.
-
-\textbf{Step 3: Concentration.} Fix $z \in \mathcal{N}$. By construction, $Q^Tz$ is uniformly distributed on the 
-sphere: $Q^Tz \sim \mathrm{Unif}(S^{n - 1})$ (Exercise 7.24). The expectation can be expressed as the spherical 
-width:
-\[ \mathbb{E}\left[ \sup_{x \in T-T}\left\langle Q^Tz, x \right\rangle \right] 
-= w_s(T - T) = 2w_s(T). \]
-(The last equality if just a spherical version of \cref{prop:7.5.2} (e)). To check that $(*)$ concentrates 
-around its mean, we use the concentration inequality on the sphere (\cref{thm:5.1.3}). Since $\mathrm{diam}(T) 
-\leq 1$ by assumption, the function $z \mapsto \sup_{x \in T-T}\left\langle z, x \right\rangle$ on the sphere 
-has Lipschitz norm at most 1. So we get 
-\[ P \left( \sup_{x \in T-T}\left\langle Q^Tz, x \right\rangle \geq 2w_s(T) + t \right) \leq 
-2 \exp{(-cnt^2)}. \]
-
-\textbf{Step 4: Union bound.} Now we unfix $z \in \mathcal{N}$ by taking the union bound:
-\[ P \left( \max_{z \in \mathcal{N}} \sup_{x \in T-T}\left\langle Q^Tz, x \right\rangle \geq 2w_s(T) + 
-t \right) \leq |\mathcal{N}| \cdot 2 \exp{(-cnt^2)}. \]
-Recall that $|\mathcal{N}| \leq 5^m$. Choosing $t = Cs \sqrt{m/n}$ with constant $C$ large enough, the 
-probability above is bounded by $2e^{-ms^2}$ for any $s \geq 1$. Therefore, we get 
-\[ P \left( \frac{1}{2}\mathrm{diam}(QT) \geq 2w_s(T) + Cs \sqrt{\frac{m}{n}} \right) \leq e^{-ms^2} 
-\text{ for any } s \geq 1. \]
-From this, we can bound the expected value of $\mathrm{diam}(QT)$ using the integrated tail formula 
-\cref{lem:1.6.1}, and the proof is complete.
-\end{proof}
-
-\begin{remark}[Phase transition]
-\label{rmk:7.6.2}
-Let's get more insight from \cref{thm:7.6.1}. Since the sum of two terms is equivalent to maximum (up to a 
-factor of 2), we can write:
-\[ \mathrm{diam}(PT) \asymp \max_{}\left[ w_s(T), \sqrt{\frac{m}{n}}\mathrm{diam}(T) \right]. \]
-Let's find the ``phase transition" point where these two terms are equal. Set them to be equal and solving for 
-$m$, we get 
-\[ m = \frac{(\sqrt{n} w_s(T))^2}{\mathrm{diam}(T)^2} \asymp \frac{w(T)^2}{\mathrm{diam}(T)^2} 
-\asymp d(T), \]
-using \cref{lem:7.5.5} and the definition of effective dimension $d(T)$ (\cref{def:7.5.12}). So the takeaway:
-\[ \mathrm{diam}(PT) \asymp \begin{cases}
-	\sqrt{\frac{m}{n}}\mathrm{diam}(T) &\text{ if } m \geq d(T) \\
-	w_s(T) &\text{ if } m \leq d(T).
-\end{cases} \]
-See figure 7.5 below. 
-\begin{center}
-    \includegraphics[width=0.8\textwidth]{Chapter 7/fig7-5.png}
-\end{center}
-As we decrease the dimension $m$ of the random projection, initially it shrinks $t$ by roughly $\sqrt{m/n}$ 
-as stated in the Johnson-Lindenstrauss lemma. But once $m$ dips below the effective dimension $d(T)$, the 
-shrinking stops and the diameter stays near the spherical width $w_s(T)$. This is because $\mathrm{conv}(PT)$ 
-looks like a ball of radius $w_s(T)$, as we will see in Section 9.7.2.
-\end{remark}
