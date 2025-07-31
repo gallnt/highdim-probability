@@ -225,6 +225,7 @@ and subgaussian rows $A_i$. Then the scaled matrix $P = \frac{1}{\sqrt{n}}A$ (a 
 Here $K = \max_{i}\lVert A_i \rVert_{\psi_2}$ and $w_s(T)$ is the spherical width of $T$.
 \end{proposition}
 
+
 \begin{proof}
 \cref{thm:9.1.1} implies via triangle inequality:
 \[ \mathbb{E}\left[ \sup_{x \in T}\lVert Ax \rVert_{2} \right] \leq \sqrt{m}\sup_{x \in T}\lVert x \rVert_{2} 
@@ -239,7 +240,65 @@ $\sqrt{n}$ completes the proof.
 
 
 \subsubsection{Covariance Estimation for Low-dimensional Distributions}
+Let's visit the covariance estimation problem from Section 4.7. We want to estimate the population covariance 
+via the sample covariance matrix $\Sigma_m = \sum_{i = 1}^{m}X_iX_i^T$.
 
+In general, $O(n \log_{}{n})$ samples are enough (Section 5.6), but for subgaussian distributions, $m = O(n)$ 
+is enough.
+
+It gets even better for approximately low-dimensional distributions. If a distribution concentrates near a 
+$r$-dimensional subspace, $m = O(r \log_{}{n})$ samples suffice (\cref{rmk:5.6.3}). Now we will show that for 
+subgaussian distributions, $m = O(r)$ samples suffices:
+
+\begin{theorem}[Covariance estimation for low-dimensional distributions]
+\label{thm:9.2.2}
+Let $X$ be a subgaussian random vector in $\mathbb{R}^n$. More spefically, assume that these exists $K \geq 1$ 
+such that 
+\[ \lVert \left\langle X, x \right\rangle \rVert_{\psi_2} \leq K \lVert \left\langle X, x 
+\right\rangle \rVert_{L^2} \text{ for any } z \in \mathbb{R}^n. \]
+Then, for every positive integer $m$, 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \leq CK^4 \left( 
+\sqrt{\frac{r}{m}} + \frac{r}{m} \right) \lVert \Sigma \rVert_{}, \]
+where $r = \mathrm{tr}(\Sigma)/\lVert \Sigma \rVert_{}$ is the effective rank of $\Sigma$.
+\end{theorem}
+
+\begin{proof}
+We start as in \cref{thm:4.7.1} by bringing the distribution to the isotropic position: $X = \Sigma^{1/2}Z$ and 
+$X_i = \Sigma^{1/2}Z_i$ where $Z$ and $Z_i$ are isotropic, and 
+\begin{align*}
+	\lVert \Sigma_m - \Sigma \rVert_{} 
+	&= \lVert \Sigma^{1/2} E_m \Sigma^{1/2} \rVert_{} \quad (R_m = \frac{1}{m}\sum_{i = 1}^{m}Z_iZ_i^T - I_n) \\
+	&= \max_{x \in S^{n-1}} |x^T \Sigma^{1/2} R_m \Sigma^{1/2} x| \quad \text{(\cref{rmk:4.1.12})} \\
+	&= \max_{x \in T}|x^T R_m x| \quad (T := \Sigma^{1/2}S^{n-1}) \\
+	&= \max_{x \in T} \left| \frac{1}{m}\sum_{i = 1}^{m}\left\langle Z_i, x \right\rangle^2 - 
+	\lVert x \rVert_{2}^2 \right| \\
+	&= \frac{1}{m}\max_{x \in T} \left| \lVert Ax \rVert_{2}^2 - m \lVert x \rVert_{2}^2 \right|,
+\end{align*}
+where $A$ is the $m \times n$ matrix with ros $Z_i$. As in the proof of \cref{thm:4.7.1}, $Z_i$ are isotropic, 
+and satisfy $\lVert Z_i \rVert_{\psi_2} \lesssim 1$. This allows us to apply the matrix deviation inequality 
+for $A$ (in the form given by Exercise 9.3), which gives
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \lesssim 
+\frac{1}{m}(\gamma(T)^2 + \sqrt{m}\mathrm{rad}(T)\gamma(T)). \]
+The radius and Gaussian complexity of the ellipsoid $T = \Sigma^{1/2}S^{n-1}$ satisfy 
+\[ \mathrm{rad}(T) = \lVert \Sigma \rVert_{}^{1/2} \text{ and } \gamma(T) \leq (\mathrm{tr}(\Sigma))^{1/2}. \]
+Therefore, 
+\[ \mathbb{E}\left[ \lVert \Sigma_m - \Sigma \rVert_{} \right] \lesssim 
+\frac{1}{m} (\mathrm{tr}(\Sigma) + \sqrt{m \lVert \Sigma \rVert_{} \mathrm{tr}(\Sigma)}). \]
+Substituting $\mathrm{tr}(\Sigma) = r \lVert \Sigma \rVert_{}$ and simplifying the bound completes the proof.
+\end{proof}
+
+\begin{remark}[Covariance estimation: a high-probability guarantee]
+\label{rmk:9.2.4}
+Just like the versions before (\cref{rmk:4.7.3} and \cref{rmk:5.6.5}), we can upgrade the expectation bound 
+above to a high-probability one. For any $u \geq 0$ we have 
+\[ \lVert \Sigma_m - \Sigma \rVert_{} \leq CK^4 \left( 
+\sqrt{\frac{r + u}{m}} + \frac{r + u}{m} \right) \lVert \Sigma \rVert_{} \]
+with probability at least $1 - 2e^{-u}$. 
+\end{remark}
+
+\begin{proof}
+Exercise 9.9.
+\end{proof}
 
 
 \subsubsection{Johnson-Lindenstrauss Lemma for Infinite Sets}
@@ -266,6 +325,35 @@ classical JL lemma.
 What we just not gave did not care if $\mathcal{X}$ is finite or not - all that matters is the Gaussian width. 
 So we can extend JL to any set:
 
+\begin{lemma}[Additive Johnson-Lindenstrauss lemma]
+\label{lem:9.2.4}
+Let $\mathcal{X} \subset \mathbb{R}^n$ be a bounded set, and let $A$ be an $m \times n$ matrix with independent, 
+isotropic and subgaussian rows $A_i$. Then, with high probability (say 0.99), the scaled matrix $Q = 
+\frac{1}{\sqrt{m}}A$ satisfies 
+\[ |\lVert Qx - Qy \rVert_{2} - \lVert x - y \rVert_{2}| \leq \delta \text{ for all } x, y \in \mathcal{X} \]
+where $\delta = CK^2w(\mathcal{X}) / \sqrt{m}$ and $K = \max_{i}\lVert A_i \rVert_{\psi_2}$.
+\end{lemma}
+
+\begin{proof}
+Apply the matrix deviation inequality (\cref{thm:9.1.1}) for the set of differences $T = \mathcal{X}-
+\mathcal{X}$. Then, with high probability, 
+\[ \sup_{x, y \in \mathcal{X}} \left| \lVert Ax - Ay \rVert_{2} - \sqrt{m}\lVert x - y \rVert_{2} \right| 
+\leq CK^2 \gamma(\mathcal{X}-\mathcal{X}) = 2CK^2 w(\mathcal{X}), \]
+thanks to \cref{lem:7.5.11} (a). Divide both sides by $\sqrt{m}$ completes the proof.
+\end{proof}
+
+Unlike the classical JL lemma for finite sets (\cref{thm:5.3.1}), which gives a relative error, here we get an 
+absolute error $\delta$. It is a small difference - but in general, a necessary one (Exercise 9.11).
+
+\begin{remark}[Effective dimension]
+\label{rmk:9.2.5}
+To better understand the additive Johnson-Lindenstrauss lemma, let's restate it using the effective dimension of 
+the data $d(\mathcal{X}) \asymp w(\mathcal{X})^2 / \mathrm{diam}(\mathcal{X})^2$. If we choose 
+\[ m \gtrsim \varepsilon^{-2} d(T) \]
+(ignoring the dependence on $K$ for simplicity), then we can make $\delta = \varepsilon \mathrm{diam}
+(\mathcal{X})$, so $Q$ preserves distances up to a small fraction of diameter - in other words, it reduces the 
+dimension of the data down to its effective dimension.
+\end{remark}
 
 
 
@@ -283,7 +371,7 @@ always have
 and if $A$ has a continuous distribution, $\dim{(E)} \geq n - m$ almost surely.
 
 A great example is a Gaussian matrix $A$ with i.i.d. $N(0, 1)$ entries - by rotation invariance, $E - \ker{(A)}$ 
-is uniformly distributed in the Grassmanian:
+is uniformly distributed in the Grassmannian:
 \[ E \sim \mathrm{Unif}(G_{n, n - m}). \]
 
 \begin{theorem}[$M^*$ bound]
@@ -370,18 +458,446 @@ $T \cap E = \emptyset$. Done!
 
 % ----------9.4----------
 \subsection{Application: High-dimensional Linear Models}
+Let's apply our tools on a classic data science problem: learning a linear model in high dimensions. Let 
+\[ y_i = \left\langle A_i, x \right\rangle + w_i, \ i = 1, \dots, m. \]
+Her $A_i \in \mathbb{R}^n$ are known, and $w_i$ are unknown numbers representing noise (Figure 9.4). In matrix form, we get 
+\[ y = Ax + w. \]
+The goal is to recover $x$ from $y$ and $A$ as accurately as possible. 
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 9/fig9-4.png}
+\end{center}
+
+We assume the rows $A_i$ of $A$ are random and independent - this is reasonable in many statistical settings 
+(think about i.i.d. observations), and perfect for applying tools from high-dimensional probability.
+
+\begin{example}[Audio sampling]
+\label{ex:9.4.1}
+In signal processing, $x$ could be a digitized audio signal, and $y$ the result of sampling it at $m$ random 
+time points (Figure 9.5).
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 9/fig9-5.png}
+\end{center}
+\end{example}
+
+\begin{example}[Linear regression]
+\label{ex:9.4.2}
+A core porblem in statistics is linear regression, where we want to learn a linear relationship between $n$ 
+predictor variables and a response variable from $m$ samples. It is written as 
+\[ Y = X \theta + w \]
+where $X$ is an $m \times n$ matrix of predictors, $Y \in \mathbb{R}^m$ is the vector of responses, $\theta \in 
+\mathbb{R}^n$ is the parameter vector that we are trying to learn.
+\end{example}
+
+\begin{remark}[The high-dimensional regime]
+\label{rmk:9.4.3}
+In modern problems, we often have less data than parameters: 
+\[ m \ll n, \]
+For example, in a genetic study, there might be $\sim$100 patients, but $\sim$10000 genes. In this 
+high-dimensional setting, even solving $Ax  = y$ becomes impossible, as there are too many possible solutions 
+as they live in a large subspace of dimension at least $m - n$.
+
+Not all hope is lost. If we have some prior information about the structure of $x$, which we can write this as 
+\[ x \in T \]
+for some known set $T \subset \mathbb{R}^n$, then we might be able to recover $x$. For example, if $x$ is 
+sparse, we can pick $T$ to be the set of all sparse vectors.
+\end{remark}
+
+
+\subsubsection{Constrained Recovery}
+Let's solve the noiseless case first:
+\[ y = Ax, \ x \in T. \]
+How do we solve this dimensional constrained linear problem?
+
+A simple idea is just to pick any vector $x' \in T$ that matches the observations:
+\[ \text{find } x': \ y = Ax', \ x \in T. \]
+If $T$ is convex, this is a convex program, and many algorithms exist to numerically solve it. Let's check 
+how accurate this solution is.
+
+\begin{theorem}[Constrained recovery]
+\label{thm:9.4.4}
+Suppose the rows $A_i$ of $A$ are independent, isotropic and subgaussian random vectors. Then any solution 
+$\Hat{x}$ of the convex linear program satisfies 
+\[ \mathbb{E}\left[ \lVert \Hat{x} - x \rVert_{2} \right] \leq \frac{CK^2 w(T)}{\sqrt{m}}, \]
+where $K = \max_{i}\lVert A_i \rVert_{\psi_2}$.
+\end{theorem}
+
+\begin{proof}
+Since $x, \Hat{x} \in T$ and $Ax = A \Hat{x} = y$, we have 
+\[ x, \Hat{x} \in T \cap E_x, \text{ where } E_x = x + \ker{A} \]
+See Figure 9.6 for an illustration.
+
+\begin{center}
+    \includegraphics[width=0.8\textwidth]{Chapter 9/fig9-6.png}
+\end{center}
+Then the $M^*$ bound (in the form of Exercise 9.12) gives 
+\[ \mathbb{E}\left[ \lVert \Hat{x} - x \rVert_{2} \right] 
+\leq \mathbb{E}\left[ \mathrm{diam}(T \cap E_x) \right] \leq \frac{CK^2 w(T)}{\sqrt{m}}. \]
+\end{proof}
+
+\begin{remark}[Effective dimension]
+\label{rmk:9.4.5}
+To get some intuition, rewrite the accuracy guarantee in \cref{thm:9.4.4} using the effective dimension 
+(\cref{def:7.5.12}). We get a nontrivial error bound 
+\[ \mathbb{E}\left[ \lVert \Hat{x} - x \rVert_{2} \right] \leq 0.01 \mathrm{diam}(T) \]
+as long as the number of observations satisfies (suppressing $K$ again)
+\[ m \gtrsim d(T). \]
+Since $d(T)$ can be much smaller than the ambient dimension $n$, recovery is often possible even in the 
+high-dimensional regime.
+\end{remark}
+
+\begin{remark}[Convex relaxation]
+\label{rmk:9.4.6}
+If $T$ is not convex, we can just use its convex hull $\mathrm{conv}(T)$. The recovery guarantees from 
+\cref{thm:9.4.4} do not change, as $w(\mathrm{conv}(T)) = w(T)$ by \cref{prop:7.5.2} (c).
+\end{remark}
+
+\begin{remark}[Unconstrained optimization]
+\label{rmk:9.4.7}
+Forcing strict rules on the solution like $y = Ax'$ and $x' \in T$ can be too rigid - noise or a bad choice for 
+$T$ might mean no solution exists. Instead, we could aim to penalize how much they are broken by solving the 
+unconstrained convex problem 
+\[ \min_{}\lVert y - Ax \rVert_{2}^2 + \lambda \lVert x \rVert_{T}, \ x \in \mathbb{R}^n, \]
+where $\lVert \cdot \rVert_{T}$ is any norm you like, and $\lambda > 0$ is a parameter we can adjust to see 
+which summand we want to prioritize more.
+\end{remark}
+
+
+We also have the following guarantee from Exercise 9.20: if $A$ is an $m \times n$ random matrix, and $\lambda$ 
+is chosen well, then the solution $\Hat{x}$ satisfies 
+\[ \mathbb{E}\left[ \lVert \Hat{x} - x \rVert_{2} \right] \lesssim 
+\frac{w(T)\lVert x \rVert_{T} + \lVert w \rVert_{2}}{\sqrt{m}}, \]
+where $T$ is the unit ball of $\lVert \cdot \rVert_{T}$. 
+
+In short, if $x$ is well structured and the noise $w$ is small, then you can recover $x$ accurately from 
+$m \asymp d(T)$ observations, where $d(T)$ is the effective dimension of $T$.
+
+
+\subsubsection{Example: Sparse Recovery}
+Sometimes we believe that $x$ is \textit{sparse} - most of its entries are zero or nearly zero. We can 
+quantify the sparsity of $x \in \mathbb{R}^n$ by the number of nonzero entries:
+\[ \lVert x \rVert_{0} = |\mathrm{supp}(x)| = |\{ i: \ x_i \neq 0 \}|, \]
+and we say that $x$ is sparse if $\lVert x \rVert_{0} \leq s$. The ``$\ell^0$ norm" is not really a norm, but 
+is a limit of $\ell^p$ norms as $p \to 0$ (Exercise 9.23).
+
+A quick dimension count shows that we can recover $x$ from $y = Ax$ if $A$ is in a general position and we have 
+enough observations: $m \geq 2 \lVert x \rVert_{0}$ (Exercise 9.22). Sounds great, as we can recover a sparse 
+vector from only a few observations. The catch? It's computationally hard unless we already know the support of 
+$x$. Without that, the best way is to brute force - $\binom{n}{s} \geq 2^s$ subsets to check!
+
+To solve this, we can pick the prior using the $\ell^1$ norm, the closest $\ell^p$ that is actually a norm 
+(Exercise 9.23). Since $s$-sparse vectors with $\lVert x \rVert_{2} \leq 1$ satisfy $\lVert x \rVert_{2} \leq 
+\sqrt{s}$, it makes sense to pick the convex set 
+\[ T := \sqrt{s}B_1^n \]
+as our prior. The recovery program becomes 
+\[ \text{find } x: \ y = Ax, \ \lVert x \rVert_{1} \leq \sqrt{s}. \]
+
+\begin{corollary}[Sparse recovery]
+\label{cor:9.4.8}
+Suppose the rows $A_i$ of $A$ are independent, isotropic and subgaussian random vectors. Assume an unknown 
+$s$-sparse vector $x \in \mathbb{R}^n$ satisfies $\lVert x \rVert_{2} \leq 1$. Then any solution $\Hat{x}$ to 
+the program above satisfies 
+\[ \mathbb{E}\left[ \lVert \Hat{x} - x \rVert_{2} \right] \leq CK^2 \sqrt{\frac{s \log_{}{n}}{m}}, \]
+where $K = \max_{i}\lVert A_i \rVert_{\psi_2}$.
+\end{corollary}
+
+\begin{proof}
+Set $T = \sqrt{s}B_1^n$. Then the result follows from \cref{thm:9.4.4} and the bound on the Gaussian width 
+of the $\ell^1$ ball: 
+\[ w(T) = \sqrt{s}w(B_1^n) \leq C \sqrt{s \log_{}{n}}. \]
+\end{proof}
+
+\begin{remark}[Observations scale almost linearly with sparsity]
+\label{rmk:9.4.9}
+\cref{cor:9.4.8} gives a small error as long as
+\[ m \gtrsim s \log_{}{n} \]
+(if the hidden constant is appropriately large). That's great news - we can efficiently recover a sparse vector 
+from way fewer observations $m$ than the full dimension $n$.
+\end{remark}
+
+\begin{remark}[A logarithmic improvement]
+\label{rmk:9.4.10}
+The set $S_{n, s}$ of unit $s$-sparse vectors in $\mathbb{R}^n$ can be convexified a bit tighter. Instead of 
+using the $\ell^1$ ball, use the \textit{truncated} $\ell^1$ ball 
+\[ T_{n,s} = \sqrt{s}B_1^n \cap B_2^n. \]
+This relaxation is pretty tight - Exercise 9.25 gives 
+\[ \mathrm{conv}(S_{n,s}) \subset T_{n,s} \subset 2\mathrm{conv}(S_{n,s}).  \]
+This tightening gives a logarithmic improvement on the bound in \cref{cor:9.4.8}, showing that 
+\[ m \gtrsim s \log_{}{(en/s)} \]
+observations suffice for sparse recovery (Exercise 9.21).
+\end{remark}
+
+
+\subsubsection{Example: Low-rank Recovery}
+Here is one more example of a high-dimensional linear problem: recover a $d \times d$ matrix $X$ (instead of 
+a vector) from $m$ linear observations:
+\[ y_i = \left\langle A_i, X \right\rangle, \ i = 1, \dots, m, \]
+where $A_i$ are known, independent random matrices, adn the inner product is 
+\[ \left\langle A, B \right\rangle = \mathrm{tr}(A^T B). \]
+
+Normally, we would need $d^2$ observations - one per entry. To get away with fewer, we need some structure in 
+$X$. A common one is low rank. Just like sparsity counts nonzero entries, rank counts nonzero singular values.
+
+In section 9.4.2, we took a relaxation by replacing the $\ell^0$ norm with the $\ell^1$ norm. Here we'll use 
+a convex relaxation by replacing the $\ell^0$ norm for the singular values with the $\ell^1$ norm, which 
+is also known as the \textit{nuclear norm}:
+\[ \lVert X \rVert_{*} := \sum_{i = 1}^{d} \sigma_i(X). \]
+
+Since every vector $x$ with at most $s$ nonzero entries and $\lVert x \rVert_{2} \leq 1$ satisfies 
+$\lVert x \rVert_{} \leq \sqrt{s}$, every matrix with rank at most $r$ and $\lVert X \rVert_{F} = 1$ satisfies 
+\[ \lVert X \rVert_{*} \leq \sqrt{r}. \]
+Therefore, it makes sense to consider $T = \sqrt{r}B_*$ as our prior, where 
+\[ B_* = \{ X \in \mathbb{R}^{d \times d}: \ \lVert X \rVert_{*} \leq 1 \}. \]
+Then, the recovery program becomes 
+\[ \text{find } X: \ y_i = \left\langle A_i, X \right\rangle \forall i; \ \lVert X \rVert_{*} \leq \sqrt{r}, \]
+which is convex and computationally tractable. And \cref{thm:9.4.4} gives 
+
+\begin{corollary}[Low-rank matrix recovery]
+\label{cor:9.4.11}
+Suppose $A_i$ are independent Gaussian random matrices with all i.i.d. $N(0, 1)$ entries. Assume an unknown 
+$d \times d$ matrix $X$ has rank at most $r$ and $\lVert X \rVert_{F} \leq 1$. Then any solution $\Hat{X}$ of 
+the program satisfies 
+\[ \mathbb{E}\left[ \lVert \Hat{X} - X \rVert_{F} \right] \leq C \sqrt{\frac{rd}{m}}. \]
+\end{corollary}
+
+\begin{proof}
+Using the duality between the nuclear and operator norms (Exercise 7.18a), we get that for a $d \times d$ 
+Gaussian matrix $G$ with i.i.d. $N(0, 1)$ entries:
+\[ w(B_*) = \mathbb{E}\left[ \sup_{\lVert X \rVert_{*} \leq 1} \left\langle G, X \right\rangle \right] 
+= \mathbb{E}\left[ \lVert G \rVert_{} \right] \leq 2 \sqrt{d} \]
+by \cref{thm:7.3.1}. Now just apply \cref{thm:9.4.4} with $T = \sqrt{r}B_*$. 
+\end{proof}
+
+\begin{remark}[Recovering a low-rank matrix from few observations]
+\label{rmk:9.4.12}
+\cref{cor:9.4.8} gives a small error as long as
+\[ m \gtrsim rd, \]
+allowing us to recover a low-rank matrix from war fewer observations $m$ then the entirety $d^2$. This is 
+similar to the matrix completion problem in Section 6.5, where we can recover a low-rank matrix from about 
+$m \asymp rd \log_{}{d}$ randomly chosen entries.
+\end{remark}
 
 
 
 % ----------9.5----------
 \subsection{Application: Exact Sparse Recovery}
+In the noiseless case, we can do even better - we can recover a sparse vector $x$ from $y = Ax$ \textit{exactly} 
+(and algorithmically effective)! We will look at two ways to get this surprising result:
+\begin{enumerate}
+	\item Use the escape theorem (\cref{thm:9.3.4}).
+	\item Using the restricted isometry property - then show random matrices satisfy it with high probability.
+\end{enumerate}
+
+
+\subsubsection{Exact Recovery Based on the Escape Theorem}
+Let's look at Figure 9.7 below for some intuition.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 9/fig9-7.png}
+\end{center}
+
+Suppose we are trying to recover an unknown $s$-sparse unit vector $x$ from $y=Ax$ by solving the convex program 
+in Section 9.4.2. A solution $\Hat{x}$ lies in the intersection of the prior set $T = \sqrt{s}B_1^n$ and the 
+affine subspace $E_x = x + \ker{A}$.
+
+$T$ is a cross-polytope, and $x$ sits on one of its $(s-1)$-dimensional edges (Figure 9.7a). With some 
+probability, the random subspace $E_x$ is tangent to the polytope at $x$. If so, $x$ is the only point where 
+$T$ and $E_x$ intersect, hence the solution $\Hat{x}$ must be exact:
+\[ \Hat{x} = x. \]
+To justify this argument, we just need to show that a random subspace $E_x$ is tangent to the $\ell^1$ ball 
+with high probability. That's where the escape theorem (\cref{thm:9.3.4}) comes in. Zoom in near $x$
+(Figure 9.7b): $E_x$ is tangent if and only if the \textit{tangent cone} $T(x)$ (all rays coming from x into 
+the $\ell^1$ ball) intersects $E_x$ only at $x$. This happens if the \textit{spherical part} $S(x)$ of the 
+cone (the intersection of $T(x)$ with a small sphere centered at $x$) is disjoint from $E_x$ – and that is 
+exactly what the escape theorem can guarantee!
+
+Let's formalize this. We want to recover $x$ from 
+\[ y = Ax \]
+by solving the optimization problem 
+\[ \min_{}\lVert x \rVert_{1} \text{ subject to } y = Ax. \]
+
+\begin{theorem}[Exact sparse recovery]
+\label{thm:9.5.1} A $m \times n$ matrix $A$ with independent, isotropic, subgaussian rows $A_i$ satisfies the 
+following with probability at least $1 - 2 \exp{(-cm/K^4)}$, where $K = \max_{i}\lVert A_i \rVert_{\psi_2}$:
+
+If the number of observations satisfies 
+\[ m \geq CK^4 s \log_{}{n}, \]
+then for any $s$-sparse vector $x \in \mathbb{R}^n$, a solution $\Hat{x}$ of the convex program is exact:
+\[ \Hat{x} = x. \]
+\end{theorem}
+
+To prove this, we want to show that the recovery error is 0:
+\[ h := \Hat{x} - x = 0. \]
+First, let's show a weaker claim: $h$ has more mass on the spport of $X$ than off it.
+
+\begin{lemma}[The error is heavier on $x$'s support]
+\label{lem:9.5.2}
+Set $S := \mathrm{supp}(x)$, and let $h_S \in \mathbb{R}^S$ denote the restriction of $h$ onto $S$ (and 
+similartly for $S^c$). Then 
+\[ h_{S^c} \leq \lVert h_S \rVert_{1}. \]
+\end{lemma}
+
+\begin{proof}
+Since $\Hat{x}$ is the minimizer in the program, we have 
+\[ \lVert \Hat{x} \rVert_{1} \leq \lVert x \rVert_{1}. \]
+But there is also a lower bound
+\begin{align*}
+	\lVert \Hat{x} \rVert_{1} 
+	&= \lVert x + h \rVert_{1} \\
+	&= \lVert x_S + h_S \rVert_{1} + \lVert x_{S^c} + h_{S^c} \rVert_{1} \\
+	&\geq \lVert x \rVert_{1} - \lVert h_S \rVert_{1} + \lVert h_{S^c} \rVert_{1},
+\end{align*}
+where the last line follows by triangle inequality and using $x_S = x$ and $x_{S^c} = 0$. Substituting this 
+into the first equation completes the proof.
+\end{proof}
+
+\begin{lemma}[The error is approximately sparse]
+\label{lem:9.5.3}
+The error vector satisfies 
+\[ \lVert h \rVert_{1} \leq 2 \sqrt{s}\lVert h \rVert_{2}. \]
+\end{lemma}
+
+\begin{proof}
+Using \cref{lem:9.5.2} and then the Cauchy-Schwartz inequality, we get 
+\begin{align*}
+	\lVert h \rVert_{1} 
+	&= \lVert h_S \rVert_{1} + \lVert h_{S^\subset1} \rVert_{1} \\
+	&\leq 2 \lVert h_S \rVert_{1} \\
+	&\leq 2 \sqrt{s}\lVert h_S \rVert_{2} \\
+	&\leq 2 \sqrt{s}\lVert h \rVert_{2}.
+\end{align*}
+\end{proof}
+
+Now let's return to the proof for exact sparse recovery.
+\begin{proof}[Proof of \cref{thm:9.5.1}]
+Assume $h = \Hat{x} - x \neq 0$. \cref{lem:9.5.3} gives 
+\[ \frac{h}{\lVert h \rVert_{2}} \in T_s := \{ z \in S^{n-1}: \ \lVert z \rVert_{1} \leq 2 \sqrt{s} \}. \]
+Since also $Ah = A \Hat{x} - Ax = y - y = 0$, we have 
+\[ \frac{h}{\lVert h \rVert_{2}} \in T_s \cap \ker{A}. \]
+The escape theorem (\cref{thm:9.3.4}) shows that this intersection is empty with high probability as long as 
+$m \geq C_1 K^4w(T_s)^2$. Now, since $T_s \subset 2 \sqrt{s}B_1^n$, we get
+\[ w(T_s) \leq 2 \sqrt{s} w(B_1^n) \leq C_2 \sqrt{s \log_{}{n}}. \]
+Thus, if $m \geq CK^4s \log_{}{n}$, the intersection $T_s \cap \ker{A}$ is empty with high probability, which 
+means the inclusion in the first equation cannot hold. Therefore, our assumption that $h \neq 0$ is false 
+with high probablity, and the proof is complete.
+\end{proof}
+
+\begin{remark}[Improving the logarithmic factor]
+\label{rmk:9.5.4}
+By slightly tightening the last equation from \cref{lem:9.5.3}, we can improve the number of sufficient 
+observations in \cref{thm:9.5.1} to
+\[ m \geq CK^4 s \log_{}{(en/s)}. \]
+This follows from Exercise 9.26.
+\end{remark}
+
+
+\subsubsection{Restricted Isometries}
+We'll now find a \textit{deterministic} condition that ensures a matrix $A$ works for sparse recovery, and 
+prove that random matrices satisfy this condition. 
+
+\begin{definition}[]
+\label{def:9.5.5} 
+An $m \times n$ matrix $A$ satisfies the \underline{restricted isometry property/RIP} with 
+parameters $\alpha, \beta$, and $s$ if the inequality
+\[ \alpha \leq \lVert v \rVert_{2} \leq \lVert Av \rVert_{2} \leq \beta \lVert v \rVert_{2} \]
+holds for all vectors $v \in \mathbb{R}^n$ with at most $s$ nonzero entries.
+\end{definition}
+
+RIP just says that the singular values of all $m \times s$ submatrices $A_I$ of $A$ satisfy 
+\[ \alpha \leq \sigma_s(A_I) \leq \sigma_1(A_i) \leq \beta. \]
+And if $\alpha \approx \beta \approx 1$, then RIP tells us that all those submatrices are approximate 
+isometries.
+
+\begin{theorem}[RIP implies exact recovery]
+\label{thm:9.5.6}
+Suppose a $m \times n$ matrix $A$ satisfies TIP with some parameters $\alpha, \beta$, and $(1 + \lambda)s$, 
+where $\lambda > (\beta/\alpha)^2$. Then every $s$-sparse vector $x \in \mathbb{R}^n$ can be exactly recovered 
+from $y = Ax$ by solving the convex relaxation problem earlier.
+\end{theorem}
+
+\begin{proof}
+As in the proof of \cref{thm:9.5.1}, we need to show that the error
+\[ h = \Hat{x} - x \]
+is zero. To do this, we decompose $h$ in a way ver similar to Exercise 9.25.
+
+\textbf{Step 1: Decomposing the support.} Let $I_0$ be the support of $x$. Let $I_1$ index the $\lambda s$ 
+largest entries of $h_{I_0^c}$ in magnitude, let $I_2$ index the next $\lambda s$ largest entries of 
+$h_{I_0^c}$ in magnitude, and so on. Finally, set $I_{01} = I_0 \cup I_1$. Since 
+\[ Ah = A \Hat{x} - Ax = y - y = 0, \]
+the triangle inequality gives 
+\[ 0 = \lVert Ah \rVert_{2} \geq \lVert A_{I_{01}}h_{I_{01}} \rVert_{2} - 
+\lVert A_{I_{01}^c}h_{I_{01}^c} \rVert_{2}. \quad (*) \]
+Next, let's look at the two terms on the right hand side.
+
+\textbf{Step 2: Applying RIP.} Since $|I_{0,1}| \leq s + \lambda s$, RIP gives 
+\[ \lVert A_{I_{01}} h_{I_{01}} \rVert_{2} \geq \alpha \lVert h_{I_{01}} \rVert_{2} \]
+and the triangle inequality followed by RIP gives 
+\[ \lVert A_{I_{01}^c}h_{I_{01}^c} \rVert_{2} \leq \sum_{i \geq 2}^{} \lVert A_{I_i}h_{I_i} \rVert_{2} 
+\leq \beta \sum_{i \geq 2}^{} \lVert h_{I_i} \rVert_{2}. \]
+Plugging into $(*)$ gives 
+\[ \beta \sum_{i \geq 2}^{}\lVert h_{I_i} \rVert_{2} \geq \alpha \lVert h_{I_{0,1}} \rVert_{2}. \quad (**) \]
+
+\textbf{Step 3: Summing up.} Nextm we bound the sum in the left like we did in Exercise 9.25. By definition 
+of $I_i$, each entry of $h_{I_i}$ is bounded in magnitude by the average of the entries of $h_{I_{i - 1}}$, 
+i.e. by $\frac{1}{\lambda_s}\lVert h_{I_{i-1}} \rVert_{1}$ for $i \geq 2$. Thus 
+\[ \lVert h_{I_i} \rVert_{2} \leq \frac{1}{\sqrt{\lambda s}} \lVert h_{I_{i-1}} \rVert_{1}. \]
+Summing up, we get 
+\begin{align*}
+	\sum_{i \geq 2}^{}\lVert h_{I_i} \rVert_{2} 
+	&\leq \frac{1}{\sqrt{\lambda s}}\sum_{i \geq 1}^{}\lVert h_{I_i} \rVert_{1} \\
+	&= \frac{1}{\sqrt{\lambda s}} \lVert h_{I_0^c} \rVert_{1} \\
+	&\leq \frac{1}{\sqrt{\lambda s}} \lVert h_{I_0} \rVert_{1} \quad \text{(\cref{lem:9.5.2})} \\
+	&\leq \frac{1}{\sqrt{\lambda}} \lVert h_{I_0} \rVert_{2} \\
+	&\leq \frac{1}{\sqrt{\lambda}} \lVert h_{I_{0,1}} \rVert_{2}.
+\end{align*}
+Putting this into $(**)$, we get 
+\[ \frac{\beta}{\sqrt{\lambda}}\lVert h_{I_{0,1}} \rVert_{2} \geq \alpha \lVert h_{I_{0,1}} \rVert_{2}. \]
+But this implies that $h_{I_{0,1}} = 0$ since $\beta/\sqrt{\lambda} < \alpha$ by assumption. And since 
+$I_{0,1}$ contains the largest entries of $h$, it must be that $h = 0$.
+\end{proof}
+
+While we do not know how to construct deterministic matries $A$ that satisfy RIP with good parameters, we can 
+show that random matrices satisfy it with high probability:
+
+\begin{theorem}[Random matrices satisfy RIP]
+\label{thm:9.5.7}
+Consider an $m \times n$ matrix $A$ with independent, isotropic, subgaussian rows $A_i$. Assume that 
+\[ m \geq CK^4 s \log_{}{(en/s)} \]
+where $K = \max_{i} \lVert A_i \rVert_{\psi_2}$. Then, with probability at least $1 - 2 \exp{(-cm/K^4)}$, 
+the random matrix $A$ satisfies RIP with paremeters 
+\[ \alpha = 0.9 \sqrt{m}, \beta = 1.1 \sqrt{m}, \text{ and } s. \]
+\end{theorem}
+
+\begin{proof}
+We need to check that 
+\[ \alpha \leq \sigma_s(A_I) \leq \sigma_1(A_i) \leq \beta. \]
+for all $m \times s$ submatrices $A_I$. First, fix $I$. By \cref{thm:4.6.1}, we get 
+\[ 0.9 \sqrt{m} \leq \sigma_s(A_I) \leq \sigma_1(A_I) \leq 1.1 \sqrt{m} \]
+with probability at least $1 - 2 \exp{(-cm/K^4)}$ (set $t = \sqrt{2cm}/K$ and use the assumption on $m$, 
+with constants $c$ and $C$ chosen appropriately).
+
+Now take a union bound over all $\binom{n}{s}$ possible $s$-element subsets $I \subset \{ 1, \dots, n \}$. 
+Then the above holds with probability at least 
+\[ 1 - 2 \exp{(-cm/K^4)} \cdot \binom{n}{s} > 1 - 2 \exp{(-cm/K^4)}, \]
+using the bound $\binom{n}{s} \leq \exp{(s \log_{}{(en/s)})}$ from Exercise 0.6 and the assumption on $m$. 
+Hence the proof is complete.
+\end{proof}
+
+In fact, we just learned an alternative approach to exact recovery:
+
+\begin{proof}[Second proof of \cref{thm:9.5.1}]
+By \cref{thm:9.5.7}, $A$ satisfies RIP with $\alpha = 0.9 \sqrt{m}$, $\beta = 1.1 \sqrt{m}$, and $3s$. Thus, 
+\cref{thm:9.5.6} for $\lambda = 2$ guarantees exact recovery. The proof is complete. We even get the 
+logarithmic improvement from Exercise 9.5.4!
+\end{proof}
 
 
 
 % ----------9.6----------
 \subsection{Deviations of Random Matrices for General Norms}
 We can generalize the matrix deviation inequality (\cref{thm:9.1.1}) to work for any norm - not just the 
-Euclidean one. Actually we don't even need the noem to be nonnegative - just homogeneity and triangle inequality 
+Euclidean one. Actually we don't even need the norm to be nonnegative - just homogeneity and triangle inequality 
 is enough.
 
 \begin{definition}[]
