@@ -226,6 +226,147 @@ as $n \to \infty$. However, the good news:
 
 % ----------8.2----------
 \subsection{Application: Empirical Processes}
+We'll apply Dudley's inequality to \textit{empirical processes} - certain natural random processes indexed by 
+functions. Here is a motivating example.
+
+
+\subsubsection{The Monte Carlo Method}
+Suppose we want to compute an integral 
+\[ \int_{\Omega}^{} f \ d \mu \]
+where $f: \Omega \to \mathbb{R}$ is a given function on some set $\Omega$ and $\mu$ is a probability measure on 
+$\Omega$. For instance, this could just be
+\[ \int_{0}^{1} f(x) \ dx, \ f: [0, 1] \to \mathbb{R} \]
+(See Figure 8.3a).
+
+We can do this \textit{probabilistically}. Suppose $X$ is a random point in $\Omega$ drawn according to $\mu$, 
+i.e. $P(X \in A) = \mu(A)$ for any measurable set $A \subset \Omega$. Then the integral becomes the expectation:
+\[ \int_{\Omega}^{} f \ d \mu = \mathbb{E}\left[ f(X) \right]. \]
+Now take i.i.d. samples $X_1, X_2, \dots$ By the strong law of large numbers (\cref{thm:1.7.1}),
+\[ \frac{1}{n}\sum_{i = 1}^{n}f(X_i) \to \mathbb{E}\left[ f(X) \right] \text{ almost surely } \]
+as $n \to \infty$. So, we can approximate the integral with just the arithmetic mean:
+\[ \int_{\Omega}^{} f \ d \mu \approx \frac{1}{n}\sum_{i = 1}^{n}f(X_i) \]
+(See Figure 8.3b). This is the \textit{Monte Carlo Method} - compute the integral by averaging function values 
+at random sample points.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 8/fig8-3.png}
+\end{center}
+
+\begin{remark}[Error rate]
+\label{rmk:8.2.1}
+The expected error of the Monte Carlo estimate is $O(1/\sqrt{n})$. This comes from the convergence rate in the 
+law of large numbers:
+\[ \mathbb{E}\left[ \left| \frac{1}{n}\sum_{i = 1}^{n}f(X_i) - \mathbb{E}\left[ f(X) \right] \right| \right] 
+\leq \left[ \mathrm{Var}\left( \frac{1}{n}\sum_{i = 1}^{n}f(X_i) \right) \right]^{1/2} = 
+O \left( \frac{1}{\sqrt{n}} \right). \]
+\end{remark}
+
+\begin{remark}[Monte Carlo is high-dimensional, agnostic]
+\label{rmk:8.2.2}
+Monte Carlo works well in high dimensions since the error does not depend on dimension - unlike grid-based 
+integration methods. You don't even need to know the measure $\mu$; just being able to sample it is enough. The 
+same is with $f$ - you only need its values at just a few points.
+\end{remark}
+
+
+\subsubsection{Lipschitz Law of Large Numbers}
+Can we use the same sample $X_1, \dots, X_n$ to estimate the integral of \textit{any} function $f: \Omega \to 
+\mathbb{R}$? No. A badly chosen $f$ could wiggle wildly between sample points (Like in Figure 8.4), making the 
+Monte Carlo estimate totally off.
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 8/fig8-4.png}
+\end{center}
+
+But what if we stick to function that don't wiggle too much, like Lipschitz functions? Then yes!
+
+\begin{theorem}[Lipschitz Law of Large Numbers]
+\label{thm:8.2.3}
+Consider the class of functions 
+\[ \mathcal{F} := \{ f: [0, 1] \to \mathbb{R}, \ \lVert f \rVert_{\mathrm{Lip}} \leq L \}, \]
+where $L$ is any number. Let $X, X_1, \dots, X_n$ be i.i.d. random variables taking values in $[0, 1]$. Then 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}}\left| \frac{1}{n}\sum_{i = 1}^{n}f(X_i) - 
+\mathbb{E}\left[ f(X) \right] \right| \right] \leq \frac{CL}{\sqrt{n}}. \]
+\end{theorem}
+
+\begin{remark}[One sample serves all Lipschitz functions]
+\label{rmk:8.2.4}
+Before the proof, let's iterate the key point: the supremum over $f \in \mathcal{F}$ is \textit{inside} the 
+expectation. Thanks to Markov's inequality, this means that a single sample $X_1, \dots, X_n$ will, with high 
+probability, work well simultaneously for all $f \in \mathcal{F}$. And ``work well" means approximating each 
+integral with $O(1/\sqrt{n})$ error - same rate as the usual law of large numbers with just one function. So, 
+we made the law of large numbers uniform without losing anything!
+\end{remark}
+
+To make the proof of \cref{thm:8.2.3} more intuitive, we will also introduce empirical processes:
+\begin{definition}[]
+\label{def:8.2.5}
+Let $\mathcal{F}$ be a class of real-valued functions $f: \Omega \to \mathbb{R}$ on some set $\Omega$. Let $X$ 
+be a random point in $\Omega$ picked according to some probability distribution, and let $X_1, \dots, X_n$ be 
+independent copies of $X$. The random process $(X_f)_{f \in \mathcal{F}}$ defined by 
+\[ X_f := \frac{1}{n}\sum_{i = 1}^{n}f(X_i) - \mathbb{E}\left[ f(X) \right] \]
+is called an \underline{empirical process} indexed by $\mathcal{F}$m.
+\end{definition}
+
+Let's go to the proof!
+\begin{proof}[Proof of \cref{thm:8.2.3}]
+Without loss of generality, it is enough to prove the theorem for the class
+\[ \mathcal{F} := \{ f: [0, 1] \to [0, 1], \lVert f \rVert_{\mathrm{Lip}} \leq 1 \}. \]
+We would like to bound 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}}|X_f| \right] \]
+for the empirical process $(X_f)_{f \in \mathcal{F}}$ defined earlier.
+
+\textbf{Step 1: Checking subgaussian increments.} Let's use Dudley's inequality (\cref{thm:8.1.3}). To apply 
+it, we will check that the empirical process has subgaussian increments with respect to the $L^{\infty}$ metric 
+$d(f, g) = \lVert f - g \rVert_{L^\infty}$. So, fix a pair of functions $f, g \in \mathcal{F}$ and write 
+\[ \lVert X_f - X_g \rVert_{\psi_2} = \frac{1}{n}\lVert \sum_{i = 1}^{n}Z_i \rVert_{\psi_2} 
+\text{ where } Z_i := (f-g)(X_i) - \mathbb{E}\left[ (f-g)(X) \right]. \]
+Since $Z_i$ are independent, mean-zero random variables, \cref{prop:2.7.1} gives
+\[ \lVert X_f - X_g \rVert_{\psi_2} \lesssim \frac{1}{n}\left( \sum_{i = 1}^{n} 
+\lVert Z_i \rVert_{\psi_2}^2 \right)^{1/2}. \]
+Now, using centering (\cref{lem:2.7.8}) we have 
+\[ \lVert Z_i \rVert_{\psi_2} \lesssim \lVert (f - g)(X_i) \rVert_{\psi_2} \lesssim 
+\lVert f - g \rVert_{L^\infty}. \]
+It follows that 
+\[ \lVert X_f - X_g \rVert_{\psi_2} \lesssim \frac{1}{n} \cdot n^{1/2}\lVert f - g \rVert_{L^\infty} 
+= \frac{1}{\sqrt{n}} \lVert f - g \rVert_{L^{\infty}}. \]
+
+\textbf{Step 2: Applying Dudley's inequality.} Now apply Dudley's inequality (\cref{thm:8.1.3}), then we get 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}}|X_f| \right] = 
+\mathbb{E}\left[ \sup_{f \in \mathcal{F}}|X_f - X_0| \right] \lesssim 
+\frac{1}{\sqrt{n}} \int_{0}^{1} \sqrt{\log_{}{\mathcal{N}(\mathcal{F}, \lVert \cdot \rVert_{L^\infty}, 
+\varepsilon)}} \ d \varepsilon. \]
+(Here we used that the zero function belongs to $\mathcal{F}$, and the diameter of $\mathcal{F}$ in the 
+$L^\infty$ metric is bounded by 1). It is not difficult to bound the covering numbers of $\mathcal{F}$ like 
+this (Exercise 8.9):
+\[ \mathcal{N}(\mathcal{F}, \lVert \cdot \rVert_{L^\infty}, \varepsilon) \leq e^{C/\varepsilon}. \]
+Substitute this bound into the integral, we get 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}}|X_f| \right] \lesssim \frac{1}{\sqrt{n}} 
+\int_{0}^{1} \sqrt{\frac{C}{\varepsilon}} \ d \varepsilon \lesssim \frac{1}{\sqrt{n}}. \]
+hence the proof is complete.
+\end{proof}
+
+
+\subsubsection{Empirical Measure}
+For a broader perspective, take one more look at \cref{def:8.2.5}. Given an i.i.d sample $X_1, \dots, X_n$ 
+picked from $\Omega$ according to some probability measure $\mu$, let's consider the \textit{empirical measure} 
+$\mu_n$ that assigns equal probabilities $1/n$ to each point, counting multiplicities:
+\[ \mu_n = \frac{1}{n}\sum_{i = 1}^{n} \delta_{X_i}. \]
+Here $\delta_x$ is the Dirac probability measure at $x$, i.e.
+\[ \delta_x(A) = \begin{cases}
+	1 &\text{if } x \in A, \\
+	0 &\text{otherwise.}
+\end{cases} \]
+The integral of $f$ with respect to the original measure $\mu$ is $\mathbb{E}\left[ f(X) \right]$, while the 
+integral of $f$ with respect to the empirical measure $\mu_n$ is $\frac{1}{n}\sum_{i = 1}^{n}f(X_i)$. The 
+empirical process $X_f$ we defined above tracks the deviation of the population expectation from the empirical 
+expectation.
+
+This deviation, which we bounded in \cref{thm:8.2.3}, can be thought as a distance between measures $\mu$ and 
+$\mu_n$, called the \textit{Wasserstein distance} $W_1(\mu, \mu_n)$. It has an equivalent interpretation as the 
+\textit{transportation cost} of turning one measure into the other. The equivalence is provided by the 
+Kantorovich-Rubinstein duality theorem. For this reason, \cref{thm:8.2.3} is often called the 
+\textit{Wasserstein law of large numbers}.
 
 
 
@@ -677,6 +818,134 @@ that any Boolean class with finite VC dimension is uniform Glivenko-Cantelli. Th
 
 % ----------8.4----------
 \subsection{Application: Statistical Learning Theory}
+Statistical learning (or machine learning) is about making predictions from data. Suppose there is an unknown 
+function $T: \Omega \to \mathbb{R}$ on some set $\Omega$ (the \textit{target function}), and we get to see a 
+few sample points $X_1, \dots, X_n$ drawn independently from some distribution on $\Omega$. Therefore, our 
+\textit{training data} is 
+\[ (X_i, T(X_i)), \ i = 1, \dots, n. \]
+The goal is to use this sample to predict $T(X)$ for a new point $X$ drawn from the same distribution (See 
+Figure 8.9).
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 8/fig8-9.png}
+\end{center}
+
+\begin{example}[Classification]
+\label{ex:8.4.1}
+An important type of learning problems is classification, where the function $T$ is Boolean (takes value 0 and 
+1), classifying points in $\Omega$ into two classes. For instance, imagine a health study with $n$ patients. 
+For each patient, we record $d$ hralth parameters like blood pressure or temperature - that is our vector 
+$X_i \in \mathbb{R}^d$. Suppose we also know if they have diabetes: $T(X_i) = 0$ (healthy) or $1$ (sick). The 
+goal is to learn how to predict diabetes from data - that is, to learn the function $T: \mathbb{R}^d \to 
+\{ 0, 1 \}$ so we can diagnose new patients based on their health parameters.
+\end{example}
+
+
+\subsubsection{Risk, Fit, and Complexity}
+Given the training data, we want to find a function $f: \Omega \to \mathbb{R}$ that approximates $T$. 
+We aim to minimize the \textit{risk}, defined as
+\[ R(f) = \mathbb{E}\left[ (f(X) - T(X))^2 \right]. \]
+
+\begin{example}[]
+\label{ex:8.4.2}
+In classification problems where $T$ and $f$ are boolean functions, the risk is the probability of 
+misclassification:
+\[ R(f) = P(f(X) \neq T(X)). \]
+\end{example}
+
+How much training data do we need? That depends on the complexity of the problem. If we believe the target 
+function $T(X)$ behaves in a complicated way, we need more data. Since we usually don't know this up front, we 
+limit our guesses $f$ to some class of functions $\mathcal{F}$, callled the \textit{hypothesis class}.
+
+But how do we pick $\mathcal{F}$? There is no universal rule, but it should balance fit and complexity. If 
+$\mathcal{F}$ is too simplistic - say, only linear functions - we might \textit{underfit} (Figure 8.10a) and 
+miss real patterns. Too complex, we might \textit{overfit}, just memorizing the training data rather than 
+generalizing from it (Figure 8.10b). The sweet spot is a hypothesis class that is just enough to capture the 
+real patterns, without fitting the noise (Figure 8.10c).
+
+\begin{center}
+	\includegraphics[width=0.8\textwidth]{Chapter 8/fig8-10}
+\end{center}
+
+
+\subsubsection{Empirical Risk Minimization}
+Once we pick a hypothesis space $\mathcal{F}$, we might just choose the best function $f^*$ in it - one that 
+minimizes the risk:
+\[ f^* = \mathrm{arg}\min_{f \in \mathcal{F}} R(F). \]
+The catch is that we can't actually compute $R(F)$ since we don't have access to the population $\Omega$. 
+Solution? Use the training set and take the expectation.
+
+\begin{definition}[]
+\label{def:8.4.3}
+For a function $f: \Omega \to \mathbb{R}$, define the \underline{empirical risk} and \underline{empirical 
+minimizer} as 
+\[ R_n(f) := \frac{1}{n}\sum_{i = 1}^{n}(f(X_i) - T(X_i))^2, \ f_n^* = \mathrm{arg}\min_{f \in \mathcal{F}} 
+R_n(f). \]
+\end{definition}
+
+\begin{example}[Classification]
+\label{ex:8.4.4}
+In classification, where $f$ and $T$ take values 0 or 1, the empirical risk $R_n(f)$ is just the fraction of 
+training points where $f$ gets it wrong: $f(X_i) \neq T(X_i)$. So empirical risk minimization picks the 
+$f \in \mathcal{F}$ that makes the fewest mistakes on the training data.
+\end{example}
+
+
+\subsubsection{VC Generalization Bound}
+Let's use the VC theory to bound the generalization error in any classification problem.
+
+\begin{theorem}[VC generalization bound]
+\label{thm:8.4.5}
+Assume that the target $T$ is a Boolean function, and the hypothesis space $\mathcal{F}$ is a class of 
+Boolean functions with finite VC dimension. Then 
+\[ \mathbb{E}\left[ R(f_n^*) \right] \leq R(f^*) + C \sqrt{\frac{\mathrm{vc}(\mathcal{F})}{n}}. \]
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1: Excess risk.} The following bound holds pointwise:
+\[ R(f_n^*) - R(f^*) \leq 2 \sup_{f \in \mathcal{F}}|R_n(f) - R(f)|. \]
+To check this, denote $\varepsilon := \sup_{f \in \mathcal{F}}|R_n(f) - R(f)|$ and write 
+\begin{align*}
+	R(f_n^*) 
+	&\leq R_n(f_n^*) + \varepsilon \quad (\text{since } f_n^* \in \mathcal{F} \text{ by construction}) \\
+	&\leq R_n(f^*) + \varepsilon \quad (\text{since } f_n^* \text{ minimizes } R_n \text{ in the class} 
+	\mathcal{F}) \\
+	&\leq R(f^*) + 2 \varepsilon \quad (\text{since } f^* \in \mathcal{F} \text{ by construction}).
+\end{align*}
+Subtracting $R(f^*)$ from both sides gives the claim.
+
+\textbf{Step 2: Applying VC law of large numbers.} Thanks to the claim above, it is enough to show that 
+\[ \mathbb{E}\left[ \sup_{f \in \mathcal{F}}|R_n(f) - R(f)| \right] \lesssim 
+\sqrt{\frac{\mathrm{vc}(\mathcal{F})}{n}}. \]
+Recalling the definitions of the empirical and population risk, we can rewrite the above as
+\[ \mathbb{E}\left[ \sup_{\ell \in \mathcal{L}} \left| \frac{1}{n}\sum_{i = 1}^{n} \ell(X_i) 
+- \mathbb{E}\left[ \ell(X) \right] \right| \right] \lesssim \sqrt{\frac{\mathrm{vc}(\mathcal{F})}{n}}, \]
+where $\mathcal{L} = \{ (f - T)^2: \ f \in \mathcal{F} \}$. A moment's thought reveals that (Exercise 8.29) 
+$\mathrm{vc}(\mathcal{L}) = \mathrm{vc}(\mathcal{F})$. Then, an application of \cref{thm:8.3.15} completes 
+the proof.
+\end{proof}
+
+\begin{example}[Classification]
+Say we have $n$ training data points $X_1, \dots, X_n$ sampled uniformly from the unit square (as in 
+\cref{ex:8.3.18}), each labeled ``sick" (1) if it lies in some fixed circle $\mathcal{C}$, and ``healthy" 
+otherwise. Our goal is to learn that ``sickness" circle $\mathcal{C}$ from the data. Let's do empirical risk 
+minimization - pick a circle that best matches the labels, i.e. minimizes misclassifications.
+
+How well do we do? Since the true circle $\mathcal{C}$ gives zero error, and the VC dimension of circles it 
+at most 3 (Exercise 8.13), \cref{thm:8.4.5} tells us the risk for our learned circle is at most 
+$O(1/\sqrt{n})$. So, new points can be classified just by checking if they are inside our learned circle - 
+with misdiagnosis probability $O(1/\sqrt{n})$, which decreases as we get more data.
+\end{example}
+
+\begin{remark}[Bias-variance tradeoff]
+\label{rmk:8.4.7}
+The VC generalization bound (\cref{thm:8.4.5}) identifies two main sources of error in learning. The 
+\textit{bias} term $F(f^*)$ comes from an imperfect choice of the hypothesis class (underfitting). We can 
+shrink the bias by including more functions in $\mathcal{F}$ - ideally enough to capture the true target 
+function $T$, making the bias equal zero. But then the \textit{variance} term 
+$O(\sqrt{\mathrm{vc}(\mathcal{F})/n})$ grows. To keep it in check, we may use more training data (increase $n$) 
+to avoid overfitting.
+\end{remark}
 
 
 
